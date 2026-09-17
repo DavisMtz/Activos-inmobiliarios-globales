@@ -130,6 +130,19 @@ export const IconoAdelante = ({ className }: Props) => (
   </Marco>
 );
 
+export const IconoAtras = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="m14.5 6-6 6 6 6" />
+  </Marco>
+);
+
+/** La foto que encabeza la casa. */
+export const IconoPortada = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="m12 4.4 2.4 4.85 5.35.78-3.87 3.77.91 5.33L12 16.6l-4.79 2.52.91-5.33-3.87-3.77 5.35-.78z" />
+  </Marco>
+);
+
 export const IconoMas = ({ className }: Props) => (
   <Marco className={className}>
     <path d="M12 5.25v13.5M5.25 12h13.5" />

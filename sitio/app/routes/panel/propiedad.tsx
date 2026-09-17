@@ -21,6 +21,7 @@ import {
   zonasConocidas,
 } from "../../../server/db/panel/propiedades";
 import { FormularioDePropiedad } from "../../components/panel/formulario-propiedad";
+import { FotosDeLaCasa } from "../../components/panel/fotos";
 import { Aviso, Bloque, Boton, Etiqueta } from "../../components/panel/piezas";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/propiedad";
@@ -107,6 +108,9 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     puedeComercial: puede(usuario, "propiedades.estado_comercial", { asesor_id: casa.asesorId }),
     puedeAsignar: puede(usuario, "propiedades.asignar_asesor"),
     puedePapelera: puede(usuario, "propiedades.papelera"),
+    puedeFotos: puede(usuario, "fotos.gestionar", { asesor_id: casa.asesorId }),
+    // Sin credenciales, la sección de fotos lo dice y el resto sigue igual.
+    cloudinaryListo: servicios.config.cloudinary.configurado,
     reciencreada: url.searchParams.get("creada") === "1",
     guardada: url.searchParams.get("guardada") === "1",
   };
@@ -172,6 +176,8 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
     puedeComercial,
     puedeAsignar,
     puedePapelera,
+    puedeFotos,
+    cloudinaryListo,
     reciencreada,
     guardada,
   } = loaderData;
@@ -272,6 +278,13 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
           </div>
         </Bloque>
       ) : null}
+
+      <FotosDeLaCasa
+        propiedadId={casa.id}
+        fotos={casa.fotos}
+        cloudinaryListo={cloudinaryListo}
+        puedeEditar={puedeFotos}
+      />
 
       {puedeEditar ? (
         <FormularioDePropiedad
