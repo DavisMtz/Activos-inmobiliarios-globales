@@ -42,7 +42,10 @@
   /* ─── Escala tipográfica ──────────────────────────────────────────
      Fluida entre 390 px y 1440 px: una sola escala para los dos extremos
      que pide el plan, sin saltos a media pantalla. */
-  --text-display: clamp(2.6rem, 1.45rem + 4.7vw, 5.25rem);
+  /* El tope era 5.25rem y a 1366 px la palabra «financiamiento» del titular
+     real se salía de su columna y se encimaba con la foto. La escala se mide
+     con el texto de verdad, no con una frase de ejemplo. */
+  --text-display: clamp(2.4rem, 1.5rem + 3.6vw, 4.25rem);
   --text-display--line-height: 0.96;
   --text-display--letter-spacing: -0.035em;
   --text-display--font-weight: 700;

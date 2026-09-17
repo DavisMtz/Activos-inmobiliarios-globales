@@ -360,17 +360,27 @@ function Caracteristicas({ ficha }: { ficha: Route.ComponentProps["loaderData"][
 
   return (
     <section className="mt-8">
-      {/* Con 5 datos en dos columnas el último queda solo y deja un hueco al
-          lado: si el número es impar, el último ocupa el ancho completo. */}
       {datos.length ? (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 [&>li:last-child:nth-child(odd)]:col-span-2 sm:[&>li:last-child:nth-child(odd)]:col-span-1">
-          {datos.map((d) => (
-            <li key={d.etiqueta} className="rounded-2xl border border-linea bg-superficie p-4">
-              <span className="text-texto-suave">{d.icono}</span>
-              <p className="mt-2 text-sm text-texto-suave">{d.etiqueta}</p>
-              <p className="font-bold text-tinta tabular-nums">{d.valor}</p>
-            </li>
-          ))}
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {datos.map((d, i) => {
+            // Con 5 datos en dos columnas el último queda solo y deja un hueco
+            // al lado. La clase se decide aquí y no con una variante de
+            // Tailwind (`[&>li:last-child:nth-child(odd)]`), que se escribe
+            // igual pero no llegó a generarse: esto sí es una clase estática.
+            const huerfano = datos.length % 2 === 1 && i === datos.length - 1;
+            return (
+              <li
+                key={d.etiqueta}
+                className={`rounded-2xl border border-linea bg-superficie p-4 ${
+                  huerfano ? "col-span-2 sm:col-span-1" : ""
+                }`}
+              >
+                <span className="text-texto-suave">{d.icono}</span>
+                <p className="mt-2 text-sm text-texto-suave">{d.etiqueta}</p>
+                <p className="font-bold text-tinta tabular-nums">{d.valor}</p>
+              </li>
+            );
+          })}
         </ul>
       ) : null}
 
