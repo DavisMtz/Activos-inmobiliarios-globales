@@ -206,7 +206,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
       {parecidas.length ? (
         <section className="mx-auto mt-16 max-w-6xl px-5 pb-16">
           <h2 className="font-display text-seccion text-tinta">Propiedades parecidas</h2>
-          <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {parecidas.map((item) => (
               <li key={item.clave}>
                 <TarjetaPropiedad item={item} />

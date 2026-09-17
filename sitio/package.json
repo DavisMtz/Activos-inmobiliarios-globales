@@ -17,6 +17,7 @@
     "maestro:crear": "node scripts/crear-maestro.mjs",
     "verificar": "node scripts/verificar.mjs",
     "verificar:navegador": "node scripts/verificar-navegador.mjs",
+    "verificar:movimiento": "node scripts/verificar-movimiento.mjs",
     "capturar": "node scripts/capturar.mjs",
     "fichas:descargar": "node scripts/descargar-fichas.mjs",
     "sembrar": "node scripts/sembrar-desde-wordpress.mjs",
@@ -26,6 +27,7 @@
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/nunito": "5.3.0",
+    "gsap": "^3.15.0",
     "hono": "4.13.8",
     "isbot": "5.2.2",
     "react": "19.3.0",

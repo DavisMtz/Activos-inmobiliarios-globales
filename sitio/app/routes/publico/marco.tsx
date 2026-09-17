@@ -1,5 +1,6 @@
 import "@fontsource-variable/fraunces/wght.css";
 
+import { useEffect, useRef } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router";
 import { leerConfigDelSitio } from "../../../server/db/configuracion";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
@@ -62,12 +63,48 @@ export async function loader({ context }: Route.LoaderArgs) {
 
 export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
   const { nombreNegocio, contacto, redes, whatsapp, anio } = loaderData;
+  const { pathname } = useLocation();
   // En la ficha el botón flotante estorba: ahí WhatsApp vive en la barra de
   // acciones, pegada abajo, que es la que no tapa el precio.
-  const enFicha = /^\/propiedades\/[^/]+$/.test(useLocation().pathname);
+  const enFicha = /^\/propiedades\/[^/]+$/.test(pathname);
+  const contenedor = useRef<HTMLDivElement>(null);
+
+  /**
+   * El movimiento entra DESPUÉS de hidratar y con `import()`, así que GSAP cae
+   * en su propio trozo y no cuenta en la carga inicial del sitio público
+   * (PLAN §10.4, tope de 150 KB gzip). Vive aquí, en el marco público, y nunca
+   * en `root.tsx`: el panel no debe descargar ni un byte de esto.
+   *
+   * Se rearma en cada página porque al navegar en el cliente el contenido
+   * cambia sin recargar, y se limpia siempre: si no, la página siguiente
+   * heredaría los estilos en línea que dejó la anterior a medias.
+   */
+  useEffect(() => {
+    const nodo = contenedor.current;
+    if (!nodo) return;
+
+    let vivo = true;
+    let limpiar: (() => void) | null = null;
+
+    void import("../../components/publico/movimiento")
+      .then(({ animarSitioPublico }) => animarSitioPublico(nodo))
+      .then((fin) => {
+        // Si la página ya cambió mientras bajaba GSAP, se deshace enseguida.
+        if (vivo) limpiar = fin;
+        else fin();
+      })
+      .catch(() => {
+        // Sin animación la página está completa igual: no se avisa de nada.
+      });
+
+    return () => {
+      vivo = false;
+      limpiar?.();
+    };
+  }, [pathname]);
 
   return (
-    <div className="flex min-h-dvh flex-col bg-fondo">
+    <div ref={contenedor} className="flex min-h-dvh flex-col bg-fondo">
       <Cabecera nombreNegocio={nombreNegocio} />
 
       <main id="contenido" className="flex-1">

@@ -164,7 +164,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </Link>
           </div>
 
-          <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {casas.map((casa, i) => (
               <li key={casa.clave}>
                 <TarjetaPropiedad item={casa} prioridad={i < 1} />
@@ -208,7 +208,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
 
       {/* ─── Cierre ─── */}
       <section className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
-        <div className="rounded-3xl bg-marca-oscuro px-6 py-12 text-center sm:px-12 campo-oscuro">
+        <div data-animar className="rounded-3xl bg-marca-oscuro px-6 py-12 text-center sm:px-12 campo-oscuro">
           <h2 className="mx-auto max-w-2xl font-display text-seccion text-white">
             ¿Buscas algo que no está en la lista? Dinos qué necesitas.
           </h2>
