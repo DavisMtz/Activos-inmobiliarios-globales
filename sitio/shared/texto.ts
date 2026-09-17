@@ -238,3 +238,332 @@ export function slugificar(texto: string): string {
 
 /** Comparación sin mayúsculas ni acentos: «Tres Marias» = «Tres Marías». */
 export const sinAcentos = (texto: string): string => slugificar(texto).replace(/-/g, " ");
+
+// ─── «Pegar texto de Facebook» (PLAN §11.3, paso 2) ───────────────
+
+/**
+ * Lee el texto con el que el equipo publica una casa en Facebook y saca los
+ * datos que ya están escritos ahí, para no capturarlos dos veces.
+ *
+ * Regla de toda esta parte: **antes no contestar que contestar de más.** Lo que
+ * se devuelve rellena campos vacíos de un formulario y una persona lo confirma;
+ * un dato inventado se cuela al sitio, y uno que falta solo se escribe a mano.
+ * Por eso, ante duda (un monto sin contexto, unos metros que no dicen si son de
+ * terreno o de construcción) se devuelve null.
+ */
+
+/** El alfiler con el que marcan la ubicación. */
+const ALFILER = cp(0x1f4cd);
+
+export type DatosDeFacebook = {
+  operacion: "venta" | "renta" | "venta_renta" | null;
+  tipo: string | null;
+  condicion: string | null;
+  precio: number | null;
+  precioRenta: number | null;
+  recamaras: number | null;
+  banosCompletos: number | null;
+  mediosBanos: number | null;
+  estacionamientos: number | null;
+  niveles: number | null;
+  m2Terreno: number | null;
+  m2Construccion: number | null;
+  ciudad: string | null;
+  colonia: string | null;
+};
+
+const SIN_DATOS: DatosDeFacebook = {
+  operacion: null,
+  tipo: null,
+  condicion: null,
+  precio: null,
+  precioRenta: null,
+  recamaras: null,
+  banosCompletos: null,
+  mediosBanos: null,
+  estacionamientos: null,
+  niveles: null,
+  m2Terreno: null,
+  m2Construccion: null,
+  ciudad: null,
+  colonia: null,
+};
+
+/** «Recámaras» → «recamaras». De paso, NFKD convierte «m²» en «m2». */
+const plano = (texto: string): string =>
+  texto
+    .normalize("NFKD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase();
+
+const NUMEROS_ESCRITOS: Record<string, number> = {
+  un: 1, uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5,
+  seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10,
+};
+/** Lo que cuenta como cantidad: cifras o los números escritos hasta diez. */
+const CANTIDAD = `\\d{1,3}|${Object.keys(NUMEROS_ESCRITOS).join("|")}`;
+
+function cuantos(texto: string | undefined, maximo: number): number | null {
+  if (!texto) return null;
+  const escrito = NUMEROS_ESCRITOS[texto];
+  const n = escrito ?? Number(texto);
+  return Number.isInteger(n) && n >= 1 && n <= maximo ? n : null;
+}
+
+/**
+ * «3,000,000.00» → 3000000. Null si hay que adivinar («3.000.000», «2.5
+ * millones»). Los metros conservan sus decimales: redondear «93.5 m²» a 94
+ * desmentía al inventario en nueve casas (medido sobre las 188 reales).
+ */
+function montoDe(bruto: string, { decimales = false } = {}): number | null {
+  const sinMiles = bruto.replace(/,/g, "");
+  if (!/^\d{1,10}(\.\d{1,2})?$/.test(sinMiles)) return null;
+  const n = Number(sinMiles);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return decimales ? Math.round(n * 100) / 100 : Math.round(n);
+}
+
+/** Montos que no son el precio de la casa. */
+const OTROS_MONTOS = /enganche|mensualidad|credito|financia|apartad|comision|descuento|cuota|mantenimiento|predial/;
+const PALABRAS_RENTA = /renta|mensual|al mes/;
+const MONTO = /\$\s*(\d[\d,]*(?:\.\d{1,2})?)/g;
+const METROS = /(\d[\d,]*(?:\.\d{1,2})?)\s*(?:m2|mts2|mt2|metros(?:\s+cuadrados)?)\b/g;
+
+const TIPOS_EN_TEXTO: [RegExp, string][] = [
+  [/\bdepartamento|\bdepto\b|\bdpto\b/, "departamento"],
+  [/\bterreno|\blote\b|\bpredio\b/, "terreno"],
+  [/\bbodega/, "bodega"],
+  [/\boficina/, "oficina"],
+  [/\bedificio/, "edificio"],
+  [/\blocal\b/, "local"],
+  [/\bcasa|\bresidencia|\bvilla\b/, "casa"],
+];
+
+const CONDICIONES_EN_TEXTO: [RegExp, string][] = [
+  [/\bpreventa\b|\ben preventa\b/, "preventa"],
+  [/\bsemi\s?nueva\b/, "seminueva"],
+  [/\bremodelada\b/, "remodelada"],
+  [/\bnueva\b|\ba estrenar\b/, "nueva"],
+];
+
+/** Renglones que hablan de OTRAS recámaras, no de cuántas tiene la casa. */
+const RECAMARA_AJENA = /secundari|adicional|extra|de servicio|visitas|principal/;
+
+/** Cómo llegar no es dónde está: eso no es una colonia. */
+const ES_REFERENCIA =
+  /^(salida|cerca|a\s+(solo|unos?|dos|tres|cuatro|cinco|\d)|frente|junto|sobre|camino|rumbo|atras|detras|calle|av\.?\s|avenida|blvd|boulevard|carretera|esquina|entre|zona|privad[ao]\s+residencial|fraccionamiento\s+privado)\b/;
+
+/** El estado no es la ciudad. */
+const ES_ESTADO = /^(michoacan|mich\.?|mexico|mx)$/;
+
+/**
+ * Cada dato junta TODAS las cifras que el texto da para él. Si el texto se
+ * contradice —y se contradice seguido: «3 recámaras + estudio / 4ª recámara»,
+ * que el inventario cuenta como 4—, no se elige ninguna y el campo se queda
+ * vacío para que lo escriba una persona. Medido sobre las 188 descripciones
+ * reales: quedarse con la primera cifra acertaba 82 veces y fallaba 56.
+ */
+type Candidatos = {
+  precio: number[];
+  precioRenta: number[];
+  recamaras: number[];
+  banosCompletos: number[];
+  mediosBanos: number[];
+  estacionamientos: number[];
+  niveles: number[];
+  m2Terreno: number[];
+  m2Construccion: number[];
+};
+
+const unico = (valores: number[]): number | null => {
+  if (!valores.length) return null;
+  const distintos = new Set(valores);
+  return distintos.size === 1 ? valores[0] : null;
+};
+
+/**
+ * Renglones que enumeran un cuarto SIN decir cuántos hay: «▪️ Recámara /
+ * estudio», «🚿 Baño completo». Van sueltos en la lista de la publicación y el
+ * inventario los suma al total, así que si aparecen junto a una cifra («3
+ * recámaras»), el total real no está escrito en ninguna parte: son 3 o son 4
+ * según a quién se le pregunte. Medido en las 188: es la causa de 29 de los 29
+ * desacuerdos en recámaras.
+ *
+ * El renglón puede empezar con viñetas, emojis o el número de la lista
+ * («6️⃣ 🚿 Baño completo»), y por eso se salta todo lo que no sea letra.
+ */
+const empiezaCon = (renglon: string, palabra: string): boolean =>
+  new RegExp(`^[\\s\\p{P}\\p{S}\\p{N}]*${palabra}`, "u").test(renglon);
+
+export function datosDeTextoFacebook(entrada: string): DatosDeFacebook {
+  const datos: DatosDeFacebook = { ...SIN_DATOS };
+  if (typeof entrada !== "string" || !entrada.trim()) return datos;
+
+  const candidatos: Candidatos = {
+    precio: [],
+    precioRenta: [],
+    recamaras: [],
+    banosCompletos: [],
+    mediosBanos: [],
+    estacionamientos: [],
+    niveles: [],
+    m2Terreno: [],
+    m2Construccion: [],
+  };
+
+  /** Cuartos enumerados sin número: vuelven ambiguo el total (ver `empiezaCon`). */
+  const sueltos = { recamaras: 0, banos: 0 };
+
+  const normalizado = entrada.normalize("NFKC").replace(/\r\n?/g, "\n");
+  const completo = plano(normalizado);
+
+  // Operación, tipo y condición salen del texto entero: casi siempre van en el
+  // encabezado, y un «se vende» a media descripción también cuenta.
+  const hayVenta = /\bventa\b|\bvende\b|\bvendo\b/.test(completo);
+  const hayRenta = /\brenta\b|\brenta mos\b|\brento\b|\bse renta\b/.test(completo);
+  datos.operacion = hayVenta && hayRenta ? "venta_renta" : hayVenta ? "venta" : hayRenta ? "renta" : null;
+  datos.tipo = TIPOS_EN_TEXTO.find(([patron]) => patron.test(completo))?.[1] ?? null;
+  datos.condicion = CONDICIONES_EN_TEXTO.find(([patron]) => patron.test(completo))?.[1] ?? null;
+
+  for (const original of normalizado.split("\n")) {
+    const r = plano(original);
+    if (!r.trim()) continue;
+
+    // ── Precios ──────────────────────────────────────────────────
+    if (!OTROS_MONTOS.test(r)) {
+      const montos = [...r.matchAll(MONTO)].map((m) => montoDe(m[1])).filter((m): m is number => m !== null);
+      const conVenta = /venta|precio/.test(r);
+      const conRenta = PALABRAS_RENTA.test(r);
+      if (montos.length >= 2 && conVenta && conRenta) {
+        // «Venta $3,000,000 · Renta $20,000»: el orden en el que están escritos.
+        candidatos.precio.push(montos[0]);
+        candidatos.precioRenta.push(montos[1]);
+      } else {
+        for (const monto of montos) {
+          if (conRenta) candidatos.precioRenta.push(monto);
+          // Sin ninguna palabra que lo diga, un monto grande es el de venta; uno
+          // chico puede ser cualquier cosa (una cuota, un enganche) y se ignora.
+          else if (conVenta || monto >= 300_000) candidatos.precio.push(monto);
+        }
+      }
+    }
+
+    // ── Recámaras ────────────────────────────────────────────────
+    if (/recamaras?|dormitorios?|habitacion/.test(r)) {
+      const encontrado =
+        r.match(new RegExp(`(${CANTIDAD})\\s*(?:\\w+\\s+)?(?:recamaras?|habitaciones?|dormitorios?|rec\\b)`)) ??
+        r.match(new RegExp(`(?:recamaras?|habitaciones?|dormitorios?)\\s*:?\\s*(${CANTIDAD})\\b`));
+      const n = cuantos(encontrado?.[1], 20);
+      // «Recámara principal…», «3 recámaras secundarias», «estudio o cuarta
+      // recámara»: cuentan una parte, no el total.
+      const parcial = RECAMARA_AJENA.test(r) || /\bestudio\b/.test(r);
+      if (n !== null && !parcial) candidatos.recamaras.push(n);
+      else if (parcial || empiezaCon(r, "(?:recamaras?|dormitorios?|habitacion)")) sueltos.recamaras++;
+    }
+
+    // ── Baños: «2.5 baños» son 2 completos y 1 medio ─────────────
+    const medios =
+      r.match(new RegExp(`(${CANTIDAD})\\s*medios?\\s*ba[nñ]os?`)) ??
+      r.match(new RegExp(`medios?\\s*ba[nñ]os?\\s*:?\\s*(${CANTIDAD})\\b`));
+    if (medios) {
+      const n = cuantos(medios[1], 20);
+      if (n !== null) candidatos.mediosBanos.push(n);
+    } else if (/\bmedio\s+ba[nñ]o|1\/2\s*ba[nñ]o/.test(r)) {
+      candidatos.mediosBanos.push(1);
+    } else if (/ba[nñ]os?\b/.test(r)) {
+      const banos =
+        r.match(new RegExp(`(${CANTIDAD})([.,]5)?\\s*ba[nñ]os?`)) ??
+        r.match(new RegExp(`ba[nñ]os?(?:\\s+completos?)?\\s*:?\\s*(${CANTIDAD})([.,]5)?\\b`));
+      const completos = cuantos(banos?.[1], 20);
+      if (completos !== null) {
+        candidatos.banosCompletos.push(completos);
+        if (banos?.[2]) candidatos.mediosBanos.push(1);
+      } else {
+        // «Recámara principal con baño completo» es otro baño que el total
+        // escrito no incluye: con eso, la cifra deja de ser de fiar.
+        sueltos.banos++;
+      }
+    }
+
+    // ── Metros: solo si el renglón dice de qué son ───────────────
+    const iTerreno = r.search(/terreno|lote\b|superficie/);
+    const iConstruccion = r.search(/construc|construido|constru\b|habitable/);
+    if (iTerreno >= 0 || iConstruccion >= 0) {
+      for (const encontrado of r.matchAll(METROS)) {
+        const valor = montoDe(encontrado[1], { decimales: true });
+        if (valor === null || valor > 1_000_000) continue;
+        const posicion = encontrado.index ?? 0;
+        const deTerreno =
+          iConstruccion < 0 ||
+          (iTerreno >= 0 && Math.abs(posicion - iTerreno) < Math.abs(posicion - iConstruccion));
+        if (deTerreno) candidatos.m2Terreno.push(valor);
+        else candidatos.m2Construccion.push(valor);
+      }
+    }
+
+    // ── Estacionamientos ─────────────────────────────────────────
+    if (/cochera|garage|garaje|estacionamiento|cajon|auto/.test(r)) {
+      const encontrado =
+        r.match(new RegExp(`(?:cochera|garage|garaje|estacionamiento)[^\\n]{0,24}?para\\s+(${CANTIDAD})`)) ??
+        r.match(new RegExp(`(${CANTIDAD})\\s*(?:cajones|autos?|coches?|vehiculos?|carros?)`)) ??
+        r.match(new RegExp(`(?:cocheras?|garages?|garajes?|estacionamientos?)\\s*:?\\s*(${CANTIDAD})\\b`));
+      const n = cuantos(encontrado?.[1], 20);
+      if (n !== null) candidatos.estacionamientos.push(n);
+    }
+
+    // ── Niveles ──────────────────────────────────────────────────
+    if (!/ultimo|primer|segundo|tercer|cuarto piso/.test(r)) {
+      const encontrado = r.match(new RegExp(`(${CANTIDAD})\\s*(?:niveles?|pisos?|plantas?)\\b`));
+      const n = cuantos(encontrado?.[1], 10);
+      if (n !== null) candidatos.niveles.push(n);
+    }
+
+    // ── Ubicación: el renglón del alfiler ────────────────────────
+    if (datos.colonia === null) {
+      let ubicacion: string | null = null;
+      if (original.includes(ALFILER)) {
+        ubicacion = original.split(ALFILER).slice(1).join(" ");
+      } else {
+        const encabezado = original.match(/^\s*(?:ubicacion|ubicaci[oó]n|zona|colonia|fraccionamiento)\s*:\s*(.+)$/i);
+        if (encabezado) ubicacion = encabezado[1];
+      }
+      if (ubicacion) {
+        const limpia = quitarEmojis(ubicacion)
+          .replace(/^(?:ubicad[ao]s?\s+en|ubicacion|ubicaci[oó]n|en)\s+/i, "")
+          .replace(/^[\s:.\-–—]+|[\s.,;:]+$/g, "")
+          .slice(0, 120);
+        // El renglón del alfiler mezcla la colonia con referencias y el estado:
+        // «Salida al Aeropuerto | Plaza El Prado», «Av. Periodismo | Morelia, Michoacán».
+        const partes = limpia
+          .split(/\s*[,|]\s*/)
+          .map((parte) => parte.trim())
+          .filter((parte) => parte && /\p{L}/u.test(parte) && !ES_ESTADO.test(plano(parte)));
+
+        if (partes.length >= 2) {
+          const ultima = partes[partes.length - 1];
+          if (ultima.length <= 40 && !ES_REFERENCIA.test(plano(ultima))) datos.ciudad ??= ultima;
+        }
+        // Una referencia («a dos cuadras de…») o una frase de folleto no son
+        // una colonia: mejor dejarlo vacío que llenar el campo con eso.
+        const colonia = partes
+          .slice(0, partes.length >= 2 ? -1 : undefined)
+          .find((parte) => parte.length <= 40 && !ES_REFERENCIA.test(plano(parte)));
+        if (colonia) datos.colonia = colonia;
+      }
+    }
+  }
+
+  // Un dato solo se da por bueno si el texto no se contradice.
+  datos.precio = unico(candidatos.precio);
+  datos.precioRenta = unico(candidatos.precioRenta);
+  // Con cuartos enumerados sueltos, la cifra escrita no es el total.
+  datos.recamaras = sueltos.recamaras ? null : unico(candidatos.recamaras);
+  datos.banosCompletos = sueltos.banos ? null : unico(candidatos.banosCompletos);
+  datos.mediosBanos = unico(candidatos.mediosBanos);
+  datos.estacionamientos = unico(candidatos.estacionamientos);
+  datos.niveles = unico(candidatos.niveles);
+  datos.m2Terreno = unico(candidatos.m2Terreno);
+  datos.m2Construccion = unico(candidatos.m2Construccion);
+
+  return datos;
+}

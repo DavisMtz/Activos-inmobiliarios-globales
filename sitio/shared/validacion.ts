@@ -13,6 +13,12 @@ export const LARGO_MINIMO_CLAVE = 10;
 const LARGO_MAXIMO_CLAVE = 128;
 
 /**
+ * Cuánto vive una contraseña temporal (PLAN §8.2). Una sola definición: la usan
+ * el panel (cuando el director da de alta a alguien) y `scripts/lib/usuarios.mjs`.
+ */
+export const HORAS_CLAVE_TEMPORAL = 72;
+
+/**
  * Reglas de la contraseña nueva (PLAN §8.1). Devuelve el problema o null.
  * «Distinta de la temporal» no está aquí: solo el servidor puede comprobarlo.
  */

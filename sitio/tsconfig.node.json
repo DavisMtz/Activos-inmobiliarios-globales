@@ -9,6 +9,7 @@
     "tests/**/*",
     "shared/**/*",
     "server/auth/clave.ts",
+    "server/cloudinary.ts",
     "server/redirecciones.ts"
   ],
   "compilerOptions": {

@@ -6,12 +6,13 @@
  * mismo código y los mismos parámetros, sin copias que se desincronicen.
  */
 import { generarClaveTemporal, hashClave } from "../../server/auth/clave.ts";
-import { correoValido, normalizarCorreo } from "../../shared/validacion.ts";
+import { HORAS_CLAVE_TEMPORAL, correoValido, normalizarCorreo } from "../../shared/validacion.ts";
 import { consultar, ejecutarSql, texto } from "./d1.mjs";
 
 export { correoValido, normalizarCorreo };
 
-export const HORAS_TEMPORAL = 72;
+/** Una sola definición, compartida con el panel (`shared/validacion.ts`). */
+export const HORAS_TEMPORAL = HORAS_CLAVE_TEMPORAL;
 const ROLES = ["maestro", "director", "asesor", "contenido"];
 
 /** Clave temporal nueva, su hash y cuándo vence. La clave en claro solo vive en memoria. */
