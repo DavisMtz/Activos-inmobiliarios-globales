@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Date: Wed, 16 Sep 2026 23:03:00 GMT
+Server: Apache
+X-Robots-Tag: noindex
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link, Jet-Query-Total, Jet-Query-Pages
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+X-WP-Total: 188
+X-WP-TotalPages: 2
+Link: <https://activosinmobiliariosglobales.com/wp-json/wp/v2/properties?per_page=100&page=2>; rel="next"
+Allow: GET
+Vary: Origin,Accept-Encoding,User-Agent
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+

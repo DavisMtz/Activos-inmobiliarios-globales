@@ -1,0 +1,6829 @@
+[
+ {
+  "id": 12486,
+  "titulo": "Casa en El Prado",
+  "slug": "casa-en-el-prado-4",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-el-prado-4/",
+  "alta": "2026-09-11T14:07:01",
+  "modificada": "2026-09-11T14:07:01",
+  "autor": 11,
+  "foto_portada": 12490,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2379,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "96 m²",
+   "En construcción": "140 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 12471,
+  "titulo": "Casa en El Prado",
+  "slug": "casa-en-el-prado-3",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-el-prado-3/",
+  "alta": "2026-09-11T13:58:54",
+  "modificada": "2026-09-11T14:00:16",
+  "autor": 11,
+  "foto_portada": 12472,
+  "type-of-housing": [
+   "Casa Semi nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1900,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,550,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "96 m²",
+   "En construcción": "129 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 17
+ },
+ {
+  "id": 12460,
+  "titulo": "Casa en El Prado",
+  "slug": "casa-en-el-prado-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-el-prado-2/",
+  "alta": "2026-09-11T13:46:47",
+  "modificada": "2026-09-11T13:46:47",
+  "autor": 11,
+  "foto_portada": 12470,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1600,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,770,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "96 m²",
+   "En construcción": "70 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 12450,
+  "titulo": "Casa en El Prado",
+  "slug": "casa-en-el-prado",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-el-prado/",
+  "alta": "2026-09-11T13:40:57",
+  "modificada": "2026-09-11T13:40:57",
+  "autor": 11,
+  "foto_portada": 12451,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1708,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,700,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "96 m²",
+   "En construcción": "70 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 12440,
+  "titulo": "Casa en Lomas del Sur",
+  "slug": "casa-en-lomas-del-sur",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-lomas-del-sur/",
+  "alta": "2026-09-10T13:01:27",
+  "modificada": "2026-09-10T13:01:27",
+  "autor": 11,
+  "foto_portada": 12446,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1949,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "200 m²",
+   "En construcción": "140 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 12432,
+  "titulo": "Casa en Defensores de Puebla",
+  "slug": "casa-en-defensores-de-puebla",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-defensores-de-puebla/",
+  "alta": "2026-09-10T12:47:39",
+  "modificada": "2026-09-10T12:47:39",
+  "autor": 11,
+  "foto_portada": 12433,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1741,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "232 m²",
+   "En construcción": "150 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 12420,
+  "titulo": "Casa en Gertrudis Sánchez",
+  "slug": "casa-en-gertrudis-sanchez",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-gertrudis-sanchez/",
+  "alta": "2026-09-10T12:36:54",
+  "modificada": "2026-09-10T12:36:54",
+  "autor": 11,
+  "foto_portada": 12426,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2162,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,290,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "80 m²",
+   "En construcción": "175 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 12404,
+  "titulo": "Casa en Agustín Arriaga Rivera",
+  "slug": "casa-en-agustin-arriaga-rivera",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-agustin-arriaga-rivera/",
+  "alta": "2026-09-10T12:23:24",
+  "modificada": "2026-09-10T12:25:28",
+  "autor": 11,
+  "foto_portada": 12408,
+  "type-of-housing": [
+   "Casa remodelada"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2361,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "68 m²",
+   "En construcción": "218 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 12388,
+  "titulo": "Casa en Jesús del Monte",
+  "slug": "casa-en-jesus-del-monte-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-jesus-del-monte-2/",
+  "alta": "2026-09-10T11:58:53",
+  "modificada": "2026-09-10T12:01:26",
+  "autor": 11,
+  "foto_portada": 12389,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1834,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "115 m²",
+   "En construcción": "147 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 12378,
+  "titulo": "Casa en Prados Verdes",
+  "slug": "casa-en-prados-verdes-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-prados-verdes-2/",
+  "alta": "2026-09-10T11:43:00",
+  "modificada": "2026-09-10T11:43:00",
+  "autor": 11,
+  "foto_portada": 12386,
+  "type-of-housing": [
+   "Casa remodelada"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 997,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,580,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 12355,
+  "titulo": "Casa en Calle 20 de septiembre",
+  "slug": "casa-en-calle-20-de-septiembre",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-calle-20-de-septiembre/",
+  "alta": "2026-09-04T14:13:59",
+  "modificada": "2026-09-04T14:14:41",
+  "autor": 11,
+  "foto_portada": 12359,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1809,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,450,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "204 m²",
+   "En construcción": "196 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 25
+ },
+ {
+  "id": 12347,
+  "titulo": "Casa en Campo Elíseos",
+  "slug": "casa-en-campo-eliseos",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-campo-eliseos/",
+  "alta": "2026-09-04T13:59:55",
+  "modificada": "2026-09-04T13:59:55",
+  "autor": 11,
+  "foto_portada": 12352,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1690,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,150,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "112 m²",
+   "En construcción": "163 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 12324,
+  "titulo": "Casa en Fracc. Privado Diego Rivera",
+  "slug": "casa-en-fracc-privado-diego-rivera",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-privado-diego-rivera/",
+  "alta": "2026-09-04T13:48:44",
+  "modificada": "2026-09-04T13:48:44",
+  "autor": 11,
+  "foto_portada": 12342,
+  "type-of-housing": [
+   "Casa remodelada"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1543,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,390,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "98 m²",
+   "En construcción": "88 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 8
+ },
+ {
+  "id": 12308,
+  "titulo": "Departamento en Torreón Nuevo",
+  "slug": "departamento-en-torreon-nuevo",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-torreon-nuevo/",
+  "alta": "2026-09-04T13:36:05",
+  "modificada": "2026-09-04T13:36:05",
+  "autor": 11,
+  "foto_portada": 12313,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1364,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,790,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "107 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 17
+ },
+ {
+  "id": 12273,
+  "titulo": "Casa en Terranova",
+  "slug": "casa-en-terranova",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-terranova/",
+  "alta": "2026-08-28T14:35:59",
+  "modificada": "2026-08-28T14:35:59",
+  "autor": 11,
+  "foto_portada": 12275,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1522,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,070,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "6",
+   "Tamaño de la propiedad": "96 m²",
+   "En construcción": "142 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 12258,
+  "titulo": "Casa en Terrazas",
+  "slug": "casa-en-terrazas",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-terrazas/",
+  "alta": "2026-08-28T14:32:32",
+  "modificada": "2026-08-28T14:32:32",
+  "autor": 11,
+  "foto_portada": 12260,
+  "type-of-housing": [
+   "Casa remodelada"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1481,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,260,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "90 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 12226,
+  "titulo": "Casa en Rincón del Cielo",
+  "slug": "casa-en-rincon-del-cielo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-rincon-del-cielo/",
+  "alta": "2026-08-28T14:28:04",
+  "modificada": "2026-08-28T14:28:04",
+  "autor": 11,
+  "foto_portada": 12256,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2271,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "9,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "240 m²",
+   "En construcción": "400 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 33
+ },
+ {
+  "id": 12217,
+  "titulo": "Casa en Circuito San Marcos",
+  "slug": "casa-en-circuito-san-marcos",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-circuito-san-marcos/",
+  "alta": "2026-08-28T14:18:34",
+  "modificada": "2026-08-28T14:18:34",
+  "autor": 11,
+  "foto_portada": 12222,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1427,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,950,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "110 m²",
+   "En construcción": "95 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 11
+ },
+ {
+  "id": 12203,
+  "titulo": "Casa en Álamos, Tres Marías",
+  "slug": "casa-en-alamos-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-alamos-tres-marias/",
+  "alta": "2026-08-24T15:41:21",
+  "modificada": "2026-08-24T15:41:21",
+  "autor": 11,
+  "foto_portada": 12209,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1898,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "9,115,500.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "264 m²",
+   "En construcción": "295 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 12198,
+  "titulo": "Casa cerca de Av Periodismo",
+  "slug": "casa-cerca-de-av-periodismo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-cerca-de-av-periodismo/",
+  "alta": "2026-08-22T13:07:29",
+  "modificada": "2026-08-22T13:07:29",
+  "autor": 11,
+  "foto_portada": 12202,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1845,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "128 m²",
+   "En construcción": "196 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 7
+ },
+ {
+  "id": 12190,
+  "titulo": "Casa en Lomalta, Tres Marías",
+  "slug": "casa-en-lomalta-tres-marias-5",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-lomalta-tres-marias-5/",
+  "alta": "2026-08-22T12:50:55",
+  "modificada": "2026-08-22T12:52:30",
+  "autor": 11,
+  "foto_portada": 12194,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2023,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,890,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 12165,
+  "titulo": "Casa en Fracc. La Artesi",
+  "slug": "casa-en-fracc-la-artesi",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-la-artesi/",
+  "alta": "2026-08-22T12:08:59",
+  "modificada": "2026-08-22T12:08:59",
+  "autor": 11,
+  "foto_portada": 12173,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1412,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,590,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "126 m²",
+   "En construcción": "146 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 12015,
+  "titulo": "Casa en Lomalta, Tres Marías",
+  "slug": "casa-en-lomalta-tres-marias-4",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-lomalta-tres-marias-4/",
+  "alta": "2026-08-19T15:30:58",
+  "modificada": "2026-08-21T13:20:39",
+  "autor": 11,
+  "foto_portada": 12146,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1655,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,890,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "144 m²",
+   "En construcción": "197 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 12014,
+  "titulo": "Casa en Santa Fe",
+  "slug": "casa-en-santa-fe",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-santa-fe/",
+  "alta": "2026-08-19T15:23:20",
+  "modificada": "2026-08-21T13:10:03",
+  "autor": 11,
+  "foto_portada": 12140,
+  "type-of-housing": [
+   "Casa remodelada"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1653,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 12013,
+  "titulo": "Casa en Fracc. Miralta",
+  "slug": "casa-en-fracc-miralta-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-miralta-2/",
+  "alta": "2026-08-19T15:17:17",
+  "modificada": "2026-08-21T13:02:58",
+  "autor": 11,
+  "foto_portada": 12114,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1818,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,670,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "90 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 22
+ },
+ {
+  "id": 12008,
+  "titulo": "Casa en Club de Golf Altozano",
+  "slug": "casa-en-club-de-golf-altozano",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-club-de-golf-altozano/",
+  "alta": "2026-08-18T13:33:23",
+  "modificada": "2026-08-21T13:27:41",
+  "autor": 11,
+  "foto_portada": 12018,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1980,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "7,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "301 m²",
+   "En construcción": "250 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 30
+ },
+ {
+  "id": 11977,
+  "titulo": "Casa en Valle Quieto",
+  "slug": "casa-en-valle-quieto",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-valle-quieto/",
+  "alta": "2026-08-14T17:42:56",
+  "modificada": "2026-08-14T17:42:56",
+  "autor": 11,
+  "foto_portada": 11994,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2134,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,990,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "120 m²",
+   "En construcción": "210 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 27
+ },
+ {
+  "id": 11968,
+  "titulo": "Departamento en Fracc. Puerta Victoria",
+  "slug": "departamento-en-fracc-puerta-victoria",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-fracc-puerta-victoria/",
+  "alta": "2026-08-14T17:27:27",
+  "modificada": "2026-08-14T17:27:27",
+  "autor": 11,
+  "foto_portada": 11970,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1497,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,400,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 11
+ },
+ {
+  "id": 11956,
+  "titulo": "Casa en Col. Gertrudis Sánchez",
+  "slug": "casa-en-col-gertrudis-sanchez",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-gertrudis-sanchez/",
+  "alta": "2026-08-14T17:09:58",
+  "modificada": "2026-08-14T17:10:28",
+  "autor": 11,
+  "foto_portada": 11964,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1268,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,600,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 11942,
+  "titulo": "Departamento a espaldas de Hiperlumen",
+  "slug": "departamento-a-espaldas-de-hiperlumen",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-a-espaldas-de-hiperlumen/",
+  "alta": "2026-08-14T17:04:35",
+  "modificada": "2026-08-14T17:04:35",
+  "autor": 11,
+  "foto_portada": 11943,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta / Renta"
+  ],
+  "descripcion_caracteres": 1499,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,490,000.00",
+  "para": "Venta / Renta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 11884,
+  "titulo": "Bodega en Zona de Abastos",
+  "slug": "bodega-en-renta-en-zona-de-abastos",
+  "url": "https://activosinmobiliariosglobales.com/properties/bodega-en-renta-en-zona-de-abastos/",
+  "alta": "2026-08-14T16:31:16",
+  "modificada": "2026-08-17T14:49:51",
+  "autor": 11,
+  "foto_portada": 11887,
+  "type-of-housing": [
+   "Bodega"
+  ],
+  "property-type": [
+   "Bodega"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1768,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "18,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "120 m²",
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 11880,
+  "titulo": "Casa en Cañadas del Bosque",
+  "slug": "casa-en-canadas-del-bosque",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-canadas-del-bosque/",
+  "alta": "2026-08-10T15:30:00",
+  "modificada": "2026-08-14T16:56:48",
+  "autor": 11,
+  "foto_portada": 11930,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1783,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,290,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "96 m²",
+   "En construcción": "150 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 11878,
+  "titulo": "Casa en Bosque Monarca",
+  "slug": "casa-en-bosque-monarca",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-bosque-monarca/",
+  "alta": "2026-08-10T15:24:41",
+  "modificada": "2026-08-10T15:24:41",
+  "autor": 11,
+  "foto_portada": 11879,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1560,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "18,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "525 m²",
+   "En construcción": "410 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "6",
+   "Medios Baños": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 11857,
+  "titulo": "Casa en Bosques Tres Marías",
+  "slug": "casa-en-bosques-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-bosques-tres-marias/",
+  "alta": "2026-08-08T12:24:27",
+  "modificada": "2026-08-08T12:24:27",
+  "autor": 11,
+  "foto_portada": 11865,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1548,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "177 m²",
+   "En construcción": "160 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 11847,
+  "titulo": "Casa en Club Campestre Erandeni",
+  "slug": "casa-en-club-campestre-erandeni-4",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-club-campestre-erandeni-4/",
+  "alta": "2026-08-08T12:07:26",
+  "modificada": "2026-08-08T12:07:26",
+  "autor": 11,
+  "foto_portada": 11850,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1923,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "7,950,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "1000 m²",
+   "En construcción": "350 m²",
+   "Estacionamientos": "8",
+   "Baños completos": "4",
+   "Medios Baños": "2",
+   "Cantidad de Pisos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 11826,
+  "titulo": "Casa en Centro Histórico (Aquiles Serdán)",
+  "slug": "casa-en-centro-historico-aquiles-serdan",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-centro-historico-aquiles-serdan/",
+  "alta": "2026-08-08T11:48:27",
+  "modificada": "2026-08-08T11:48:27",
+  "autor": 11,
+  "foto_portada": 11846,
+  "type-of-housing": [
+   "inmueble"
+  ],
+  "property-type": [
+   "Inmueble"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta / Renta"
+  ],
+  "descripcion_caracteres": 1397,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,500,000.00",
+  "para": "Venta / Renta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "182 m²",
+   "En construcción": "260 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 11814,
+  "titulo": "Casa en renta en Real Castillejo",
+  "slug": "casa-en-renta-en-real-castillejo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-renta-en-real-castillejo/",
+  "alta": "2026-08-08T11:37:00",
+  "modificada": "2026-08-08T11:37:42",
+  "autor": 11,
+  "foto_portada": 11815,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Renta"
+  ],
+  "descripcion_caracteres": 1912,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "14,000.00",
+  "para": "Renta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 11802,
+  "titulo": "Casa en Fracc. Vistas San Rubén",
+  "slug": "casa-en-fracc-vistas-san-ruben",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-vistas-san-ruben/",
+  "alta": "2026-08-03T13:03:58",
+  "modificada": "2026-08-03T13:04:55",
+  "autor": 11,
+  "foto_portada": 11803,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta / Renta"
+  ],
+  "descripcion_caracteres": 1444,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,498,000.00",
+  "para": "Venta / Renta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "93 m²",
+   "En construcción": "158 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 11749,
+  "titulo": "Casa en Fracc. Lomas del Sur",
+  "slug": "casa-en-fracc-lomas-del-sur",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-lomas-del-sur/",
+  "alta": "2026-08-01T13:43:54",
+  "modificada": "2026-08-01T13:43:54",
+  "autor": 11,
+  "foto_portada": 11763,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1612,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,390,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "200 m²",
+   "En construcción": "250 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 11730,
+  "titulo": "Casa en Bosque Camelinas",
+  "slug": "casa-en-bosque-camelinas-3",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-bosque-camelinas-3/",
+  "alta": "2026-08-01T13:24:27",
+  "modificada": "2026-08-01T13:24:45",
+  "autor": 11,
+  "foto_portada": 11748,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1266,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "200 m²",
+   "En construcción": "475 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Medios Baños": "2",
+   "Cantidad de Pisos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 11674,
+  "titulo": "Propiedad en Col. Vasco de Quiroga",
+  "slug": "propiedad-en-col-vasco-de-quiroga",
+  "url": "https://activosinmobiliariosglobales.com/properties/propiedad-en-col-vasco-de-quiroga/",
+  "alta": "2026-07-28T11:51:01",
+  "modificada": "2026-07-28T11:51:01",
+  "autor": 11,
+  "foto_portada": 11681,
+  "type-of-housing": [
+   "inmueble"
+  ],
+  "property-type": [
+   "Inmueble"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1095,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "112 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "6",
+   "Planta baja": "Si"
+  },
+  "fotos": 22
+ },
+ {
+  "id": 11663,
+  "titulo": "Casa en Valle Norte, Tres Marías",
+  "slug": "casa-en-valle-norte-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-valle-norte-tres-marias/",
+  "alta": "2026-07-28T11:25:02",
+  "modificada": "2026-07-28T11:25:02",
+  "autor": 11,
+  "foto_portada": 11664,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1696,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 11652,
+  "titulo": "Casa en Chapultepec Sur",
+  "slug": "casa-en-chapultepec-sur",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-chapultepec-sur/",
+  "alta": "2026-07-23T13:16:08",
+  "modificada": "2026-07-23T13:16:08",
+  "autor": 11,
+  "foto_portada": 11655,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1466,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "145 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 11618,
+  "titulo": "Casa en Paseo del Parque, Tres Marías",
+  "slug": "casa-en-paseo-del-parque-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-paseo-del-parque-tres-marias/",
+  "alta": "2026-07-23T12:55:16",
+  "modificada": "2026-07-23T12:55:16",
+  "autor": 11,
+  "foto_portada": 11632,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 990,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "160 m²",
+   "En construcción": "288 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 36
+ },
+ {
+  "id": 11605,
+  "titulo": "Casa en El Trébol",
+  "slug": "casa-en-el-trebol-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-el-trebol-2/",
+  "alta": "2026-07-23T12:43:21",
+  "modificada": "2026-07-23T12:43:21",
+  "autor": 11,
+  "foto_portada": 11617,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 897,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,150,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "96 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "1",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 11535,
+  "titulo": "Casa en renta en Club de Golf, Tres Marías",
+  "slug": "casa-en-renta-en-club-de-golf-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-renta-en-club-de-golf-tres-marias/",
+  "alta": "2026-07-16T10:55:23",
+  "modificada": "2026-07-16T10:55:23",
+  "autor": 11,
+  "foto_portada": 11538,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Renta"
+  ],
+  "descripcion_caracteres": 1063,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "60,000.00",
+  "para": "Renta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "3",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 17
+ },
+ {
+  "id": 11490,
+  "titulo": "Oficinas en renta en Col. Vasco de Quiroga",
+  "slug": "oficinas-en-renta-en-col-vasco-de-quiroga",
+  "url": "https://activosinmobiliariosglobales.com/properties/oficinas-en-renta-en-col-vasco-de-quiroga/",
+  "alta": "2026-07-04T14:02:21",
+  "modificada": "2026-07-04T14:02:21",
+  "autor": 11,
+  "foto_portada": 11493,
+  "type-of-housing": [
+   "Oficinas"
+  ],
+  "property-type": [
+   "Oficinas"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Renta"
+  ],
+  "descripcion_caracteres": 975,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "45,000.00",
+  "para": "Renta",
+  "specs": {
+   "Habitaciones": "5",
+   "En construcción": "600 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 27
+ },
+ {
+  "id": 11457,
+  "titulo": "Casa en Fracc. Camelinas",
+  "slug": "casa-en-fracc-camelinas",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-camelinas/",
+  "alta": "2026-07-04T13:29:28",
+  "modificada": "2026-07-04T13:31:27",
+  "autor": 11,
+  "foto_portada": 11462,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1679,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "6,950,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "250 m²",
+   "En construcción": "304 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 11435,
+  "titulo": "Casa en Coto Mirlos, Altozano",
+  "slug": "11435",
+  "url": "https://activosinmobiliariosglobales.com/properties/11435/",
+  "alta": "2026-06-22T11:53:39",
+  "modificada": "2026-06-22T11:54:09",
+  "autor": 11,
+  "foto_portada": 11437,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1774,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "5,799,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "153 m²",
+   "En construcción": "203 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 11421,
+  "titulo": "Departamento en Condominio D’ Chalmer",
+  "slug": "departamento-en-condominio-d-chalmer",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-condominio-d-chalmer/",
+  "alta": "2026-06-22T11:37:20",
+  "modificada": "2026-06-22T11:37:20",
+  "autor": 11,
+  "foto_portada": 11432,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1207,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "178 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 11389,
+  "titulo": "Casa en Fracc. Montaña Monarca 1",
+  "slug": "casa-en-fracc-montana-monarca-1",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-montana-monarca-1/",
+  "alta": "2026-06-22T11:20:15",
+  "modificada": "2026-06-22T11:20:15",
+  "autor": 11,
+  "foto_portada": 11419,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1448,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "5,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "215 m²",
+   "En construcción": "225 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 32
+ },
+ {
+  "id": 11372,
+  "titulo": "Casa en Uriangato, Guanajuato",
+  "slug": "casa-en-uriangato-guanajuato",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-uriangato-guanajuato/",
+  "alta": "2026-06-17T11:05:47",
+  "modificada": "2026-06-17T11:05:47",
+  "autor": 11,
+  "foto_portada": 11378,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Guanajuato"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1222,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "3,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 11351,
+  "titulo": "Casa en Fracc. Riviera",
+  "slug": "casa-en-fracc-riviera",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-riviera/",
+  "alta": "2026-06-16T12:37:06",
+  "modificada": "2026-06-16T12:37:06",
+  "autor": 11,
+  "foto_portada": 11352,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1843,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "6,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "7",
+   "Tamaño de la propiedad": "720 m²",
+   "En construcción": "480 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "10",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 11323,
+  "titulo": "Casa en Lomalta, Tres Marías",
+  "slug": "casa-en-lomalta-tres-marias-3",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-lomalta-tres-marias-3/",
+  "alta": "2026-06-13T12:38:02",
+  "modificada": "2026-06-13T12:38:02",
+  "autor": 11,
+  "foto_portada": 11343,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1002,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,600,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "150 m²",
+   "En construcción": "245 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 29
+ },
+ {
+  "id": 11306,
+  "titulo": "Casa en Col. Bosque Monarca, Altozano",
+  "slug": "casa-en-col-bosque-monarca-altozano",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-bosque-monarca-altozano/",
+  "alta": "2026-06-13T12:19:38",
+  "modificada": "2026-06-13T12:19:38",
+  "autor": 11,
+  "foto_portada": 11320,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1399,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "7,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "163 m²",
+   "En construcción": "310 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 19
+ },
+ {
+  "id": 11223,
+  "titulo": "Casa en Lomalta, Tres Marías",
+  "slug": "casa-en-lomalta-tres-marias-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-lomalta-tres-marias-2/",
+  "alta": "2026-06-12T12:25:21",
+  "modificada": "2026-06-12T12:25:21",
+  "autor": 11,
+  "foto_portada": 11227,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1508,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,990,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "133 m²",
+   "En construcción": "200 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 28
+ },
+ {
+  "id": 11158,
+  "titulo": "Casa en Ixtapa",
+  "slug": "casa-en-ixtapa",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-ixtapa/",
+  "alta": "2026-06-09T14:05:06",
+  "modificada": "2026-06-09T14:09:22",
+  "autor": 11,
+  "foto_portada": 11159,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Ixtapa"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 621,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "1,600,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 19
+ },
+ {
+  "id": 11101,
+  "titulo": "Casa en Lomalta, Tres Marias",
+  "slug": "casa-en-lomalta-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-lomalta-tres-marias/",
+  "alta": "2026-06-09T12:59:56",
+  "modificada": "2026-06-09T12:59:56",
+  "autor": 11,
+  "foto_portada": 11124,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1002,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "4,400,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "En construcción": "190 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 32
+ },
+ {
+  "id": 11045,
+  "titulo": "Departamento en Fracc. Castellón Residencial",
+  "slug": "departamento-en-fracc-castellon-residencial",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-fracc-castellon-residencial/",
+  "alta": "2026-06-08T13:46:38",
+  "modificada": "2026-06-08T13:46:38",
+  "autor": 11,
+  "foto_portada": 11055,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 909,
+  "descripcion_con_letras_unicode": true,
+  "http": 200,
+  "precio": "2,880,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "En construcción": "94 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 11024,
+  "titulo": "Casa en Prados Verdes",
+  "slug": "casa-en-prados-verdes",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-prados-verdes/",
+  "alta": "2026-06-08T13:40:04",
+  "modificada": "2026-06-08T13:40:04",
+  "autor": 11,
+  "foto_portada": 11028,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1084,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,600,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "136 m²",
+   "En construcción": "272 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 11009,
+  "titulo": "Casa en Terranova 1, Tarímbaro",
+  "slug": "casa-en-terranova-1-tarimbaro",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-terranova-1-tarimbaro/",
+  "alta": "2026-06-05T12:30:20",
+  "modificada": "2026-06-05T12:30:20",
+  "autor": 11,
+  "foto_portada": 11020,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Tarimbaro"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 988,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,440,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "90 m²",
+   "En construcción": "116 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 10993,
+  "titulo": "Casa en La Colina",
+  "slug": "casa-en-la-colina",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-la-colina/",
+  "alta": "2026-06-05T12:23:52",
+  "modificada": "2026-06-05T12:23:52",
+  "autor": 11,
+  "foto_portada": 11003,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 762,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,680,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "109 m²",
+   "En construcción": "143 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 10966,
+  "titulo": "Casa en Fracc. La Huerta",
+  "slug": "casa-en-fracc-la-huerta",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-la-huerta/",
+  "alta": "2026-06-03T14:01:14",
+  "modificada": "2026-08-28T15:15:52",
+  "autor": 11,
+  "foto_portada": 10976,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1155,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,050,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 29
+ },
+ {
+  "id": 10933,
+  "titulo": "Casa en Amado Nervo, Centro Histórico",
+  "slug": "casa-en-amado-nervo-centro-historico",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-amado-nervo-centro-historico/",
+  "alta": "2026-06-03T11:45:34",
+  "modificada": "2026-06-03T11:45:34",
+  "autor": 11,
+  "foto_portada": 10934,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1012,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,690,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "136 m²",
+   "En construcción": "265 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 17
+ },
+ {
+  "id": 10910,
+  "titulo": "Casa en Fracc. EL Monasterio",
+  "slug": "casa-en-fracc-el-monasterio",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-el-monasterio/",
+  "alta": "2026-06-01T12:56:56",
+  "modificada": "2026-06-01T12:56:56",
+  "autor": 11,
+  "foto_portada": 10925,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 979,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "222 m²",
+   "En construcción": "194 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 24
+ },
+ {
+  "id": 10907,
+  "titulo": "Terreno a dos cuadras atrás de Camelinas",
+  "slug": "terreno-a-dos-cuadras-atras-de-camelinas",
+  "url": "https://activosinmobiliariosglobales.com/properties/terreno-a-dos-cuadras-atras-de-camelinas/",
+  "alta": "2026-06-01T12:50:39",
+  "modificada": "2026-06-01T12:50:39",
+  "autor": 11,
+  "foto_portada": 10909,
+  "type-of-housing": [
+   "Terreno"
+  ],
+  "property-type": [
+   "Terreno"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 885,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "200 m²",
+   "En construcción": "200 m²",
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 5
+ },
+ {
+  "id": 10880,
+  "titulo": "Departamento en Torre Cielo",
+  "slug": "departamento-en-torre-cielo",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-torre-cielo/",
+  "alta": "2026-06-01T12:48:03",
+  "modificada": "2026-06-01T12:48:03",
+  "autor": 11,
+  "foto_portada": 10881,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1360,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 28
+ },
+ {
+  "id": 10859,
+  "titulo": "Casa en Fracc. Privado La Castellana",
+  "slug": "casa-en-fracc-privado-la-castellana",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-privado-la-castellana/",
+  "alta": "2026-06-01T12:40:32",
+  "modificada": "2026-06-01T12:40:32",
+  "autor": 11,
+  "foto_portada": 10866,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 932,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,575,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 10843,
+  "titulo": "Casa a dos cuadras de Av. Madero",
+  "slug": "casa-a-dos-cuadras-de-av-madero",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-a-dos-cuadras-de-av-madero/",
+  "alta": "2026-06-01T12:31:27",
+  "modificada": "2026-06-01T12:32:23",
+  "autor": 11,
+  "foto_portada": 10846,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 985,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 10739,
+  "titulo": "Departamentos en Puerta Cantera",
+  "slug": "departamentos-en-puerta-cantera",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-puerta-cantera/",
+  "alta": "2026-05-22T13:12:44",
+  "modificada": "2026-05-22T13:12:44",
+  "autor": 11,
+  "foto_portada": 10746,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 897,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "793,026.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 10645,
+  "titulo": "Casa en Altozano, Modelo Sauce",
+  "slug": "casa-en-altozano-modelo-sauce",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-modelo-sauce/",
+  "alta": "2026-05-13T13:05:44",
+  "modificada": "2026-05-13T13:05:44",
+  "autor": 11,
+  "foto_portada": 10647,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1143,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,282,680.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "153 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 10644,
+  "titulo": "Casa en Altozano, Modelo Nogal",
+  "slug": "casa-en-altozano-modelo-nogal",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-modelo-nogal/",
+  "alta": "2026-05-13T13:01:18",
+  "modificada": "2026-05-13T13:01:18",
+  "autor": 11,
+  "foto_portada": 10635,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1128,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,698,680.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "En construcción": "167 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 10614,
+  "titulo": "Casa en Altozano, Modelo Fresno",
+  "slug": "casa-en-altozano-modelo-fresno",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-modelo-fresno/",
+  "alta": "2026-05-13T12:30:54",
+  "modificada": "2026-05-13T12:30:54",
+  "autor": 11,
+  "foto_portada": 10618,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1216,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,717,560.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "168 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 10602,
+  "titulo": "Casa en Altozano, Modelo Olivo",
+  "slug": "casa-en-altozano-modelo-olivo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-modelo-olivo/",
+  "alta": "2026-05-13T12:16:50",
+  "modificada": "2026-05-13T12:16:50",
+  "autor": 11,
+  "foto_portada": 10607,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1147,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,914,160.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "143 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 14
+ },
+ {
+  "id": 10573,
+  "titulo": "Casa en Vista Bella",
+  "slug": "casa-en-vista-bella",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-vista-bella/",
+  "alta": "2026-05-13T12:03:36",
+  "modificada": "2026-05-13T12:03:36",
+  "autor": 11,
+  "foto_portada": 10586,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1093,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "140 m²",
+   "En construcción": "242 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 31
+ },
+ {
+  "id": 10549,
+  "titulo": "Casa en Col. Vista Bella",
+  "slug": "casa-en-col-vista-bella",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-vista-bella/",
+  "alta": "2026-05-13T11:29:20",
+  "modificada": "2026-05-13T11:31:49",
+  "autor": 11,
+  "foto_portada": 10565,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 729,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,900,001.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "362 m²",
+   "En construcción": "376 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 26
+ },
+ {
+  "id": 10541,
+  "titulo": "Casa en Cosmos",
+  "slug": "casa-en-cosmos",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-cosmos/",
+  "alta": "2026-05-12T12:22:50",
+  "modificada": "2026-05-12T12:22:50",
+  "autor": 11,
+  "foto_portada": 10543,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 466,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,200,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "160 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 10497,
+  "titulo": "Casa en Col. Ilustres Novohispanos",
+  "slug": "casa-en-col-ilustres-novohispanos",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-ilustres-novohispanos/",
+  "alta": "2026-05-11T12:57:34",
+  "modificada": "2026-05-11T13:00:06",
+  "autor": 11,
+  "foto_portada": 10498,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 822,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,550,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "80 m²",
+   "En construcción": "136 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 22
+ },
+ {
+  "id": 10479,
+  "titulo": "Casa en Batalla de Casa Mata",
+  "slug": "casa-en-batalla-de-casa-mata",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-batalla-de-casa-mata/",
+  "alta": "2026-05-11T12:41:49",
+  "modificada": "2026-05-11T12:41:49",
+  "autor": 11,
+  "foto_portada": 10486,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 607,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "180 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 10469,
+  "titulo": "Casa en Fracc. Misión de la Montaña",
+  "slug": "casa-en-fracc-mision-de-la-montana",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-mision-de-la-montana/",
+  "alta": "2026-05-11T12:04:27",
+  "modificada": "2026-05-11T12:04:27",
+  "autor": 11,
+  "foto_portada": 10474,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 606,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,680,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "160 m²",
+   "En construcción": "180 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 10462,
+  "titulo": "Departamentos en Agora Urban Living",
+  "slug": "departamentos-en-agora-urban-living",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-agora-urban-living/",
+  "alta": "2026-05-11T11:56:13",
+  "modificada": "2026-05-11T11:56:13",
+  "autor": 11,
+  "foto_portada": 10463,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 392,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "En construcción": "48 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 9
+ },
+ {
+  "id": 10433,
+  "titulo": "Propiedad en Pátzcuaro en Col. Vasco de Quiroga",
+  "slug": "propiedad-en-patzcuaro-en-col-vasco-de-quiroga",
+  "url": "https://activosinmobiliariosglobales.com/properties/propiedad-en-patzcuaro-en-col-vasco-de-quiroga/",
+  "alta": "2026-05-11T11:29:49",
+  "modificada": "2026-05-11T11:29:49",
+  "autor": 11,
+  "foto_portada": 10450,
+  "type-of-housing": [
+   "inmueble"
+  ],
+  "property-type": [
+   "Inmueble"
+  ],
+  "location": [
+   "Patzcuaro"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1036,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "9,250,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "2500 m²",
+   "En construcción": "360 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "7",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 25
+ },
+ {
+  "id": 10196,
+  "titulo": "Casa en Club Campestre Erandeni",
+  "slug": "casa-en-club-campestre-erandeni-3",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-club-campestre-erandeni-3/",
+  "alta": "2026-05-01T12:26:11",
+  "modificada": "2026-05-08T11:32:28",
+  "autor": 11,
+  "foto_portada": 10258,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1302,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "12,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "1000 m²",
+   "En construcción": "373 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "8",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 10195,
+  "titulo": "Casa en Club Campestre Erandeni",
+  "slug": "casa-en-club-campestre-erandeni-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-club-campestre-erandeni-2/",
+  "alta": "2026-05-01T12:13:53",
+  "modificada": "2026-05-08T12:16:57",
+  "autor": 11,
+  "foto_portada": 10268,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1277,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "12,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "1000 m²",
+   "En construcción": "460 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 43
+ },
+ {
+  "id": 10194,
+  "titulo": "Casa en Jardines del Valle, Altozano",
+  "slug": "casa-en-jardines-del-valle-altozano",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-jardines-del-valle-altozano/",
+  "alta": "2026-05-01T12:03:45",
+  "modificada": "2026-05-08T12:43:14",
+  "autor": 11,
+  "foto_portada": 10300,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 810,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,350,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "288 m²",
+   "En construcción": "351 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 30
+ },
+ {
+  "id": 10172,
+  "titulo": "Casa en Misión de la Montaña",
+  "slug": "casa-en-mision-de-la-montana",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-mision-de-la-montana/",
+  "alta": "2026-04-29T13:40:22",
+  "modificada": "2026-05-08T12:56:27",
+  "autor": 11,
+  "foto_portada": 10342,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 912,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,100,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "160 m²",
+   "En construcción": "180 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 33
+ },
+ {
+  "id": 10171,
+  "titulo": "Casa en Fracc. Mirlos, El Pinar Altozano",
+  "slug": "casa-en-fracc-mirlos-el-pinar-altozano",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-mirlos-el-pinar-altozano/",
+  "alta": "2026-04-29T13:26:43",
+  "modificada": "2026-05-08T13:04:58",
+  "autor": 11,
+  "foto_portada": 10359,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 839,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,700,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 31
+ },
+ {
+  "id": 10170,
+  "titulo": "Casa en Fracc. Cisnes, Vistas Altozano",
+  "slug": "casa-en-fracc-cisnes-vistas-altozano",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-cisnes-vistas-altozano/",
+  "alta": "2026-04-29T12:49:37",
+  "modificada": "2026-05-08T13:16:48",
+  "autor": 11,
+  "foto_portada": 10412,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1043,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,970,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "160 m²",
+   "En construcción": "208 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 34
+ },
+ {
+  "id": 10160,
+  "titulo": "Departamento en Hacienda Ciprés",
+  "slug": "departamento-en-hacienda-cipres",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-hacienda-cipres/",
+  "alta": "2026-04-28T13:01:46",
+  "modificada": "2026-04-28T13:01:46",
+  "autor": 11,
+  "foto_portada": 10168,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 477,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 10029,
+  "titulo": "Casa en Balcones de Santa Maria",
+  "slug": "casa-en-balcones-de-santa-maria",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-balcones-de-santa-maria/",
+  "alta": "2026-04-23T12:02:52",
+  "modificada": "2026-09-10T11:05:06",
+  "autor": 11,
+  "foto_portada": 10064,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1535,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,400,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "520 m²",
+   "En construcción": "415 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 38
+ },
+ {
+  "id": 9939,
+  "titulo": "Terreno / Propiedad en Venta en Roma Norte",
+  "slug": "terreno-propiedad-en-venta-en-roma-norte",
+  "url": "https://activosinmobiliariosglobales.com/properties/terreno-propiedad-en-venta-en-roma-norte/",
+  "alta": "2026-04-16T11:43:38",
+  "modificada": "2026-04-16T11:43:38",
+  "autor": 11,
+  "foto_portada": 9945,
+  "type-of-housing": [
+   "inmueble"
+  ],
+  "property-type": [
+   "Inmueble",
+   "Terreno"
+  ],
+  "location": [
+   "Estado de México"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1016,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "17,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "143 m²",
+   "En construcción": "575 m²",
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 9915,
+  "titulo": "Residencia en Tres Marías",
+  "slug": "residencia-en-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/residencia-en-tres-marias/",
+  "alta": "2026-04-14T11:49:45",
+  "modificada": "2026-04-14T11:49:45",
+  "autor": 11,
+  "foto_portada": 9916,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1472,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,346,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "152 m²",
+   "En construcción": "218 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 26
+ },
+ {
+  "id": 9836,
+  "titulo": "Casa en Fracc. Santa Fe (Sur/Poniente)",
+  "slug": "casa-en-fracc-santa-fe-sur-poniente",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-santa-fe-sur-poniente/",
+  "alta": "2026-04-10T12:42:37",
+  "modificada": "2026-04-10T12:43:45",
+  "autor": 11,
+  "foto_portada": 9848,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 741,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,550,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "93 m²",
+   "En construcción": "114 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 9797,
+  "titulo": "Departamentos en Valle Artisa",
+  "slug": "departamentos-en-valle-artisa",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-valle-artisa/",
+  "alta": "2026-04-09T15:18:20",
+  "modificada": "2026-04-09T15:18:20",
+  "autor": 11,
+  "foto_portada": 9808,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1239,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "854,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "66 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 9754,
+  "titulo": "Casa en Altozano, Hacienda del Monte",
+  "slug": "casa-en-altozano-hacienda-del-monte",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-hacienda-del-monte/",
+  "alta": "2026-04-09T14:45:39",
+  "modificada": "2026-04-09T14:45:39",
+  "autor": 11,
+  "foto_portada": 9759,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 966,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "250 m²",
+   "En construcción": "330 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 9715,
+  "titulo": "Casa en Cañón de Santa Catarina",
+  "slug": "casa-en-canon-de-santa-catarina",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-canon-de-santa-catarina/",
+  "alta": "2026-03-30T14:04:34",
+  "modificada": "2026-03-30T14:04:34",
+  "autor": 11,
+  "foto_portada": 9721,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1101,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "65,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "2266 m²",
+   "En construcción": "1607 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "6",
+   "Medios Baños": "4",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 38
+ },
+ {
+  "id": 9663,
+  "titulo": "Casa en Tres Marías",
+  "slug": "casa-en-tres-marias-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-tres-marias-2/",
+  "alta": "2026-03-30T12:54:15",
+  "modificada": "2026-03-30T12:54:15",
+  "autor": 11,
+  "foto_portada": 9673,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 2007,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,455,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "147 m²",
+   "En construcción": "203 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 28
+ },
+ {
+  "id": 9647,
+  "titulo": "Casa en Colinas del Sol",
+  "slug": "casa-en-colinas-del-sol",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-colinas-del-sol/",
+  "alta": "2026-03-28T13:49:22",
+  "modificada": "2026-04-28T11:42:02",
+  "autor": 11,
+  "foto_portada": 9657,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 874,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,660,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "207 m²",
+   "En construcción": "156 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 9615,
+  "titulo": "Casa en Chapultepec Oriente",
+  "slug": "casa-en-chapultepec-oriente",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-chapultepec-oriente/",
+  "alta": "2026-03-20T16:27:51",
+  "modificada": "2026-08-10T15:13:39",
+  "autor": 11,
+  "foto_portada": 9633,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1130,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "6",
+   "Tamaño de la propiedad": "235 m²",
+   "En construcción": "342 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 32
+ },
+ {
+  "id": 9597,
+  "titulo": "Casa en Terraza Quinceo",
+  "slug": "casa-en-terraza-quinceo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-terraza-quinceo/",
+  "alta": "2026-03-20T16:02:39",
+  "modificada": "2026-03-20T16:02:39",
+  "autor": 11,
+  "foto_portada": 9602,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 946,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,890,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "70 m²",
+   "En construcción": "76 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 9578,
+  "titulo": "Casa en Jesús del Monte",
+  "slug": "casa-en-jesus-del-monte",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-jesus-del-monte/",
+  "alta": "2026-03-20T15:34:52",
+  "modificada": "2026-03-20T15:37:47",
+  "autor": 11,
+  "foto_portada": 9582,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 885,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,950,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "133 m²",
+   "En construcción": "231 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 9567,
+  "titulo": "Departamentos en Desarrollo",
+  "slug": "departamentos-en-desarrollo",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-desarrollo/",
+  "alta": "2026-03-19T15:06:50",
+  "modificada": "2026-03-19T15:06:50",
+  "autor": 11,
+  "foto_portada": 9576,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 862,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 9531,
+  "titulo": "Casa en Col. Unión Popular Solidaria",
+  "slug": "casa-en-col-union-popular-solidaria",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-union-popular-solidaria/",
+  "alta": "2026-03-19T14:46:11",
+  "modificada": "2026-03-19T14:46:11",
+  "autor": 11,
+  "foto_portada": 9534,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 771,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,480,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "119 m²",
+   "En construcción": "188 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "1",
+   "Medios Baños": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 9512,
+  "titulo": "Casa en Col. Mariano Escobedo",
+  "slug": "casa-en-col-mariano-escobedo-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-mariano-escobedo-2/",
+  "alta": "2026-03-19T14:29:22",
+  "modificada": "2026-03-19T14:29:22",
+  "autor": 11,
+  "foto_portada": 9524,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 864,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,850,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "102 m²",
+   "En construcción": "280 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 9498,
+  "titulo": "Casa en Fracc. Pensador Mexicano",
+  "slug": "casa-en-fracc-pensador-mexicano",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-pensador-mexicano/",
+  "alta": "2026-03-19T14:17:06",
+  "modificada": "2026-03-19T14:17:06",
+  "autor": 11,
+  "foto_portada": 9500,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1187,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,950,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "99 m²",
+   "En construcción": "140 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 9395,
+  "titulo": "Casa en Centro Histórico, «Los Ayeres»",
+  "slug": "casa-en-centro-historico-los-ayeres",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-centro-historico-los-ayeres/",
+  "alta": "2026-03-11T14:14:18",
+  "modificada": "2026-03-11T14:14:18",
+  "autor": 11,
+  "foto_portada": 9413,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1824,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "39,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "18",
+   "Tamaño de la propiedad": "990 m²",
+   "En construcción": "1287 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "14",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 22
+ },
+ {
+  "id": 9364,
+  "titulo": "Casa Prototipo SYRAH",
+  "slug": "casa-prototipo-syrah",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-prototipo-syrah/",
+  "alta": "2026-03-10T14:28:30",
+  "modificada": "2026-05-12T12:29:51",
+  "autor": 11,
+  "foto_portada": 9368,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1008,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "211 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 9324,
+  "titulo": "Casa en Ocolusen",
+  "slug": "casa-en-ocolusen",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-ocolusen/",
+  "alta": "2026-03-10T13:31:07",
+  "modificada": "2026-03-10T13:31:07",
+  "autor": 11,
+  "foto_portada": 9335,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1286,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,200,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "167 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 42
+ },
+ {
+  "id": 9253,
+  "titulo": "Casa en Residencial Miralta",
+  "slug": "casa-en-residencial-miralta",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-residencial-miralta/",
+  "alta": "2026-03-09T14:47:37",
+  "modificada": "2026-07-02T13:51:54",
+  "autor": 11,
+  "foto_portada": 9258,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [],
+  "descripcion_caracteres": 1008,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,850,000.00",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 19
+ },
+ {
+  "id": 9232,
+  "titulo": "Casa en Valle Real III, Tarímbaro",
+  "slug": "casa-en-valle-real-iii-tarimbaro",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-valle-real-iii-tarimbaro/",
+  "alta": "2026-03-09T13:28:23",
+  "modificada": "2026-03-09T13:28:23",
+  "autor": 11,
+  "foto_portada": 9235,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Tarimbaro"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1014,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,200,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "129 m²",
+   "En construcción": "180 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 9213,
+  "titulo": "Casa en Col. Unión",
+  "slug": "casa-en-col-union",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-union/",
+  "alta": "2026-03-07T14:48:16",
+  "modificada": "2026-03-07T14:48:16",
+  "autor": 11,
+  "foto_portada": 9219,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 710,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "142 m²",
+   "En construcción": "278 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 9182,
+  "titulo": "Propiedad en Centro Histórico",
+  "slug": "propiedad-en-centro-historico",
+  "url": "https://activosinmobiliariosglobales.com/properties/propiedad-en-centro-historico/",
+  "alta": "2026-03-07T14:03:53",
+  "modificada": "2026-03-07T14:03:53",
+  "autor": 11,
+  "foto_portada": 9184,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1093,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,680,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "1",
+   "Tamaño de la propiedad": "208 m²",
+   "En construcción": "305 m²",
+   "Estacionamientos": "6",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 24
+ },
+ {
+  "id": 9174,
+  "titulo": "Casa en Fracc. Paseo Esmeralda",
+  "slug": "casa-en-fracc-paseo-esmeralda-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-paseo-esmeralda-2/",
+  "alta": "2026-03-07T13:46:28",
+  "modificada": "2026-03-07T13:46:28",
+  "autor": 11,
+  "foto_portada": 9168,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 882,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,590,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "125 m²",
+   "En construcción": "99 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 9046,
+  "titulo": "Casa en Bosque Camelinas",
+  "slug": "casa-en-bosque-camelinas",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-bosque-camelinas/",
+  "alta": "2026-02-27T14:16:11",
+  "modificada": "2026-09-10T11:11:27",
+  "autor": 11,
+  "foto_portada": 9048,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 818,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "200 m²",
+   "En construcción": "475 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "3",
+   "Medios Baños": "2",
+   "Cantidad de Pisos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 8969,
+  "titulo": "Casa en Privada Residencial Américas Britania",
+  "slug": "casa-en-privada-residencial-americas-britania",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-privada-residencial-americas-britania/",
+  "alta": "2026-02-26T14:54:02",
+  "modificada": "2026-03-03T14:00:41",
+  "autor": 11,
+  "foto_portada": 9000,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1232,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "14,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "400 m²",
+   "En construcción": "700 m²",
+   "Estacionamientos": "5",
+   "Baños completos": "5",
+   "Medios Baños": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 66
+ },
+ {
+  "id": 8953,
+  "titulo": "Casa a espaldas de la Pepsi",
+  "slug": "casa-a-espaldas-de-la-pepsi-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-a-espaldas-de-la-pepsi-2/",
+  "alta": "2026-02-26T14:10:54",
+  "modificada": "2026-02-26T14:10:54",
+  "autor": 11,
+  "foto_portada": 8967,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 948,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "105 m²",
+   "En construcción": "160 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 8925,
+  "titulo": "Casas en Jesús del Monte",
+  "slug": "casas-en-jesus-del-monte",
+  "url": "https://activosinmobiliariosglobales.com/properties/casas-en-jesus-del-monte/",
+  "alta": "2026-02-21T09:16:40",
+  "modificada": "2026-04-17T13:39:41",
+  "autor": 11,
+  "foto_portada": 8929,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta / Renta"
+  ],
+  "descripcion_caracteres": 1013,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,980,000.00",
+  "para": "Venta / Renta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "175 m²",
+   "En construcción": "222 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 29
+ },
+ {
+  "id": 8867,
+  "titulo": "Casa en Bosque, Tres Marías",
+  "slug": "casa-en-bosque-tres-marias-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-bosque-tres-marias-2/",
+  "alta": "2026-02-20T12:37:24",
+  "modificada": "2026-02-20T12:37:24",
+  "autor": 11,
+  "foto_portada": 8873,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 763,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "170 m²",
+   "En construcción": "160 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 18
+ },
+ {
+  "id": 8780,
+  "titulo": "Casa Modelo Aliso",
+  "slug": "casa-modelo-aliso-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-modelo-aliso-2/",
+  "alta": "2026-02-18T12:30:36",
+  "modificada": "2026-02-18T12:30:36",
+  "autor": 11,
+  "foto_portada": 8763,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 513,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,449,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "En construcción": "75 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 8721,
+  "titulo": "Casa en Centro Histórico",
+  "slug": "casa-en-centro-historico-4",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-centro-historico-4/",
+  "alta": "2026-02-14T12:43:43",
+  "modificada": "2026-02-14T12:43:43",
+  "autor": 11,
+  "foto_portada": 8722,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 672,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "113 m²",
+   "En construcción": "220 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 8650,
+  "titulo": "Casa en Centro Histórico",
+  "slug": "casa-en-centro-historico-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-centro-historico-2/",
+  "alta": "2026-02-13T14:10:44",
+  "modificada": "2026-02-13T14:10:44",
+  "autor": 11,
+  "foto_portada": 8664,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1068,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "13,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "8",
+   "Tamaño de la propiedad": "609 m²",
+   "En construcción": "972 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Medios Baños": "4",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 17
+ },
+ {
+  "id": 8591,
+  "titulo": "Casa en Fracc. Colinas del Sol, Tres Marías",
+  "slug": "casa-en-fracc-colinas-del-sol-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-colinas-del-sol-tres-marias/",
+  "alta": "2026-02-12T14:19:41",
+  "modificada": "2026-02-12T14:19:41",
+  "autor": 11,
+  "foto_portada": 8592,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 959,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,290,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "199 m²",
+   "En construcción": "203 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 8570,
+  "titulo": "Casa a espaldas de la Pepsi",
+  "slug": "casa-a-espaldas-de-la-pepsi",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-a-espaldas-de-la-pepsi/",
+  "alta": "2026-02-12T14:00:30",
+  "modificada": "2026-02-12T14:00:30",
+  "autor": 11,
+  "foto_portada": 8576,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 816,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "123 m²",
+   "En construcción": "160 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 8548,
+  "titulo": "Casa en La Vitela, Pátzcuaro",
+  "slug": "casa-en-la-vitela-patzcuaro",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-la-vitela-patzcuaro/",
+  "alta": "2026-02-12T13:31:58",
+  "modificada": "2026-02-12T14:01:44",
+  "autor": 11,
+  "foto_portada": 8557,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Patzcuaro"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 825,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "225 m²",
+   "En construcción": "185 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 24
+ },
+ {
+  "id": 8521,
+  "titulo": "Casa en Félix Ireta | Doble vivienda",
+  "slug": "casa-en-felix-ireta-doble-vivienda",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-felix-ireta-doble-vivienda/",
+  "alta": "2026-02-12T13:05:56",
+  "modificada": "2026-03-02T13:03:49",
+  "autor": 11,
+  "foto_portada": 9092,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1114,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "7",
+   "Tamaño de la propiedad": "240 m²",
+   "En construcción": "390 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "5",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 53
+ },
+ {
+  "id": 8503,
+  "titulo": "Casas en Fracc. Privado Puerta Roble II",
+  "slug": "casas-en-fracc-privado-puerta-roble-ii",
+  "url": "https://activosinmobiliariosglobales.com/properties/casas-en-fracc-privado-puerta-roble-ii/",
+  "alta": "2026-02-12T12:50:13",
+  "modificada": "2026-02-12T12:51:59",
+  "autor": 11,
+  "foto_portada": 8515,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 779,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,970,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "109 m²",
+   "En construcción": "136 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 8443,
+  "titulo": "Casa en Hacienda del Monte",
+  "slug": "casa-en-hacienda-del-monte",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-hacienda-del-monte/",
+  "alta": "2026-02-06T15:20:05",
+  "modificada": "2026-02-06T15:20:05",
+  "autor": 11,
+  "foto_portada": 8456,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1045,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "250 m²",
+   "En construcción": "276 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 39
+ },
+ {
+  "id": 8340,
+  "titulo": "Edificio a una cuadra del Boulevard García de León",
+  "slug": "edificio-a-una-cuadra-del-boulevard-garcia-de-leon",
+  "url": "https://activosinmobiliariosglobales.com/properties/edificio-a-una-cuadra-del-boulevard-garcia-de-leon/",
+  "alta": "2026-01-28T14:28:31",
+  "modificada": "2026-01-28T14:38:01",
+  "autor": 11,
+  "foto_portada": 8352,
+  "type-of-housing": [
+   "Edificio"
+  ],
+  "property-type": [
+   "Edificio"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 957,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "10,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "4",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 8109,
+  "titulo": "Departamentos en Torres Castillejo",
+  "slug": "departamentos-en-torres-castillejo",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-torres-castillejo/",
+  "alta": "2026-01-20T13:57:49",
+  "modificada": "2026-01-20T13:57:49",
+  "autor": 11,
+  "foto_portada": 8115,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 642,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,325,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 8107,
+  "titulo": "Departamentos en Valle Tamu",
+  "slug": "departamentos-en-valle-tamu",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-valle-tamu/",
+  "alta": "2026-01-19T14:16:41",
+  "modificada": "2026-01-19T14:16:41",
+  "autor": 11,
+  "foto_portada": 8108,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 667,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "740,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 8095,
+  "titulo": "Departamento en Félix Ireta",
+  "slug": "departamento-en-felix-ireta",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-felix-ireta/",
+  "alta": "2026-01-19T12:48:59",
+  "modificada": "2026-01-19T12:48:59",
+  "autor": 11,
+  "foto_portada": 8096,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 801,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,600,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "180 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 7953,
+  "titulo": "Casa Jericó, San Pedro",
+  "slug": "casa-jerico-san-pedro",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-jerico-san-pedro/",
+  "alta": "2026-01-12T12:39:32",
+  "modificada": "2026-01-12T12:39:32",
+  "autor": 11,
+  "foto_portada": 7954,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 517,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,261,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Tamaño de la propiedad": "87 m²",
+   "En construcción": "79 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 7877,
+  "titulo": "Edificio de Departamentos en la Chapultepec",
+  "slug": "edificio-de-departamentos-en-la-chapultepec",
+  "url": "https://activosinmobiliariosglobales.com/properties/edificio-de-departamentos-en-la-chapultepec/",
+  "alta": "2026-01-09T14:08:39",
+  "modificada": "2026-01-09T14:12:26",
+  "autor": 11,
+  "foto_portada": 7884,
+  "type-of-housing": [
+   "Edificio"
+  ],
+  "property-type": [
+   "Edificio"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 896,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "10,244,107.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "584 m²",
+   "En construcción": "584 m²",
+   "Estacionamientos": "5",
+   "Baños completos": "5",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 10
+ },
+ {
+  "id": 7786,
+  "titulo": "Casa en Altozano",
+  "slug": "casa-en-altozano-4",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-4/",
+  "alta": "2026-01-05T12:41:57",
+  "modificada": "2026-01-05T12:41:57",
+  "autor": 11,
+  "foto_portada": 7808,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1191,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "9,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "270 m²",
+   "En construcción": "360 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 49
+ },
+ {
+  "id": 7769,
+  "titulo": "Casa Modelo Babel en San Pedro",
+  "slug": "casa-modelo-babel-en-san-pedro",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-modelo-babel-en-san-pedro/",
+  "alta": "2026-01-05T11:54:10",
+  "modificada": "2026-01-05T11:54:10",
+  "autor": 11,
+  "foto_portada": 7781,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 929,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,330,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "67 m²",
+   "En construcción": "85 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 19
+ },
+ {
+  "id": 7732,
+  "titulo": "Casa en Fracc. Diamante 2",
+  "slug": "casa-en-fracc-diamante-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-diamante-2/",
+  "alta": "2026-01-03T13:38:21",
+  "modificada": "2026-06-29T10:52:23",
+  "autor": 11,
+  "foto_portada": 7760,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1006,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,080,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "110 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "2",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 35
+ },
+ {
+  "id": 7646,
+  "titulo": "Bodega en El Porvenir",
+  "slug": "bodega-en-el-porvenir",
+  "url": "https://activosinmobiliariosglobales.com/properties/bodega-en-el-porvenir/",
+  "alta": "2026-01-02T12:41:14",
+  "modificada": "2026-04-23T13:56:40",
+  "autor": 11,
+  "foto_portada": 7647,
+  "type-of-housing": [
+   "Bodega"
+  ],
+  "property-type": [
+   "Bodega"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 776,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "337 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 7583,
+  "titulo": "Casa en Vista Verde",
+  "slug": "casa-en-vista-verde",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-vista-verde/",
+  "alta": "2025-12-30T14:06:21",
+  "modificada": "2025-12-30T14:31:54",
+  "autor": 11,
+  "foto_portada": 7590,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 583,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,895,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "125 m²",
+   "En construcción": "165 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 7468,
+  "titulo": "Casa en la Chapultepec Oriente",
+  "slug": "casa-en-la-chapultepec-oriente",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-la-chapultepec-oriente/",
+  "alta": "2025-12-18T14:02:02",
+  "modificada": "2025-12-18T14:02:02",
+  "autor": 11,
+  "foto_portada": 7516,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1371,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "4",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 68
+ },
+ {
+  "id": 7156,
+  "titulo": "Terreno de 2942m²",
+  "slug": "terreno-de-2942m%c2%b2",
+  "url": "https://activosinmobiliariosglobales.com/properties/terreno-de-2942m%c2%b2/",
+  "alta": "2025-12-06T12:48:14",
+  "modificada": "2025-12-06T12:48:14",
+  "autor": 11,
+  "foto_portada": 7157,
+  "type-of-housing": [
+   "Terreno"
+  ],
+  "property-type": [
+   "Terreno"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 390,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "17,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "2942 m²",
+   "En construcción": "2942 m²",
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 4
+ },
+ {
+  "id": 7131,
+  "titulo": "Departamento en Acueducto",
+  "slug": "departamento-en-acueducto",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamento-en-acueducto/",
+  "alta": "2025-12-05T12:58:35",
+  "modificada": "2025-12-05T13:03:01",
+  "autor": 11,
+  "foto_portada": 7137,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 662,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,899,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "En construcción": "141 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 7106,
+  "titulo": "Casa en Altozano",
+  "slug": "casa-en-altozano-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-2/",
+  "alta": "2025-12-05T12:22:07",
+  "modificada": "2025-12-05T12:22:07",
+  "autor": 11,
+  "foto_portada": 7129,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 556,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Año de construccion": "2025-12-05",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 27
+ },
+ {
+  "id": 7051,
+  "titulo": "Casa en Fracc. El Trébol",
+  "slug": "casa-en-fracc-el-trebol",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-el-trebol/",
+  "alta": "2025-12-02T12:40:32",
+  "modificada": "2026-04-22T13:11:55",
+  "autor": 11,
+  "foto_portada": 7060,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 646,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,550,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "En construcción": "72 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ },
+ {
+  "id": 7042,
+  "titulo": "Casa en Paseos del Parque",
+  "slug": "casa-en-paseos-del-parque",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-paseos-del-parque/",
+  "alta": "2025-12-01T12:20:58",
+  "modificada": "2025-12-01T12:20:58",
+  "autor": 11,
+  "foto_portada": 7043,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 787,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,100,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "160 m²",
+   "En construcción": "230 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 7009,
+  "titulo": "Casa en Defensores de Puebla",
+  "slug": "casa-en-defensores-de-puebla-4",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-defensores-de-puebla-4/",
+  "alta": "2025-11-29T13:10:49",
+  "modificada": "2025-11-29T14:22:30",
+  "autor": 11,
+  "foto_portada": 7026,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 924,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,200,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 6920,
+  "titulo": "Casa en Club campestre de Golf",
+  "slug": "6920",
+  "url": "https://activosinmobiliariosglobales.com/properties/6920/",
+  "alta": "2025-11-26T13:13:07",
+  "modificada": "2025-11-26T13:19:25",
+  "autor": 11,
+  "foto_portada": 6921,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1796,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "18,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "3",
+   "Baños completos": "5",
+   "Medios Baños": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 35
+ },
+ {
+  "id": 6859,
+  "titulo": "Casa Modelo Andino",
+  "slug": "casa-modelo-andino",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-modelo-andino/",
+  "alta": "2025-11-22T13:50:11",
+  "modificada": "2025-11-22T13:50:11",
+  "autor": 11,
+  "foto_portada": 6862,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 647,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,803,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "97 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 6842,
+  "titulo": "Casa Modelo Aile",
+  "slug": "casa-modelo-aile",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-modelo-aile/",
+  "alta": "2025-11-22T13:38:04",
+  "modificada": "2025-11-22T13:38:04",
+  "autor": 11,
+  "foto_portada": 6844,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 501,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,499,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "En construcción": "76 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "1",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 19
+ },
+ {
+  "id": 6823,
+  "titulo": "Casa en Loma Real",
+  "slug": "casa-en-loma-real-2",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-loma-real-2/",
+  "alta": "2025-11-21T14:26:27",
+  "modificada": "2025-11-21T14:26:27",
+  "autor": 11,
+  "foto_portada": 6825,
+  "type-of-housing": [
+   "Casa"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 632,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,890,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "En construcción": "110 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 6612,
+  "titulo": "Casa en Club Campestre Erandeni",
+  "slug": "casa-en-club-campestre-erandeni",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-club-campestre-erandeni/",
+  "alta": "2025-11-15T13:22:58",
+  "modificada": "2025-11-15T13:22:58",
+  "autor": 11,
+  "foto_portada": 6636,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 524,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 36
+ },
+ {
+  "id": 6583,
+  "titulo": "Casa en Altozano, El Encinar",
+  "slug": "casa-en-altozano-el-encinar",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-el-encinar/",
+  "alta": "2025-11-15T13:05:26",
+  "modificada": "2025-11-21T12:01:38",
+  "autor": 11,
+  "foto_portada": 6596,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1057,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "10,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "300 m²",
+   "En construcción": "495 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 6519,
+  "titulo": "Casa en Fracc. Puerta Norte",
+  "slug": "casa-en-fracc-puerta-norte",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-puerta-norte/",
+  "alta": "2025-11-13T12:58:59",
+  "modificada": "2025-11-13T12:58:59",
+  "autor": 11,
+  "foto_portada": 6521,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 825,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,200,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "170 m²",
+   "En construcción": "220 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 5
+ },
+ {
+  "id": 6493,
+  "titulo": "Casa en Fracc. San Francisco, CD Hidalgo",
+  "slug": "casa-en-fracc-san-francisco-cd-hidalgo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-san-francisco-cd-hidalgo/",
+  "alta": "2025-11-10T14:57:39",
+  "modificada": "2025-11-10T14:57:39",
+  "autor": 11,
+  "foto_portada": 6500,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Ciudad Hidalgo"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 998,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "11,350,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "288 m²",
+   "En construcción": "544 m²",
+   "Estacionamientos": "3",
+   "Baños completos": "5",
+   "Medios Baños": "3",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 26
+ },
+ {
+  "id": 6424,
+  "titulo": "Casa Álamos en Tres Marías",
+  "slug": "casa-alamos-en-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-alamos-en-tres-marias/",
+  "alta": "2025-11-06T12:38:15",
+  "modificada": "2025-11-06T12:40:46",
+  "autor": 11,
+  "foto_portada": 6436,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1296,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "7,980,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "200 m²",
+   "En construcción": "297 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 6406,
+  "titulo": "Casa San Bernardo en Tres Marías",
+  "slug": "casa-san-bernardo-en-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-san-bernardo-en-tres-marias/",
+  "alta": "2025-11-05T12:51:02",
+  "modificada": "2025-11-05T12:51:02",
+  "autor": 11,
+  "foto_portada": 6421,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1914,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "22,700,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Tamaño de la propiedad": "970 m²",
+   "En construcción": "580 m²",
+   "Estacionamientos": "8",
+   "Baños completos": "5",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 6359,
+  "titulo": "Departamentos en Col. Obrera",
+  "slug": "departamentos-en-col-obrera",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-en-col-obrera/",
+  "alta": "2025-10-29T14:26:05",
+  "modificada": "2025-10-29T14:26:05",
+  "autor": 11,
+  "foto_portada": 6366,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 748,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,890,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 11
+ },
+ {
+  "id": 6299,
+  "titulo": "Casa en Av. Escritor de la Independencia",
+  "slug": "casa-en-av-escritor-de-la-independencia",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-av-escritor-de-la-independencia/",
+  "alta": "2025-10-29T13:46:50",
+  "modificada": "2025-10-29T13:46:50",
+  "autor": 11,
+  "foto_portada": 6300,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 709,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,600,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "162 m²",
+   "En construcción": "184 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 28
+ },
+ {
+  "id": 6030,
+  "titulo": "Casa en Fracc. Floresta Oculusen",
+  "slug": "casa-en-fracc-floresta-oculusen",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-floresta-oculusen/",
+  "alta": "2025-10-20T14:04:06",
+  "modificada": "2025-10-20T14:04:06",
+  "autor": 11,
+  "foto_portada": 6031,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 865,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "10,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 27
+ },
+ {
+  "id": 6029,
+  "titulo": "Casa de lujo",
+  "slug": "casa-de-lujo",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-de-lujo/",
+  "alta": "2025-10-20T13:50:48",
+  "modificada": "2025-10-20T14:29:11",
+  "autor": 11,
+  "foto_portada": 5988,
+  "type-of-housing": [
+   "Casa Semi nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1697,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "11,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "420 m²",
+   "Estacionamientos": "4",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 32
+ },
+ {
+  "id": 5969,
+  "titulo": "Casa en coto con 133 casas",
+  "slug": "casa-en-coto-con-133-casas",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-coto-con-133-casas/",
+  "alta": "2025-10-15T12:22:46",
+  "modificada": "2025-10-15T12:22:46",
+  "autor": 11,
+  "foto_portada": 5956,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 486,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,255,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "85 m²",
+   "En construcción": "97 m²",
+   "Año de construccion": "2025-10-15",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 5928,
+  "titulo": "Departamentos de Vista Serena",
+  "slug": "departamentos-de-vista-serena",
+  "url": "https://activosinmobiliariosglobales.com/properties/departamentos-de-vista-serena/",
+  "alta": "2025-10-11T14:08:32",
+  "modificada": "2026-08-27T12:18:30",
+  "autor": 11,
+  "foto_portada": 5934,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 770,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,875,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "2",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 5912,
+  "titulo": "Casa en Residencial Colinas del Sol",
+  "slug": "casa-en-residencial-colinas-del-sol",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-residencial-colinas-del-sol/",
+  "alta": "2025-10-09T14:09:25",
+  "modificada": "2025-10-09T14:09:25",
+  "autor": 11,
+  "foto_portada": 5916,
+  "type-of-housing": [
+   "Casa Semi nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 711,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,995,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "207 m²",
+   "En construcción": "270 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 16
+ },
+ {
+  "id": 5806,
+  "titulo": "Casa Prototipos Sienna y Treviso",
+  "slug": "casa-prototipos-sienna-y-treviso",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-prototipos-sienna-y-treviso/",
+  "alta": "2025-10-04T14:24:21",
+  "modificada": "2026-08-08T12:36:09",
+  "autor": 11,
+  "foto_portada": 5810,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 518,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,800,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "En construcción": "95 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 9
+ },
+ {
+  "id": 5785,
+  "titulo": "Casa cerca del Tecnológico",
+  "slug": "casa-cerca-del-tecnologico",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-cerca-del-tecnologico/",
+  "alta": "2025-10-04T14:04:15",
+  "modificada": "2026-04-17T11:22:16",
+  "autor": 11,
+  "foto_portada": 5798,
+  "type-of-housing": [
+   "Casa Semi nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 716,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,450,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "7",
+   "Tamaño de la propiedad": "119 m²",
+   "En construcción": "199 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 5673,
+  "titulo": "Terreno en Ario 1815",
+  "slug": "terreno-en-ario-1815",
+  "url": "https://activosinmobiliariosglobales.com/properties/terreno-en-ario-1815/",
+  "alta": "2025-10-01T14:26:47",
+  "modificada": "2025-10-01T14:26:47",
+  "autor": 11,
+  "foto_portada": 5674,
+  "type-of-housing": [
+   "Terreno"
+  ],
+  "property-type": [
+   "Terreno"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 548,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "5000 m²",
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 7
+ },
+ {
+  "id": 5558,
+  "titulo": "Casa en Paseo de los Balcanes",
+  "slug": "casa-en-paseo-de-los-balcanes",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-paseo-de-los-balcanes/",
+  "alta": "2025-09-27T13:03:18",
+  "modificada": "2025-09-27T13:03:18",
+  "autor": 11,
+  "foto_portada": 5562,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 720,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "9,900,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "387 m²",
+   "En construcción": "371 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 20
+ },
+ {
+  "id": 5521,
+  "titulo": "Casa en Col. Buenavista II",
+  "slug": "casa-en-col-buenavista-ii",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-buenavista-ii/",
+  "alta": "2025-09-25T14:41:22",
+  "modificada": "2025-09-25T14:41:22",
+  "autor": 11,
+  "foto_portada": 5540,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 719,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,300,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "En construcción": "255 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 23
+ },
+ {
+  "id": 5372,
+  "titulo": "Casa en Jesús del Monte",
+  "slug": "5372",
+  "url": "https://activosinmobiliariosglobales.com/properties/5372/",
+  "alta": "2025-09-23T15:31:02",
+  "modificada": "2025-12-10T13:28:34",
+  "autor": 11,
+  "foto_portada": 5380,
+  "type-of-housing": [
+   "Casa Semi nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta / Renta"
+  ],
+  "descripcion_caracteres": 699,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,680,000.00",
+  "para": "Venta / Renta",
+  "specs": {
+   "Habitaciones": "8",
+   "En construcción": "231 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 50
+ },
+ {
+  "id": 5238,
+  "titulo": "Casa en Tenencia Morelos",
+  "slug": "casa-en-tenencia-morelos",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-tenencia-morelos/",
+  "alta": "2025-09-22T12:18:59",
+  "modificada": "2025-09-22T12:22:02",
+  "autor": 11,
+  "foto_portada": 5242,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 647,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "13,400,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "6",
+   "Tamaño de la propiedad": "4832 m²",
+   "En construcción": "532 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "7",
+   "Planta baja": "Si"
+  },
+  "fotos": 24
+ },
+ {
+  "id": 5149,
+  "titulo": "Casa en coto privado",
+  "slug": "casa-en-coto-privado",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-coto-privado/",
+  "alta": "2025-09-18T13:21:05",
+  "modificada": "2025-09-18T13:21:05",
+  "autor": 11,
+  "foto_portada": 5169,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 742,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "15,000,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "500 m²",
+   "En construcción": "350 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 25
+ },
+ {
+  "id": 5084,
+  "titulo": "Casa en Fracc. Lomalta (M2 – 21)",
+  "slug": "casa-en-fracc-lomalta-m2-21",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-lomalta-m2-21/",
+  "alta": "2025-09-18T12:59:14",
+  "modificada": "2025-09-18T12:59:14",
+  "autor": 11,
+  "foto_portada": 5115,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 492,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,468,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "235 m²",
+   "En construcción": "196 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 33
+ },
+ {
+  "id": 5060,
+  "titulo": "Casa en Fracc. Lomalta (M2 – 35)",
+  "slug": "casa-en-fracc-lomalta-m2-35",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-lomalta-m2-35/",
+  "alta": "2025-09-18T12:49:24",
+  "modificada": "2025-09-18T13:25:04",
+  "autor": 11,
+  "foto_portada": 5067,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 368,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,669,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "152 m²",
+   "En construcción": "203 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 26
+ },
+ {
+  "id": 5040,
+  "titulo": "Casa en Fracc. Lomalta (M2 – 33)",
+  "slug": "casa-en-fracc-lomalta-m2-33",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-lomalta-m2-33/",
+  "alta": "2025-09-18T12:43:44",
+  "modificada": "2025-09-18T13:26:17",
+  "autor": 11,
+  "foto_portada": 5042,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 349,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,904,400.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "185 m²",
+   "En construcción": "201 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 22
+ },
+ {
+  "id": 5021,
+  "titulo": "Casa en Fracc. Lomalta (M2 – 34)",
+  "slug": "casa-en-fracc-lomalta-m2-34",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-lomalta-m2-34/",
+  "alta": "2025-09-18T12:38:40",
+  "modificada": "2025-09-18T13:36:26",
+  "autor": 11,
+  "foto_portada": 5022,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 610,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "5,124,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "196 m²",
+   "En construcción": "210 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 21
+ },
+ {
+  "id": 5004,
+  "titulo": "Casa en Fracc. Lomalta (M8 – 61)",
+  "slug": "casa-en-fracc-lomalta-m8-61",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-lomalta-m8-61/",
+  "alta": "2025-09-18T12:32:24",
+  "modificada": "2025-09-18T13:35:42",
+  "autor": 11,
+  "foto_portada": 5019,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 497,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,902,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "167 m²",
+   "En construcción": "258 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Planta baja": "Si"
+  },
+  "fotos": 19
+ },
+ {
+  "id": 4897,
+  "titulo": "Casa en Fracc. Álamos (AL – 53)",
+  "slug": "casa-en-fracc-alamos-al-53",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-alamos-al-53/",
+  "alta": "2025-09-12T14:26:31",
+  "modificada": "2025-09-12T14:26:31",
+  "autor": 11,
+  "foto_portada": 4898,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [],
+  "descripcion_caracteres": 767,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "8,505,210.00",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 26
+ },
+ {
+  "id": 4839,
+  "titulo": "Casa en Altozano (Fracc. Río)",
+  "slug": "caca-en-altozano-fracc-rio",
+  "url": "https://activosinmobiliariosglobales.com/properties/caca-en-altozano-fracc-rio/",
+  "alta": "2025-09-11T14:39:01",
+  "modificada": "2026-02-18T14:15:36",
+  "autor": 11,
+  "foto_portada": 4850,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 690,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,850,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "160 m²",
+   "En construcción": "258 m²",
+   "Estacionamientos": "1",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 26
+ },
+ {
+  "id": 4794,
+  "titulo": "Terreno en Col. El paraíso",
+  "slug": "terreno-en-col-el-paraiso",
+  "url": "https://activosinmobiliariosglobales.com/properties/terreno-en-col-el-paraiso/",
+  "alta": "2025-09-06T13:08:45",
+  "modificada": "2025-09-06T13:08:45",
+  "autor": 11,
+  "foto_portada": 4795,
+  "type-of-housing": [
+   "Terreno"
+  ],
+  "property-type": [
+   "Terreno"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 253,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Tamaño de la propiedad": "594 m²",
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 12
+ },
+ {
+  "id": 4785,
+  "titulo": "Terreno en Torremolinos",
+  "slug": "terreno-en-torremolinos",
+  "url": "https://activosinmobiliariosglobales.com/properties/terreno-en-torremolinos/",
+  "alta": "2025-09-06T11:41:00",
+  "modificada": "2025-09-06T11:46:27",
+  "autor": 11,
+  "foto_portada": 4793,
+  "type-of-housing": [
+   "Terreno"
+  ],
+  "property-type": [
+   "Terreno"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 548,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,450,000.00",
+  "para": "Venta",
+  "specs": {
+   "Estacionamientos": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 11
+ },
+ {
+  "id": 4739,
+  "titulo": "Casa en cañadas del Bosque Tres Marías",
+  "slug": "casa-en-canadas-del-bosque-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-canadas-del-bosque-tres-marias/",
+  "alta": "2025-09-05T13:30:06",
+  "modificada": "2025-09-05T13:30:06",
+  "autor": 11,
+  "foto_portada": 4740,
+  "type-of-housing": [
+   "Casa nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 617,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,590,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 4521,
+  "titulo": "Casa en Altozano, CIRCUITO TEJONES 1",
+  "slug": "casa-en-altozano-circuito-tejones-1",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-altozano-circuito-tejones-1/",
+  "alta": "2025-08-23T00:35:19",
+  "modificada": "2025-08-23T00:35:19",
+  "autor": 11,
+  "foto_portada": 4544,
+  "type-of-housing": [],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 1323,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,400,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 27
+ },
+ {
+  "id": 4425,
+  "titulo": "Casa en Fracc. Las Garzas",
+  "slug": "casa-en-fracc-las-garzas",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-las-garzas/",
+  "alta": "2025-08-20T10:35:42",
+  "modificada": "2025-08-20T10:35:42",
+  "autor": 11,
+  "foto_portada": 4435,
+  "type-of-housing": [],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 774,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "8,500,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Tamaño de la propiedad": "970 m²",
+   "En construcción": "489 m²",
+   "Año de construccion": "2025-08-20",
+   "Estacionamientos": "5",
+   "Baños completos": "2",
+   "Medios Baños": "1",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 4299,
+  "titulo": "Casa en Rincón de las Aves",
+  "slug": "casa-en-rincon-de-las-aves",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-rincon-de-las-aves/",
+  "alta": "2025-08-15T09:50:05",
+  "modificada": "2025-08-15T09:50:32",
+  "autor": 11,
+  "foto_portada": 4300,
+  "type-of-housing": [],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 484,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "2,196,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "85 m²",
+   "Estacionamientos": "2",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 11
+ },
+ {
+  "id": 4277,
+  "titulo": "Casa en Fracc. Del Bosque",
+  "slug": "casa-en-fracc-del-bosque",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-fracc-del-bosque/",
+  "alta": "2025-08-15T05:25:53",
+  "modificada": "2025-11-13T13:40:21",
+  "autor": 11,
+  "foto_portada": 4278,
+  "type-of-housing": [
+   "Casa remodelada"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 491,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "1,850,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "1",
+   "Baños completos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 4267,
+  "titulo": "Casa en Bosque Tres Marías",
+  "slug": "casa-en-bosque-tres-marias",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-bosque-tres-marias/",
+  "alta": "2025-08-15T05:21:09",
+  "modificada": "2025-08-15T05:21:09",
+  "autor": 11,
+  "foto_portada": 4268,
+  "type-of-housing": [],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 587,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,750,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Estacionamientos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 11
+ },
+ {
+  "id": 4235,
+  "titulo": "Casa en Col. Jacarandas",
+  "slug": "casa-en-col-jacarandas",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-col-jacarandas/",
+  "alta": "2025-08-14T23:19:07",
+  "modificada": "2026-06-01T12:58:54",
+  "autor": 11,
+  "foto_portada": 4236,
+  "type-of-housing": [],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 709,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "6,400,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "4",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Medios Baños": "1",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 13
+ },
+ {
+  "id": 4030,
+  "titulo": "Casa en Jardin de Torremolinos",
+  "slug": "casa-en-torremolinos",
+  "url": "https://activosinmobiliariosglobales.com/properties/casa-en-torremolinos/",
+  "alta": "2025-08-13T17:46:34",
+  "modificada": "2026-08-14T16:53:27",
+  "autor": 11,
+  "foto_portada": 4031,
+  "type-of-housing": [
+   "Casa Semi nueva"
+  ],
+  "property-type": [
+   "Casa"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 734,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "3,200,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "5",
+   "Estacionamientos": "2",
+   "Baños completos": "4",
+   "Cantidad de Pisos": "2",
+   "Planta baja": "Si"
+  },
+  "fotos": 34
+ },
+ {
+  "id": 3622,
+  "titulo": "PUERTA CENTRO",
+  "slug": "puerta-centro",
+  "url": "https://activosinmobiliariosglobales.com/properties/puerta-centro/",
+  "alta": "2025-01-20T15:46:55",
+  "modificada": "2025-02-11T17:55:03",
+  "autor": 1,
+  "foto_portada": 3632,
+  "type-of-housing": [
+   "Departamento"
+  ],
+  "property-type": [
+   "Departamento"
+  ],
+  "location": [
+   "Morelia"
+  ],
+  "purpose": [
+   "Venta"
+  ],
+  "descripcion_caracteres": 67,
+  "descripcion_con_letras_unicode": false,
+  "http": 200,
+  "precio": "4,899,000.00",
+  "para": "Venta",
+  "specs": {
+   "Habitaciones": "3",
+   "Tamaño de la propiedad": "141 m²",
+   "En construcción": "141 m²",
+   "Año de construccion": "2024-01-20",
+   "Estacionamientos": "2",
+   "Baños completos": "3",
+   "Cantidad de Pisos": "3",
+   "Planta baja": "Si"
+  },
+  "fotos": 15
+ }
+]
