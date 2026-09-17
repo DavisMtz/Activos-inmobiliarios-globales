@@ -6,6 +6,10 @@ export default [
     index("routes/publico/inicio.tsx"),
     route("propiedades", "routes/publico/listado.tsx"),
     route("propiedades/:slug", "routes/publico/propiedad.tsx"),
+    route("servicios", "routes/publico/servicios.tsx"),
+    route("nosotros", "routes/publico/nosotros.tsx"),
+    route("contacto", "routes/publico/contacto.tsx"),
+    route("aviso-de-privacidad", "routes/publico/aviso.tsx"),
   ]),
 
   // ─── Panel privado: no se enlaza desde el sitio público (PLAN §11.1)
