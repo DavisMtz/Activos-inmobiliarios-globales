@@ -6,13 +6,15 @@ import { ahora } from "../fechas";
 import { exito, fallo, type Resultado } from "../resultado";
 import { HASH_RELLENO, hashClave, verificarClave } from "./clave";
 import {
+  MINUTOS_CONFIRMACION,
   cookieSesion,
   huella,
-  huellaDeTemporal,
+  huellaDeClave,
   leerSesion,
   nuevoToken,
   sentenciaBorrarSesionesDe,
   sentenciaBorrarVencidasDe,
+  sentenciaConfirmarClave,
   sentenciaCrearSesion,
   type SesionActiva,
 } from "./sesion";
@@ -108,7 +110,7 @@ export async function iniciarSesion(
       idHash: await huella(token),
       usuarioId: usuario.id,
       soloCambioClave,
-      huellaTemporal: soloCambioClave ? await huellaDeTemporal(token, clave) : null,
+      huellaTemporal: soloCambioClave ? await huellaDeClave(token, clave) : null,
       agente: peticion.agente,
     }),
     s.db.prepare("UPDATE usuarios SET ultimo_acceso = ? WHERE id = ?").bind(ahora(), usuario.id),
@@ -124,11 +126,51 @@ export async function iniciarSesion(
   return exito({ token, cookie: cookieSesion(token, soloCambioClave), soloCambioClave });
 }
 
+/**
+ * Primer paso para cambiar la contraseña desde «Mi cuenta» (PLAN §17):
+ * confirmar la actual. Va en su propia petición porque verificar la actual y
+ * derivar la nueva son dos PBKDF2 de 100 000 iteraciones, y dos en la misma
+ * petición rebasan el CPU de un Worker.
+ *
+ * No se guarda la contraseña: se guarda su huella atada al token de la cookie,
+ * y vale cinco minutos.
+ */
+export async function confirmarClaveActual(
+  s: Servicios,
+  sesion: SesionActiva,
+  token: string,
+  claveActual: unknown,
+): Promise<Resultado<{ minutos: number }>> {
+  const clave = typeof claveActual === "string" ? claveActual : "";
+  if (!clave || clave.length > 200) return fallo(400, "datos_incompletos", "Escribe tu contraseña actual.");
+
+  const limite = await s.limites.acceso.limit({ key: `confirmar:${sesion.usuario.id}` });
+  if (!limite.success) return fallo(429, "demasiados_intentos", "Demasiados intentos. Espera un minuto.");
+
+  const fila = await s.db
+    .prepare("SELECT clave_hash FROM usuarios WHERE id = ?")
+    .bind(sesion.usuario.id)
+    .first<{ clave_hash: string }>();
+  if (!fila || !(await verificarClave(clave, fila.clave_hash))) {
+    await sentenciaBitacora(s.db, {
+      usuarioId: sesion.usuario.id,
+      entidad: "usuario",
+      entidadId: sesion.usuario.id,
+      accion: "acceso_fallido",
+      cambios: { motivo: "confirmar_clave" },
+    }).run();
+    return fallo(401, "clave_incorrecta", "Esa no es tu contraseña actual.");
+  }
+
+  await sentenciaConfirmarClave(s.db, sesion.idHash, await huellaDeClave(token, clave)).run();
+  return exito({ minutos: MINUTOS_CONFIRMACION });
+}
+
 export async function cambiarClave(
   s: Servicios,
   sesion: SesionActiva,
   token: string,
-  datos: { actual?: unknown; nueva: unknown; confirmacion: unknown },
+  datos: { nueva: unknown; confirmacion: unknown },
   peticion: ContextoPeticion,
 ): Promise<Resultado<SesionIniciada>> {
   const nueva = typeof datos.nueva === "string" ? datos.nueva : "";
@@ -139,19 +181,23 @@ export async function cambiarClave(
   if (sesion.soloCambioClave) {
     // Acaba de entrar con la temporal: no se le vuelve a pedir. Que la nueva
     // no la repita se comprueba con la huella, sin gastar un segundo PBKDF2.
-    if (!sesion.huellaTemporal || (await huellaDeTemporal(token, nueva)) === sesion.huellaTemporal) {
+    if (!sesion.huellaTemporal || (await huellaDeClave(token, nueva)) === sesion.huellaTemporal) {
       return fallo(400, "clave_repetida", "La contraseña nueva tiene que ser distinta de la temporal.");
     }
   } else {
-    // Desde «Mi cuenta»: exige la actual. Con dos PBKDF2 en la misma petición
-    // (verificar la actual y derivar la nueva) se rebasa el CPU del Worker,
-    // así que la actual se comprueba primero y en su propia petición:
-    // `/api/panel/mi-cuenta/clave/verificar` (llega con F3).
-    return fallo(
-      400,
-      "requiere_verificacion",
-      "Para cambiar tu contraseña desde Mi cuenta primero confirma la actual.",
-    );
+    // Desde «Mi cuenta»: tuvo que confirmar la actual hace menos de 5 minutos
+    // (`confirmarClaveActual`), y así aquí solo se deriva la nueva.
+    const confirmada = sesion.claveConfirmadaHasta !== null && sesion.claveConfirmadaHasta > ahora();
+    if (!confirmada || !sesion.huellaClaveActual) {
+      return fallo(
+        400,
+        "requiere_verificacion",
+        "Para cambiar tu contraseña desde Mi cuenta primero confirma la actual.",
+      );
+    }
+    if ((await huellaDeClave(token, nueva)) === sesion.huellaClaveActual) {
+      return fallo(400, "clave_repetida", "La contraseña nueva tiene que ser distinta de la actual.");
+    }
   }
 
   const limite = await s.limites.acceso.limit({ key: `clave:${sesion.usuario.id}` });
@@ -164,7 +210,7 @@ export async function cambiarClave(
       .prepare("UPDATE usuarios SET clave_hash = ?, debe_cambiar_clave = 0, clave_temporal_expira = NULL WHERE id = ?")
       .bind(nuevoHash, sesion.usuario.id),
     // Todas fuera, incluida esta: quien cambia su clave puede estar echando a
-    // alguien que se le metió en la cuenta.
+    // alguien que se le metió en la cuenta. Con ellas se va la confirmación.
     sentenciaBorrarSesionesDe(s.db, sesion.usuario.id),
     sentenciaCrearSesion(s.db, {
       idHash: await huella(tokenNuevo),

@@ -239,6 +239,15 @@ export async function borrarFoto(
   return exito({ publicId: foto.public_id });
 }
 
+/** De qué casa es una foto: la API la borra por su id, y el permiso es de la casa. */
+export async function propiedadDeFoto(db: D1Database, fotoId: number): Promise<number | null> {
+  const fila = await db
+    .prepare("SELECT propiedad_id FROM fotos WHERE id = ?")
+    .bind(fotoId)
+    .first<{ propiedad_id: number }>();
+  return fila?.propiedad_id ?? null;
+}
+
 /** Para `/panel/sistema`: cuántas fotos siguen colgando del sitio viejo. */
 export async function fotosPendientesDeMigrar(db: D1Database): Promise<number> {
   const fila = await db

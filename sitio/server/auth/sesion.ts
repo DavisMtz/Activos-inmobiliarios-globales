@@ -17,6 +17,8 @@ export const COOKIE_SESION = "__Host-aig_sesion";
 const DIAS_SESION = 7;
 /** La sesión que solo sirve para cambiar la temporal no necesita más. */
 const MINUTOS_SOLO_CAMBIO = 60;
+/** Cuánto vale haber confirmado la contraseña actual en «Mi cuenta» (F3). */
+export const MINUTOS_CONFIRMACION = 5;
 
 export type UsuarioSesion = {
   id: string;
@@ -32,6 +34,9 @@ export type SesionActiva = {
   /** La clave es temporal: solo puede cambiarla o salir (PLAN §8.2). */
   soloCambioClave: boolean;
   huellaTemporal: string | null;
+  /** Huella de la contraseña actual, si acaba de confirmarla (ver abajo). */
+  huellaClaveActual: string | null;
+  claveConfirmadaHasta: string | null;
   usuario: UsuarioSesion;
 };
 
@@ -48,8 +53,16 @@ export async function huella(texto: string): Promise<string> {
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-/** Huella de la temporal atada al token (ver la columna en la migración). */
-export const huellaDeTemporal = (token: string, clave: string): Promise<string> => huella(`${token}:${clave}`);
+/**
+ * Huella de una contraseña atada al token de ESA sesión. Sirve para dos cosas
+ * sin volver a derivar con PBKDF2 (dos en una petición revientan el CPU del
+ * Worker, PLAN §17): comprobar que la clave nueva no repite la temporal, y
+ * recordar que quien pide el cambio ya confirmó su contraseña actual.
+ *
+ * Sin el token, que solo vive en la cookie, la huella guardada no le sirve a
+ * nadie: no se puede probar contraseñas contra ella desde una copia de la base.
+ */
+export const huellaDeClave = (token: string, clave: string): Promise<string> => huella(`${token}:${clave}`);
 
 export function sentenciaCrearSesion(
   db: D1Database,
@@ -72,6 +85,16 @@ export function sentenciaCrearSesion(
     );
 }
 
+/** Primer paso del cambio de clave desde «Mi cuenta»: queda confirmada 5 minutos. */
+export const sentenciaConfirmarClave = (
+  db: D1Database,
+  idHash: string,
+  huellaClave: string,
+): D1PreparedStatement =>
+  db
+    .prepare("UPDATE sesiones SET huella_clave_actual = ?, clave_confirmada_hasta = ? WHERE id_hash = ?")
+    .bind(huellaClave, enMinutos(MINUTOS_CONFIRMACION), idHash);
+
 /** Todas las sesiones de alguien: al desactivarlo, cambiarle el rol o la clave. */
 export const sentenciaBorrarSesionesDe = (db: D1Database, usuarioId: string): D1PreparedStatement =>
   db.prepare("DELETE FROM sesiones WHERE usuario_id = ?").bind(usuarioId);
@@ -87,7 +110,7 @@ export async function leerSesion(db: D1Database, token: string | null): Promise<
   // siguiente petición aunque todavía tenga la cookie.
   const fila = await db
     .prepare(
-      `SELECT s.solo_cambio_clave, s.huella_temporal,
+      `SELECT s.solo_cambio_clave, s.huella_temporal, s.huella_clave_actual, s.clave_confirmada_hasta,
               u.id, u.correo, u.nombre, u.rol, u.telefono, u.whatsapp
          FROM sesiones s JOIN usuarios u ON u.id = s.usuario_id
         WHERE s.id_hash = ? AND s.expira_en > ? AND u.activo = 1`,
@@ -96,6 +119,8 @@ export async function leerSesion(db: D1Database, token: string | null): Promise<
     .first<{
       solo_cambio_clave: number;
       huella_temporal: string | null;
+      huella_clave_actual: string | null;
+      clave_confirmada_hasta: string | null;
       id: string;
       correo: string;
       nombre: string;
@@ -108,6 +133,8 @@ export async function leerSesion(db: D1Database, token: string | null): Promise<
     idHash,
     soloCambioClave: fila.solo_cambio_clave === 1,
     huellaTemporal: fila.huella_temporal,
+    huellaClaveActual: fila.huella_clave_actual,
+    claveConfirmadaHasta: fila.clave_confirmada_hasta,
     usuario: {
       id: fila.id,
       correo: fila.correo,

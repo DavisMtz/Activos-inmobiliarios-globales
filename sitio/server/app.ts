@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { RouterContextProvider } from "react-router";
 import { contextoServidor } from "../app/contexto";
-import { apiPanel } from "./api/panel";
+import { apiPanel } from "./api/panel/index";
 import { apiPublica } from "./api/publica";
 import type { EntornoHono } from "./api/tipos";
 import { crearServicios } from "./config";
