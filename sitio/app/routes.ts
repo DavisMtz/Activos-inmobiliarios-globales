@@ -19,6 +19,9 @@ export default [
     route("salir", "routes/panel/salir.tsx"),
     layout("routes/panel/marco.tsx", [
       index("routes/panel/inicio.tsx"),
+      route("propiedades", "routes/panel/propiedades.tsx"),
+      route("propiedades/nueva", "routes/panel/propiedad-nueva.tsx"),
+      route("propiedades/:id", "routes/panel/propiedad.tsx"),
       route("mi-cuenta", "routes/panel/mi-cuenta.tsx"),
     ]),
   ]),

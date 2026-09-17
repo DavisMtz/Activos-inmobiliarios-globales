@@ -173,15 +173,24 @@ export function Boton({
   tono = "principal",
   ocupado,
   ancho,
+  pequeno,
   children,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { tono?: Tono; ocupado?: boolean; ancho?: boolean }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  tono?: Tono;
+  ocupado?: boolean;
+  ancho?: boolean;
+  /** Para grupos de acciones secundarias, donde seis botones grandes serían un muro. */
+  pequeno?: boolean;
+}) {
   return (
     <button
       {...props}
       disabled={props.disabled || ocupado}
       aria-busy={ocupado || undefined}
-      className={`${BASE_BOTON} ${TONOS[tono]} ${ancho ? "w-full" : ""} ${ocupado ? "cursor-wait" : ""}`}
+      className={`${BASE_BOTON} ${TONOS[tono]} ${pequeno ? "h-10 px-3.5 text-sm" : ""} ${ancho ? "w-full" : ""} ${
+        ocupado ? "cursor-wait" : ""
+      }`}
     >
       {children}
     </button>
