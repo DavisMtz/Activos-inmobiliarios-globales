@@ -408,8 +408,11 @@ for (const c of casas) {
 lineas.push("", "-- Fotos (solo las que siguen en WordPress se reemplazan)");
 for (const c of casas) {
   const casaSinEditar = `wp_id = ${c.wpId} AND actualizada_en = ${sql(c.actualizada)}`;
+  // INDEXED BY a propósito: sin él SQLite busca por `public_id IS NULL` y cada DELETE
+  // lee TODAS las fotos pendientes (188 × 3,241 filas leídas en una base nueva). El
+  // plan gratuito de D1 da 5 millones de lecturas al día para toda la cuenta (PLAN §17).
   lineas.push(
-    `DELETE FROM fotos WHERE public_id IS NULL AND propiedad_id = (SELECT id FROM propiedades WHERE ${casaSinEditar});`,
+    `DELETE FROM fotos INDEXED BY idx_fotos_propiedad WHERE propiedad_id = (SELECT id FROM propiedades WHERE ${casaSinEditar}) AND public_id IS NULL;`,
   );
   if (!c.fotos.length) continue;
   const filas = c.fotos
