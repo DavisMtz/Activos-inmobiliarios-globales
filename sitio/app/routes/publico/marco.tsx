@@ -1,4 +1,7 @@
 import "@fontsource-variable/fraunces/wght.css";
+// Las dos fuentes, por su URL con hash, para precargarlas (ver más abajo).
+import fuenteFraunces from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
+import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 
 import { useEffect, useRef } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router";
@@ -105,6 +108,13 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 
   return (
     <div ref={contenedor} className="flex min-h-dvh flex-col bg-fondo">
+      {/* Medido en F2: el LCP de la portada NO es una foto, es el titular, con
+          el primer dibujado en 3.8 s. El navegador no descubre las fuentes
+          hasta parsear el CSS, así que se piden desde el principio. React 19
+          sube estos enlaces al <head> solo. Van aquí, en el marco público, y
+          no en `root.tsx`: el panel no tiene por qué bajar la serif. */}
+      <link rel="preload" as="font" type="font/woff2" href={fuenteFraunces} crossOrigin="anonymous" />
+      <link rel="preload" as="font" type="font/woff2" href={fuenteNunito} crossOrigin="anonymous" />
       <Cabecera nombreNegocio={nombreNegocio} />
 
       <main id="contenido" className="flex-1">

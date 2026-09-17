@@ -8,7 +8,7 @@ const SOLO_WORDPRESS = { public_id: null, url_origen: "https://viejo.mx/foto.jpg
 describe("urlFoto", () => {
   it("construye la URL de Cloudinary con la transformación de la variante", () => {
     expect(urlFoto(EN_NUBE, "tarjeta", NUBE)).toBe(
-      `https://res.cloudinary.com/${NUBE}/image/upload/c_fill,g_auto,w_640,h_480,f_auto,q_auto/aig/propiedades/AIG-0001/998fa0de`,
+      `https://res.cloudinary.com/${NUBE}/image/upload/c_fill,g_auto,w_640,h_480,f_auto,q_auto:eco/aig/propiedades/AIG-0001/998fa0de`,
     );
   });
 

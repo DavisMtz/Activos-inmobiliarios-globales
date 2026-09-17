@@ -13,7 +13,10 @@ export type FotoFuente = {
 };
 
 const TRANSFORMACIONES: Record<Variante, string> = {
-  tarjeta: "c_fill,g_auto,w_640,h_480,f_auto,q_auto",
+  // `q_auto:eco` y no `q_auto` a secas: en una tarjeta de ~360 px la
+  // diferencia no se ve y pesa bastante menos. Medido en F2: el listado movía
+  // 456 KB de fotos y su LCP era justo la primera tarjeta.
+  tarjeta: "c_fill,g_auto,w_640,h_480,f_auto,q_auto:eco",
   galeria: "c_limit,w_1600,f_auto,q_auto",
   miniatura: "c_fill,g_auto,w_160,h_120,f_auto,q_auto",
   // JPG a propósito: WhatsApp y Facebook no leen bien AVIF en la vista previa.
