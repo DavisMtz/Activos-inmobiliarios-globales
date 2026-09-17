@@ -22,6 +22,8 @@ export default [
       route("propiedades", "routes/panel/propiedades.tsx"),
       route("propiedades/nueva", "routes/panel/propiedad-nueva.tsx"),
       route("propiedades/:id", "routes/panel/propiedad.tsx"),
+      route("contenido", "routes/panel/contenido.tsx"),
+      route("configuracion", "routes/panel/configuracion.tsx"),
       route("mi-cuenta", "routes/panel/mi-cuenta.tsx"),
     ]),
   ]),

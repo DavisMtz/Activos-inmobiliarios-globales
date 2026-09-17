@@ -10,7 +10,7 @@
 
 import type { ComponentType } from "react";
 import { puede, type Actor, type Permiso } from "../../../shared/permisos";
-import { IconoCasas, IconoCuenta, IconoInicio } from "./iconos";
+import { IconoCasas, IconoConfiguracion, IconoContenido, IconoCuenta, IconoInicio } from "./iconos";
 
 export type Seccion = {
   ruta: string;
@@ -25,6 +25,8 @@ export type Seccion = {
 const SECCIONES: Seccion[] = [
   { ruta: "/panel", titulo: "Inicio", Icono: IconoInicio, permiso: null },
   { ruta: "/panel/propiedades", titulo: "Casas", Icono: IconoCasas, permiso: "propiedades.ver", raiz: true },
+  { ruta: "/panel/contenido", titulo: "Contenido", Icono: IconoContenido, permiso: "contenido.editar" },
+  { ruta: "/panel/configuracion", titulo: "Configuración", Icono: IconoConfiguracion, permiso: "configuracion.contacto" },
   { ruta: "/panel/mi-cuenta", titulo: "Mi cuenta", Icono: IconoCuenta, permiso: "cuenta.propia" },
 ];
 
