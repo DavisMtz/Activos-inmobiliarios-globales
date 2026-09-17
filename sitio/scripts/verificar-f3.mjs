@@ -100,6 +100,21 @@ function soltarReferencias(id) {
   );
 }
 
+/**
+ * Entrar aguantando el freno de intentos: en producción todo sale de la MISMA
+ * IP y son 8 por minuto (PLAN §8.4), así que preparar cuatro cuentas seguidas
+ * lo llena. En local cada petición manda su propia IP y esto nunca espera.
+ */
+async function entrar(correo, clave) {
+  for (let intento = 1; intento <= 3; intento++) {
+    const r = await pedir("/api/panel/sesion", { metodo: "POST", json: { correo, clave } });
+    if (r.estado !== 429) return r;
+    console.log("  … el freno de intentos está lleno; esperando 65 s");
+    await esperar(65_000);
+  }
+  return { estado: 429, datos: null, texto: "freno de intentos", cookie: null };
+}
+
 async function prepararCuenta(rol) {
   const correo = correoDe(rol);
   const previo = buscarUsuario(correo, opciones);
@@ -110,7 +125,7 @@ async function prepararCuenta(rol) {
   const creada = await crearUsuarioConTemporal({ correo, nombre: `Prueba ${rol}`, rol }, opciones);
   aBorrar.usuarios.push({ id: creada.id, correo });
 
-  const entrada = await pedir("/api/panel/sesion", { metodo: "POST", json: { correo, clave: creada.clave } });
+  const entrada = await entrar(correo, creada.clave);
   const clave = `prueba f3 ${randomBytes(6).toString("base64url")}`;
   const cambio = await pedir("/api/panel/mi-cuenta/clave", {
     metodo: "POST",
@@ -313,10 +328,7 @@ try {
   const nuevoAsesor = altaAsesor.datos;
   comprobar("la temporal llega una sola vez en la respuesta", typeof nuevoAsesor?.clave === "string" && nuevoAsesor.clave.length === 12, JSON.stringify(nuevoAsesor?.clave ?? null));
 
-  const primeraEntrada = await pedir("/api/panel/sesion", {
-    metodo: "POST",
-    json: { correo: "f3-alta@ejemplo.invalid", clave: nuevoAsesor.clave },
-  });
+  const primeraEntrada = await entrar("f3-alta@ejemplo.invalid", nuevoAsesor.clave);
   comprobar("entra con la temporal y el sistema le exige cambiarla", primeraEntrada.datos?.debe_cambiar_clave === true, primeraEntrada.texto.slice(0, 160));
 
   const bloqueado = await pedir("/api/panel/propiedades", { cookie: primeraEntrada.cookie });
@@ -330,10 +342,7 @@ try {
   });
   comprobar("cambia la temporal por la suya", cambiada.estado === 200, cambiada.texto.slice(0, 160));
 
-  const segundaEntrada = await pedir("/api/panel/sesion", {
-    metodo: "POST",
-    json: { correo: "f3-alta@ejemplo.invalid", clave: claveNueva },
-  });
+  const segundaEntrada = await entrar("f3-alta@ejemplo.invalid", claveNueva);
   comprobar("y vuelve a entrar con la nueva", segundaEntrada.estado === 200 && segundaEntrada.datos?.debe_cambiar_clave === false, segundaEntrada.texto.slice(0, 160));
 
   // ─── 6. Desactivar saca de inmediato ──────────────────────────

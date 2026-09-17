@@ -144,11 +144,22 @@ let casaId = null;
 try {
   const cabeceras = { "Content-Type": "application/json", Origin: ORIGEN };
   if (!remoto) cabeceras["cf-connecting-ip"] = "10.7.7.7";
-  const entrada = await fetch(`${BASE}/api/panel/sesion`, {
-    method: "POST",
-    headers: cabeceras,
-    body: JSON.stringify({ correo: CORREO, clave: prueba.clave }),
-  });
+
+  /**
+   * En producción todo sale de la MISMA IP y el freno son 8 intentos por
+   * minuto (PLAN §8.4): si se cruza con la otra verificación, toca esperar.
+   */
+  let entrada;
+  for (let intento = 1; intento <= 3; intento++) {
+    entrada = await fetch(`${BASE}/api/panel/sesion`, {
+      method: "POST",
+      headers: cabeceras,
+      body: JSON.stringify({ correo: CORREO, clave: prueba.clave }),
+    });
+    if (entrada.status !== 429) break;
+    console.log("  … el freno de intentos está lleno; esperando 65 s");
+    await esperar(65_000);
+  }
   const temporal = (entrada.headers.getSetCookie?.() ?? []).find((c) => c.startsWith("__Host-aig_sesion="));
   const cambio = await fetch(`${BASE}/api/panel/mi-cuenta/clave`, {
     method: "POST",
@@ -331,8 +342,9 @@ try {
   casaId = Number((await evaluar(cdp, "location.pathname")).split("/").pop());
 
   // Cinco fotos por el mismo camino que usaría ella: el selector de archivos.
-  const carpeta = join(RAIZ, "..", "analisis", "crudo", "recorrido-f3");
-  mkdirSync(carpeta, { recursive: true });
+  // En una carpeta temporal del sistema, nunca dentro del proyecto:
+  // `analisis/crudo/` son los datos de origen y son de solo lectura.
+  const carpeta = mkdtempSync(join(tmpdir(), "aig-recorrido-"));
   const archivos = [1, 2, 3, 4, 5].map((n) => {
     const ruta = join(carpeta, `foto-${n}.jpg`);
     writeFileSync(ruta, JPEG);
