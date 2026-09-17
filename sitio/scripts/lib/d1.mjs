@@ -57,6 +57,11 @@ export function ejecutarSql(sql, { remoto }) {
   }
 }
 
+/** Aplica un archivo .sql que ya existe (p. ej. la semilla generada). */
+export function ejecutarArchivo(ruta, { remoto }) {
+  return wrangler([remoto ? "--remote" : "--local", "--file", ruta]);
+}
+
 /** Lectura de UNA sentencia: devuelve sus filas. */
 export function consultar(sql, { remoto }) {
   const resultados = wrangler([remoto ? "--remote" : "--local", "--command", sql]);

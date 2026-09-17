@@ -1,0 +1,87 @@
+{
+  "_nota": "Configuración inicial de la propuesta (PLAN §6.3). Textos tomados del sitio actual (analisis/crudo/html/inicio, servicios, acerca y contacto) el 16/09/2026. Lo dudoso va en «por_confirmar»: el panel lo avisa y el sitio lo muestra igual. Solo se inserta si la clave no existe: lo que el equipo cambie en el panel no se pisa.",
+
+  "configuracion": {
+    "contacto": {
+      "telefono": "443 298 3138",
+      "correo": "info@activosinmobiliariosglobales.com",
+      "direccion": "Batalla de Casa Mata #799, int. 9, Chapultepec Sur, Morelia, Mich.",
+      "horario": "",
+      "por_confirmar": ["direccion", "telefono"],
+      "notas": {
+        "direccion": "El pie de página del sitio actual dice otra: «Periférico Sector Nueva España 6338, int. 17, Lázaro Cárdenas, 58229 Morelia».",
+        "telefono": "El sitio actual usa el fijo 443 298 3138 en Contacto y el celular 443 492 2197 en el pie de página."
+      }
+    },
+
+    "whatsapp": {
+      "numero": "524434922197",
+      "plantilla_propiedad": "Hola, me interesa {titulo} ({clave}): {url}",
+      "plantilla_general": "Hola, quisiera información sobre sus propiedades."
+    },
+
+    "redes": {
+      "facebook": "https://www.facebook.com/profile.php?id=61569927005730",
+      "instagram": "https://www.instagram.com/activosinmobiliariosglobales/"
+    },
+
+    "portada": {
+      "saludo": "Bienvenido a Activos Inmobiliarios Globales",
+      "titular": "Comercialización, renta y financiamiento de inmuebles",
+      "lema": "Donde cada propiedad cuenta una historia",
+      "presentacion": "Ofrecemos soluciones integrales en el mercado inmobiliario, enfocadas en la comercialización, renta y financiamiento de propiedades.",
+      "intro_servicios": "En Activos Inmobiliarios Globales ofrecemos una amplia gama de servicios para satisfacer todas tus necesidades inmobiliarias.",
+      "imagen_propiedad_clave": null
+    },
+
+    "nosotros": {
+      "historia": "Fundados el 1 de diciembre de 2024 en el estado de Michoacán, Activos Inmobiliarios Globales ha iniciado su camino con la misión de transformar el sector inmobiliario a través de un servicio de excelencia, asegurando un impacto positivo en la vida de nuestros clientes.",
+      "mision": "Brindar un servicio único y de excelencia en la adquisición, renta y financiamiento de activos inmuebles, protegiendo el patrimonio de nuestros clientes y colaboradores, y mejorando su calidad de vida.",
+      "vision": "",
+      "valores": [
+        { "nombre": "Responsabilidad", "descripcion": "Nos comprometemos con la calidad y la ética profesional." },
+        { "nombre": "Honestidad", "descripcion": "Actuamos con transparencia y rectitud en cada acción." },
+        { "nombre": "Pasión", "descripcion": "Amamos lo que hacemos y lo reflejamos en nuestro servicio." },
+        { "nombre": "Calidad", "descripcion": "Nos esforzamos por superar las expectativas de nuestros clientes." }
+      ],
+      "por_confirmar": ["vision"],
+      "notas": {
+        "vision": "En el sitio actual la visión tiene exactamente el mismo texto que la misión. Se deja vacía (y oculta) hasta que el negocio escriba la suya."
+      }
+    },
+
+    "aviso_privacidad": {
+      "estado": "borrador",
+      "advertencia": "BORRADOR pendiente de revisión legal. No es un texto definitivo.",
+      "actualizado": "",
+      "texto": "Aviso de privacidad (borrador pendiente de revisión legal)\n\nActivos Inmobiliarios Globales, con domicilio en [domicilio pendiente de confirmar], es responsable del tratamiento de los datos personales que nos proporcionas a través de este sitio.\n\nDatos que recabamos\nNombre, teléfono, correo electrónico, el mensaje que nos envías y, en su caso, la propiedad por la que preguntas.\n\nPara qué los usamos\nPara contactarte y darte la información que solicitaste sobre propiedades o servicios, y para dar seguimiento a tu solicitud.\n\nTransferencias\nNo compartimos tus datos con terceros, salvo en los casos que la ley lo permita o lo exija.\n\nDerechos ARCO\nPuedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiendo a info@activosinmobiliariosglobales.com.\n\nCambios a este aviso\nCualquier cambio se publicará en esta misma página."
+    }
+  },
+
+  "servicios": [
+    {
+      "titulo": "Venta de inmuebles",
+      "descripcion": "Encuentra la propiedad ideal para ti con nuestras opciones cuidadosamente seleccionadas. Ofrecemos una amplia variedad de propiedades residenciales, comerciales y terrenos, asegurando que encuentres la opción que mejor se adapte a tus necesidades y presupuesto."
+    },
+    {
+      "titulo": "Renta de inmuebles",
+      "descripcion": "Soluciones de renta que se adaptan a tu estilo de vida y presupuesto. Trabajamos con propietarios y arrendatarios para garantizar acuerdos justos y transparentes, ofreciendo opciones desde departamentos y casas hasta oficinas y locales comerciales."
+    },
+    {
+      "titulo": "Financiamientos inmobiliarios",
+      "descripcion": "Facilitamos el acceso a tu patrimonio a través de opciones de financiamiento flexibles y seguras. Nuestros expertos te acompañan durante todo el proceso para encontrar el esquema de pago que mejor se adapte a tus posibilidades."
+    },
+    {
+      "titulo": "Trámites inmobiliarios",
+      "descripcion": "Gestionamos todos los procesos necesarios para que la compra, venta o renta de tu inmueble sea rápida y sin complicaciones. Esto incluye servicios como:\n• Investigación y verificación de documentos legales.\n• Asesoramiento en contratos de compraventa y arrendamiento.\n• Apoyo en la gestión de créditos hipotecarios.\n• Servicio de avalúos certificados."
+    },
+    {
+      "titulo": "Asesoría personalizada",
+      "descripcion": "Nuestro equipo de asesores está disponible para brindarte orientación profesional en la toma de decisiones. Ya sea que estés comprando, vendiendo o buscando financiamiento, estamos aquí para responder todas tus preguntas y ayudarte a alcanzar tus objetivos."
+    },
+    {
+      "titulo": "Promoción y marketing inmobiliario",
+      "descripcion": "Diseñamos estrategias personalizadas para promover tus propiedades en plataformas digitales, redes sociales y bases de datos de clientes potenciales, asegurando una exposición máxima y resultados efectivos."
+    }
+  ]
+}
