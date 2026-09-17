@@ -15,7 +15,9 @@
     "db:local": "wrangler d1 migrations apply activos-inmobiliarios-db --local",
     "db:remote": "wrangler d1 migrations apply activos-inmobiliarios-db --remote",
     "maestro:crear": "node scripts/crear-maestro.mjs",
-    "verificar": "node scripts/verificar.mjs"
+    "verificar": "node scripts/verificar.mjs",
+    "verificar:navegador": "node scripts/verificar-navegador.mjs",
+    "capturar": "node scripts/capturar.mjs"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "5.3.0",
