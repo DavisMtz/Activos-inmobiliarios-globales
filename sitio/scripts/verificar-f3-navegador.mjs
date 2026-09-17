@@ -123,7 +123,9 @@ function soltarReferencias(id) {
     `UPDATE configuracion SET actualizado_por = NULL WHERE actualizado_por = ${sql(id)};
      UPDATE usuarios SET creado_por = NULL WHERE creado_por = ${sql(id)};
      UPDATE propiedades SET creada_por = NULL WHERE creada_por = ${sql(id)};
-     UPDATE propiedades SET asesor_id = NULL WHERE asesor_id = ${sql(id)};`,
+     UPDATE propiedades SET asesor_id = NULL WHERE asesor_id = ${sql(id)};
+     UPDATE prospectos SET asesor_id = NULL WHERE asesor_id = ${sql(id)};
+     DELETE FROM notas_prospecto WHERE usuario_id = ${sql(id)};`,
     opciones,
   );
 }
@@ -446,7 +448,15 @@ try {
   console.log("\nLimpieza");
   if (casaId) {
     ejecutarSql(
-      `DELETE FROM fotos WHERE propiedad_id = ${casaId};
+      // Los EVENTOS van primero. El recorrido publica la casa y después la
+      // abre en el sitio público, y esa visita deja un `ficha_vista` que
+      // apunta a ella: sin borrarlo, `DELETE FROM propiedades` revienta con
+      // «FOREIGN KEY constraint failed» y la casa de prueba se queda
+      // PUBLICADA en el sitio (pasó en producción el 17/09/2026, PLAN §17).
+      `DELETE FROM eventos WHERE propiedad_id = ${casaId};
+       DELETE FROM notas_prospecto WHERE prospecto_id IN (SELECT id FROM prospectos WHERE propiedad_id = ${casaId});
+       DELETE FROM prospectos WHERE propiedad_id = ${casaId};
+       DELETE FROM fotos WHERE propiedad_id = ${casaId};
        DELETE FROM bitacora WHERE entidad IN ('propiedad','foto') AND entidad_id = ${sql(String(casaId))};
        DELETE FROM propiedades WHERE id = ${casaId};
        DELETE FROM zonas WHERE slug = 'morelia-recorrido' AND NOT EXISTS (SELECT 1 FROM propiedades WHERE zona_id = zonas.id);`,
@@ -454,7 +464,9 @@ try {
     );
   }
   ejecutarSql(
-    `DELETE FROM fotos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%');
+    `DELETE FROM eventos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%');
+     DELETE FROM prospectos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%');
+     DELETE FROM fotos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%');
      DELETE FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%';`,
     opciones,
   );

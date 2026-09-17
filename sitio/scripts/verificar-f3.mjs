@@ -95,7 +95,8 @@ function soltarReferencias(id) {
      UPDATE usuarios SET creado_por = NULL WHERE creado_por = ${sql(id)};
      UPDATE propiedades SET creada_por = NULL WHERE creada_por = ${sql(id)};
      UPDATE propiedades SET asesor_id = NULL WHERE asesor_id = ${sql(id)};
-     UPDATE prospectos SET asesor_id = NULL WHERE asesor_id = ${sql(id)};`,
+     UPDATE prospectos SET asesor_id = NULL WHERE asesor_id = ${sql(id)};
+     DELETE FROM notas_prospecto WHERE usuario_id = ${sql(id)};`,
     opciones,
   );
 }
@@ -145,8 +146,12 @@ function limpiarRestos() {
       borrarUsuarioDePrueba(previo.id, correo, opciones);
     }
   }
+  // Los eventos y los prospectos van ANTES que la casa: los dos la referencian
+  // y D1 rechaza el borrado con «FOREIGN KEY constraint failed» (PLAN §17).
   ejecutarSql(
-    `DELETE FROM fotos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
+    `DELETE FROM eventos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
+     DELETE FROM prospectos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
+     DELETE FROM fotos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
      DELETE FROM bitacora WHERE entidad IN ('propiedad','foto') AND entidad_id IN (SELECT CAST(id AS TEXT) FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
      DELETE FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%';`,
     opciones,
@@ -396,7 +401,10 @@ try {
   const ids = aBorrar.propiedades.filter(Boolean);
   if (ids.length) {
     ejecutarSql(
-      `DELETE FROM fotos WHERE propiedad_id IN (${ids.join(",")});
+      `DELETE FROM eventos WHERE propiedad_id IN (${ids.join(",")});
+       DELETE FROM notas_prospecto WHERE prospecto_id IN (SELECT id FROM prospectos WHERE propiedad_id IN (${ids.join(",")}));
+       DELETE FROM prospectos WHERE propiedad_id IN (${ids.join(",")});
+       DELETE FROM fotos WHERE propiedad_id IN (${ids.join(",")});
        DELETE FROM bitacora WHERE entidad IN ('propiedad','foto') AND entidad_id IN (${ids.map((id) => sql(String(id))).join(",")});
        DELETE FROM propiedades WHERE id IN (${ids.join(",")});
        DELETE FROM zonas WHERE slug = 'morelia-prueba-f3' AND NOT EXISTS (SELECT 1 FROM propiedades WHERE zona_id = zonas.id);`,
@@ -406,6 +414,8 @@ try {
   // Las casas que crearon los cuatro roles en la matriz.
   ejecutarSql(
     `DELETE FROM bitacora WHERE entidad = 'propiedad' AND entidad_id IN (SELECT CAST(id AS TEXT) FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
+     DELETE FROM eventos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
+     DELETE FROM prospectos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
      DELETE FROM fotos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%');
      DELETE FROM propiedades WHERE titulo LIKE 'Casa de prueba F3%';`,
     opciones,
