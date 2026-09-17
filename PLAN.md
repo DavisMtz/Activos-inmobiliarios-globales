@@ -668,6 +668,8 @@ La marca de agua, si el dueño la quiere, es una capa en la URL (`l_<public_id d
 
 `urlFoto()`: si la foto tiene `public_id` y hay `CLOUDINARY_CLOUD_NAME`, construye la URL de Cloudinary; si no, devuelve `url_origen` (WordPress) con el tamaño intermedio más cercano que WordPress ya generó (`-768x1024`, `-1024x768`) cuando exista. **Es solo para la demo**: depende de que el sitio viejo siga en línea.
 
+**Pendiente para F2 (medido en F1):** hoy `urlFoto()` devuelve el **original** para todas las variantes. Con 12 tarjetas de ~1,200 px por página, el listado no llega a Lighthouse ≥ 90. Los tamaños que WordPress ya generó están en `analisis/crudo/medios/*.json` (`media_details.sizes`): `large` (1,024 px de lado mayor) en 2,971 de las 3,241 fotos, `medium_large` (768 px de ancho) en 2,922 y `medium` (300 px) en 3,175. 61 fotos no tienen registro en `medios` y se quedan con el original. El nombre del archivo no se puede calcular con fiabilidad (redondeo de WordPress y originales `-scaled`), así que conviene guardar la URL: `0002` con una columna para el tamaño intermedio, que la siembra llena al re-correrla (es idempotente), y `urlFoto` la usa para `tarjeta` y `miniatura`.
+
 ### 13.5 `scripts/migrar-fotos-a-cloudinary.mjs`
 
 - Toma las fotos con `public_id IS NULL`, **sube por URL** (`file=<url_origen>`, subida firmada) con `public_id` final, espera la respuesta y actualiza D1 (`public_id`, ancho, alto).
@@ -757,6 +759,9 @@ y del resultado (grupo 3) los prefijos `Fracc.` y `Col.` y los sufijos de lote o
 
 ### F2 · Sitio público
 - Rutas de §10.1, filtros en la URL, ficha, contacto, WhatsApp, formularios → `prospectos`, eventos, redirecciones, metadatos y diseño (§10.4).
+- **Heredado de F1 (medido):**
+  - **Fotos del puente:** usar los tamaños intermedios de WordPress (§13.4).
+  - **Zonas:** hay 123 zonas para 188 casas; 115 son de Morelia y 93 de esas tienen una sola casa. Solo 22 zonas tienen dos o más. Un filtro `zona` con todas las opciones no sirve. Hay que decidir el diseño: agrupar por ciudad más las colonias con 2 o más casas, o buscar por texto. Para depurar las colonias adivinadas, F3 quizá necesite «fusionar zonas», que §11.2 no tiene.
 
 **Listo cuando:**
 1. `curl` a una ficha devuelve **sin JavaScript** el título, el precio y `og:image` (JPG 1200×630).
