@@ -57,9 +57,12 @@ apiPropiedades.get("/:id", async (c) => {
 apiPropiedades.patch("/:id", async (c) => {
   const id = idDeRuta(c);
   if (id === null) return noEncontrado(c, "Esa casa no existe.");
-  const revision = revisarPropiedad(await cuerpo(c));
+  const datos = await cuerpo(c);
+  const revision = revisarPropiedad(datos);
   if (!revision.ok) return datosInvalidos(c, revision.mensaje, revision.campo);
-  const r = await editarPropiedad(c.var.servicios.db, actorDe(c), id, revision.valor);
+  // Quien no manda el campo «asesor» no está pidiendo dejarla sin asesor.
+  const asignarAsesor = "asesor_id" in datos || "asesorId" in datos;
+  const r = await editarPropiedad(c.var.servicios.db, actorDe(c), id, revision.valor, { asignarAsesor });
   return responder(c, r, (editada) => ({ ok: true, ...editada }));
 });
 

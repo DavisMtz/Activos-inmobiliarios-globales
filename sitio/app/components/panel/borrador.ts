@@ -122,7 +122,13 @@ export function usarBorrador({
 }: {
   /** El id de la casa, o «nueva» mientras no exista. */
   id: string;
-  formulario: { current: HTMLFormElement | null };
+  /**
+   * Cómo llegar al `<form>` ya pintado. Es una función y no una ref a secas
+   * porque el formulario lo dibuja un componente de React Router: si su ref no
+   * llegara, esto se quedaría sin nodo y el borrador no guardaría nada, en
+   * silencio.
+   */
+  formulario: () => HTMLFormElement | null;
   /** Lo que el servidor acaba de mandar: con esto se decide si hay algo que recuperar. */
   servidor: Valores;
   activo?: boolean;
@@ -133,9 +139,9 @@ export function usarBorrador({
   const relojRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const guardarYa = useCallback(() => {
-    if (!activo || !formulario.current) return;
-    const datos = valoresDe(formulario.current);
-    escribirCrudo(clave, JSON.stringify({ cuando: Date.now(), datos } satisfies Guardado));
+    const nodo = formulario();
+    if (!activo || !nodo) return;
+    escribirCrudo(clave, JSON.stringify({ cuando: Date.now(), datos: valoresDe(nodo) } satisfies Guardado));
   }, [activo, clave, formulario]);
 
   // Al abrir: purgar y, solo si la copia DIFIERE de lo que trajo el servidor,
@@ -182,7 +188,8 @@ export function usarBorrador({
       relojRef.current = setTimeout(guardarYa, FRENO_MS);
     }, [guardarYa]),
     recuperar: useCallback(() => {
-      if (formulario.current && guardadoRef.current) aplicarValores(formulario.current, guardadoRef.current.datos);
+      const nodo = formulario();
+      if (nodo && guardadoRef.current) aplicarValores(nodo, guardadoRef.current.datos);
       setPendiente(null);
     }, [formulario]),
     descartar: useCallback(() => {

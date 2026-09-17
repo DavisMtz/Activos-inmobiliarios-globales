@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Form, useNavigation } from "react-router";
 import { ETIQUETA_TIPO, TIPOS } from "../../../shared/filtros";
 import {
@@ -87,12 +87,24 @@ export function FormularioDePropiedad({
   puedeAsignar: boolean;
   textoBoton: string;
 }) {
-  const formulario = useRef<HTMLFormElement>(null);
+  const contenedor = useRef<HTMLDivElement>(null);
+  const refFormulario = useRef<HTMLFormElement>(null);
   const navegacion = useNavigation();
   const guardando = navegacion.state !== "idle" && navegacion.formData?.get("que") === "guardar";
   const [rellenados, setRellenados] = useState<string[]>([]);
 
-  const borrador = usarBorrador({ id, formulario, servidor: valores });
+  /**
+   * El `<form>` de verdad. Se busca dentro del contenedor y no solo por la ref
+   * del componente de React Router: si esa ref no llega hasta el nodo, «pegar
+   * texto de Facebook» no rellenaría nada y el borrador no guardaría nada, las
+   * dos cosas sin avisar (medido al verificar F3).
+   */
+  const obtenerFormulario = useCallback(
+    () => refFormulario.current ?? contenedor.current?.querySelector("form") ?? null,
+    [],
+  );
+
+  const borrador = usarBorrador({ id, formulario: obtenerFormulario, servidor: valores });
 
   /**
    * Lo que se sacó del texto pegado entra en los campos VACÍOS. Se hace sobre
@@ -101,8 +113,8 @@ export function FormularioDePropiedad({
    * vuelve a pintar: pisarlos sería perder su trabajo.
    */
   useEffect(() => {
-    if (!sugerencias || !formulario.current) return;
-    const nodo = formulario.current;
+    const nodo = obtenerFormulario();
+    if (!sugerencias || !nodo) return;
     const llenados: string[] = [];
 
     const poner = (nombre: string, valor: string) => {
@@ -129,7 +141,8 @@ export function FormularioDePropiedad({
   const marca = (nombre: string) => (rellenados.includes(nombre) ? "Lo llenó el texto pegado: confírmalo." : undefined);
 
   return (
-    <Form method="post" ref={formulario} onChange={borrador.marcar} className="flex flex-col gap-6">
+    <div ref={contenedor}>
+      <Form method="post" ref={refFormulario} onChange={borrador.marcar} className="flex flex-col gap-6">
       {error ? <Recuadro>{error.mensaje}</Recuadro> : null}
 
       {borrador.pendiente ? (
@@ -184,7 +197,12 @@ export function FormularioDePropiedad({
             className="w-full rounded-xl border border-linea bg-superficie px-4 py-3 text-base leading-relaxed text-tinta transition-colors outline-none placeholder:text-texto-suave/70 focus:border-marca"
           />
           <div className="flex flex-wrap items-center gap-3">
-            <Boton type="submit" name="que" value="facebook" tono="secundario">
+            {/* `formNoValidate` no es un detalle: sin él, el navegador BLOQUEA
+                este envío porque el título y la ciudad están vacíos —que es
+                justo el momento en que se pega el texto— y no pasa nada de
+                nada, sin mensaje. Leer el texto no guarda la casa: no tiene por
+                qué exigir sus campos. (Medido al verificar F3.) */}
+            <Boton type="submit" name="que" value="facebook" tono="secundario" formNoValidate>
               Leer el texto
             </Boton>
             {rellenados.length ? (
@@ -361,6 +379,7 @@ export function FormularioDePropiedad({
         </Boton>
         <p className="text-sm text-texto-suave">Lo que escribes se guarda en este navegador hasta que pulses Guardar.</p>
       </div>
-    </Form>
+      </Form>
+    </div>
   );
 }

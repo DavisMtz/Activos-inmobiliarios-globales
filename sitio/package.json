@@ -19,6 +19,8 @@
     "verificar:navegador": "node scripts/verificar-navegador.mjs",
     "verificar:movimiento": "node scripts/verificar-movimiento.mjs",
     "verificar:f2": "node scripts/verificar-f2.mjs",
+    "verificar:f3": "node scripts/verificar-f3.mjs",
+    "verificar:f3-navegador": "node scripts/verificar-f3-navegador.mjs",
     "capturar": "node scripts/capturar.mjs",
     "fichas:descargar": "node scripts/descargar-fichas.mjs",
     "sembrar": "node scripts/sembrar-desde-wordpress.mjs",

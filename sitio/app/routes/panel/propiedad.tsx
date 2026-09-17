@@ -156,12 +156,16 @@ export async function action({ request, params, context }: Route.ActionArgs) {
     return redirect(que === "papelera" ? "/panel/propiedades" : `/panel/propiedades/${id}`);
   }
 
-  const revision = revisarPropiedad(Object.fromEntries(formulario.entries()) as Record<string, unknown>);
+  const crudo = Object.fromEntries(formulario.entries()) as Record<string, unknown>;
+  const revision = revisarPropiedad(crudo);
   if (!revision.ok) {
     return data({ sugerencias: null, error: { campo: revision.campo, mensaje: revision.mensaje } }, { status: 400 });
   }
 
-  const r = await editarPropiedad(servicios.db, usuario, id, revision.valor);
+  // El formulario solo trae el campo «asesor» cuando quien edita puede asignar.
+  const r = await editarPropiedad(servicios.db, usuario, id, revision.valor, {
+    asignarAsesor: "asesor_id" in crudo,
+  });
   if (!r.ok) return data({ sugerencias: null, error: { mensaje: r.mensaje } }, { status: r.estado });
   return redirect(`/panel/propiedades/${id}?guardada=1`);
 }

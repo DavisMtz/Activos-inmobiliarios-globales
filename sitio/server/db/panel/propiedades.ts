@@ -575,6 +575,13 @@ export async function editarPropiedad(
   actor: Actor,
   id: number,
   campos: CamposPropiedad,
+  /**
+   * Si quien edita NO mandó el campo «asesor», la casa conserva el que tenía.
+   * Sin esto, cualquier guardado que no incluyera ese campo dejaba la casa sin
+   * asesor sin decirlo, y con ella su dueño perdía el permiso de editarla
+   * (medido al verificar F3).
+   */
+  { asignarAsesor = true }: { asignarAsesor?: boolean } = {},
 ): Promise<Resultado<PropiedadEditada>> {
   const actual = await db
     .prepare("SELECT * FROM propiedades WHERE id = ? AND eliminada_en IS NULL")
@@ -599,7 +606,8 @@ export async function editarPropiedad(
   const slug = cambiaSlug ? await slugLibre(db, slugDeTitulo(campos.titulo), id) : actual.slug;
 
   const destacada = puedePublicar ? (campos.destacada ? 1 : 0) : actual.destacada;
-  const asesorId = puede(actor, "propiedades.asignar_asesor") ? campos.asesorId : actual.asesor_id;
+  const asesorId =
+    puede(actor, "propiedades.asignar_asesor") && asignarAsesor ? campos.asesorId : actual.asesor_id;
 
   const antes: Record<string, unknown> = { estado: actual.estado, slug: actual.slug, destacada: actual.destacada, asesor_id: actual.asesor_id, zona_id: actual.zona_id };
   const despues: Record<string, unknown> = { estado, slug, destacada, asesor_id: asesorId, zona_id: zonaId };
