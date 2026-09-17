@@ -381,6 +381,28 @@ try {
   const desborde = await evaluar(cdp, "document.documentElement.scrollWidth - document.documentElement.clientWidth");
   comprobar("todo el recorrido, sin desplazamiento horizontal a 390 px", desborde <= 0, `sobran ${desborde} px`);
 
+  // Las fotos se quitan por el MISMO camino que usaría ella, y no borrando
+  // filas: así se ejercita el borrado de verdad y, sobre todo, las fotos
+  // desaparecen también de Cloudinary. Borrando solo la fila quedarían
+  // huérfanas en la nube y `fotos:migrar --verificar` las reportaría después.
+  const fotosDeLaCasa = consultar(`SELECT id FROM fotos WHERE propiedad_id = ${casaId};`, opciones);
+  let quitadas = 0;
+  for (const foto of fotosDeLaCasa) {
+    const r = await fetch(`${BASE}/api/panel/fotos/${foto.id}`, {
+      method: "DELETE",
+      headers: { Origin: ORIGEN, Cookie: `__Host-aig_sesion=${valorCookie}` },
+    });
+    if (r.ok) quitadas++;
+  }
+  comprobar(
+    "quitar una foto la borra de la base y de la nube",
+    quitadas === fotosDeLaCasa.length &&
+      Number(consultar(`SELECT COUNT(*) AS n FROM fotos WHERE propiedad_id = ${casaId};`, opciones)[0]?.n) === 0,
+    `quitadas ${quitadas} de ${fotosDeLaCasa.length}`,
+  );
+  // Cloudinary borra en segundo plano (waitUntil): un momento antes de seguir.
+  await esperar(2500);
+
   // ─── 8. El sitio público no baja nada del panel ───────────────
   console.log("\n8. Navegar el sitio público no descarga nada del panel");
   const assets = join(RAIZ, "build", "client", "assets");
@@ -426,7 +448,8 @@ try {
     ejecutarSql(
       `DELETE FROM fotos WHERE propiedad_id = ${casaId};
        DELETE FROM bitacora WHERE entidad IN ('propiedad','foto') AND entidad_id = ${sql(String(casaId))};
-       DELETE FROM propiedades WHERE id = ${casaId};`,
+       DELETE FROM propiedades WHERE id = ${casaId};
+       DELETE FROM zonas WHERE slug = 'morelia-recorrido' AND NOT EXISTS (SELECT 1 FROM propiedades WHERE zona_id = zonas.id);`,
       opciones,
     );
   }
