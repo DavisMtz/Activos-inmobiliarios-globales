@@ -141,7 +141,7 @@ type FilaCruda = {
  * uno cambia, cambia el otro. `verificar-f3.mjs` compara este filtro contra un
  * `COUNT(*)` escrito a mano, que es lo que detectaría que se separaron.
  */
-const LE_FALTA_PARA_PUBLICAR = `(
+export const LE_FALTA_PARA_PUBLICAR = `(
      (p.operacion IN ('venta','venta_renta') AND p.precio IS NULL)
   OR (p.operacion IN ('renta','venta_renta') AND p.precio_renta IS NULL)
   OR z.colonia IS NULL OR z.colonia = ''

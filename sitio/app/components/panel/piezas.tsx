@@ -1,6 +1,17 @@
-import { useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { useId, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import { Link } from "react-router";
 
-/** Piezas pequeñas del panel. Nada de aquí se usa en el sitio público. */
+/**
+ * Piezas del panel. Nada de aquí se usa en el sitio público, ni al revés: son
+ * dos paquetes separados (PLAN §11.1).
+ *
+ * El panel es una herramienta, no un folleto: una sola tipografía (Nunito, la
+ * misma que carga `root.tsx`; la serif editorial se queda en el sitio público),
+ * escala de tamaños fija —no fluida—, y el rojo de la marca reservado para la
+ * acción principal, lo seleccionado y los estados. Lo demás es papel y tinta.
+ */
+
+// ─── Acceso (entrar y elegir contraseña) ──────────────────────────
 
 export function MarcoAcceso({ titulo, bajada, children }: { titulo: string; bajada?: ReactNode; children: ReactNode }) {
   return (
@@ -35,22 +46,25 @@ export function MarcoAcceso({ titulo, bajada, children }: { titulo: string; baja
   );
 }
 
-type CampoProps = InputHTMLAttributes<HTMLInputElement> & { etiqueta: string; ayuda?: string };
+// ─── Campos ───────────────────────────────────────────────────────
 
-export function Campo({ etiqueta, ayuda, ...props }: CampoProps) {
-  const id = useId();
+const CAMPO =
+  "h-12 w-full rounded-xl border border-linea bg-superficie px-4 text-base text-tinta transition-colors outline-none placeholder:text-texto-suave/70 focus:border-marca disabled:cursor-not-allowed disabled:bg-fondo disabled:text-texto-suave";
+
+type Etiquetado = { etiqueta: string; ayuda?: ReactNode; error?: string | null };
+
+function Envoltura({ id, etiqueta, ayuda, error, children }: Etiquetado & { id: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-bold text-tinta">
         {etiqueta}
       </label>
-      <input
-        id={id}
-        aria-describedby={ayuda ? `${id}-ayuda` : undefined}
-        className="h-12 rounded-xl border border-linea bg-superficie px-4 text-base text-tinta transition-colors outline-none placeholder:text-texto-suave/70 focus:border-marca"
-        {...props}
-      />
-      {ayuda ? (
+      {children}
+      {error ? (
+        <p id={`${id}-error`} className="text-sm font-semibold text-marca">
+          {error}
+        </p>
+      ) : ayuda ? (
         <p id={`${id}-ayuda`} className="text-sm text-texto-suave">
           {ayuda}
         </p>
@@ -59,22 +73,72 @@ export function Campo({ etiqueta, ayuda, ...props }: CampoProps) {
   );
 }
 
+export function Campo({ etiqueta, ayuda, error, ...props }: InputHTMLAttributes<HTMLInputElement> & Etiquetado) {
+  const id = useId();
+  return (
+    <Envoltura id={id} etiqueta={etiqueta} ayuda={ayuda} error={error}>
+      <input
+        id={id}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : ayuda ? `${id}-ayuda` : undefined}
+        className={CAMPO}
+        {...props}
+      />
+    </Envoltura>
+  );
+}
+
+export function CampoSelect({
+  etiqueta,
+  ayuda,
+  error,
+  children,
+  ...props
+}: SelectHTMLAttributes<HTMLSelectElement> & Etiquetado) {
+  const id = useId();
+  return (
+    <Envoltura id={id} etiqueta={etiqueta} ayuda={ayuda} error={error}>
+      <select id={id} aria-invalid={error ? true : undefined} className={`${CAMPO} px-3`} {...props}>
+        {children}
+      </select>
+    </Envoltura>
+  );
+}
+
+export function CampoTexto({
+  etiqueta,
+  ayuda,
+  error,
+  filas = 5,
+  ...props
+}: TextareaHTMLAttributes<HTMLTextAreaElement> & Etiquetado & { filas?: number }) {
+  const id = useId();
+  return (
+    <Envoltura id={id} etiqueta={etiqueta} ayuda={ayuda} error={error}>
+      <textarea
+        id={id}
+        rows={filas}
+        aria-invalid={error ? true : undefined}
+        className={`${CAMPO} h-auto py-3 leading-relaxed`}
+        {...props}
+      />
+    </Envoltura>
+  );
+}
+
 /** Campo de contraseña con botón para verla: en el celular se escribe a ciegas. */
-export function CampoClave(props: Omit<CampoProps, "type">) {
+export function CampoClave({ etiqueta, ayuda, error, ...resto }: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & Etiquetado) {
   const [visible, setVisible] = useState(false);
   const id = useId();
-  const { etiqueta, ayuda, ...resto } = props;
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-bold text-tinta">
-        {etiqueta}
-      </label>
+    <Envoltura id={id} etiqueta={etiqueta} ayuda={ayuda} error={error}>
       <div className="relative">
         <input
           id={id}
           type={visible ? "text" : "password"}
-          aria-describedby={ayuda ? `${id}-ayuda` : undefined}
-          className="h-12 w-full rounded-xl border border-linea bg-superficie pr-20 pl-4 text-base text-tinta transition-colors outline-none focus:border-marca"
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : ayuda ? `${id}-ayuda` : undefined}
+          className={`${CAMPO} pr-20`}
           {...resto}
         />
         <button
@@ -87,33 +151,139 @@ export function CampoClave(props: Omit<CampoProps, "type">) {
           {visible ? "Ocultar" : "Ver"}
         </button>
       </div>
-      {ayuda ? (
-        <p id={`${id}-ayuda`} className="text-sm text-texto-suave">
-          {ayuda}
-        </p>
-      ) : null}
-    </div>
+    </Envoltura>
   );
 }
 
-export function Aviso({ tono = "error", children }: { tono?: "error" | "info"; children: ReactNode }) {
-  const estilos =
-    tono === "error" ? "border-marca/30 bg-marca-suave text-marca-oscuro" : "border-linea bg-superficie text-texto";
+// ─── Botones ──────────────────────────────────────────────────────
+
+type Tono = "principal" | "secundario" | "fantasma" | "peligro";
+
+const TONOS: Record<Tono, string> = {
+  principal: "bg-marca text-white hover:bg-marca-oscuro",
+  secundario: "border border-linea bg-superficie text-tinta hover:border-marca hover:text-marca",
+  fantasma: "text-tinta hover:bg-marca-suave hover:text-marca-oscuro",
+  peligro: "border border-marca/30 bg-marca-suave text-marca-oscuro hover:border-marca",
+};
+
+const BASE_BOTON =
+  "inline-flex h-12 items-center justify-center gap-2 rounded-xl px-5 text-base font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60";
+
+export function Boton({
+  tono = "principal",
+  ocupado,
+  ancho,
+  children,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { tono?: Tono; ocupado?: boolean; ancho?: boolean }) {
   return (
-    <p role={tono === "error" ? "alert" : "status"} className={`rounded-xl border px-4 py-3 text-sm font-semibold ${estilos}`}>
+    <button
+      {...props}
+      disabled={props.disabled || ocupado}
+      aria-busy={ocupado || undefined}
+      className={`${BASE_BOTON} ${TONOS[tono]} ${ancho ? "w-full" : ""} ${ocupado ? "cursor-wait" : ""}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** El de siempre, para los formularios de acceso. */
+export function BotonPrincipal({ children, ocupado }: { children: ReactNode; ocupado?: boolean }) {
+  return (
+    <Boton type="submit" ocupado={ocupado} ancho>
+      {children}
+    </Boton>
+  );
+}
+
+export function BotonEnlace({
+  a,
+  tono = "secundario",
+  children,
+  ...props
+}: { a: string; tono?: Tono; children: ReactNode } & { className?: string }) {
+  return (
+    <Link to={a} {...props} className={`${BASE_BOTON} ${TONOS[tono]} ${props.className ?? ""}`}>
+      {children}
+    </Link>
+  );
+}
+
+// ─── Avisos, etiquetas y superficies ──────────────────────────────
+
+export function Aviso({ tono = "error", children }: { tono?: "error" | "info" | "exito"; children: ReactNode }) {
+  const estilos = {
+    error: "border-marca/30 bg-marca-suave text-marca-oscuro",
+    info: "border-linea bg-superficie text-texto",
+    exito: "border-exito/30 bg-exito/10 text-exito",
+  }[tono];
+  return (
+    <p
+      role={tono === "error" ? "alert" : "status"}
+      className={`rounded-xl border px-4 py-3 text-sm font-semibold ${estilos}`}
+    >
       {children}
     </p>
   );
 }
 
-export function BotonPrincipal({ children, ocupado }: { children: ReactNode; ocupado?: boolean }) {
+export type TonoEtiqueta = "neutro" | "marca" | "aviso" | "exito" | "tinta";
+
+const TONOS_ETIQUETA: Record<TonoEtiqueta, string> = {
+  neutro: "bg-fondo text-texto-suave",
+  marca: "bg-marca-suave text-marca-oscuro",
+  aviso: "bg-aviso/10 text-aviso",
+  exito: "bg-exito/10 text-exito",
+  tinta: "bg-tinta text-white",
+};
+
+export function Etiqueta({ tono = "neutro", children }: { tono?: TonoEtiqueta; children: ReactNode }) {
   return (
-    <button
-      type="submit"
-      disabled={ocupado}
-      className="h-12 w-full rounded-xl bg-marca px-5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro disabled:cursor-wait disabled:opacity-70"
-    >
+    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ${TONOS_ETIQUETA[tono]}`}>
       {children}
-    </button>
+    </span>
+  );
+}
+
+/** Una superficie con su título: la unidad con la que se arman las pantallas. */
+export function Bloque({
+  titulo,
+  descripcion,
+  acciones,
+  children,
+}: {
+  titulo?: string;
+  descripcion?: ReactNode;
+  acciones?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-2xl border border-linea bg-superficie">
+      {titulo ? (
+        <header className="flex flex-wrap items-start justify-between gap-3 border-b border-linea px-5 py-4">
+          <div>
+            <h2 className="text-lg font-extrabold text-tinta">{titulo}</h2>
+            {descripcion ? <p className="mt-1 text-sm text-texto-suave">{descripcion}</p> : null}
+          </div>
+          {acciones}
+        </header>
+      ) : null}
+      <div className="p-5">{children}</div>
+    </section>
+  );
+}
+
+/**
+ * Lo que se enseña cuando no hay nada. Dice qué es esto y cuál es el siguiente
+ * paso: un «no hay datos» a secas deja a la persona sin saber qué hacer.
+ */
+export function Vacio({ titulo, children, accion }: { titulo: string; children?: ReactNode; accion?: ReactNode }) {
+  return (
+    <div className="flex flex-col items-center gap-3 px-4 py-12 text-center">
+      <p className="text-lg font-bold text-tinta">{titulo}</p>
+      {children ? <p className="max-w-sm text-texto-suave">{children}</p> : null}
+      {accion ? <div className="mt-2">{accion}</div> : null}
+    </div>
   );
 }

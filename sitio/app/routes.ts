@@ -17,7 +17,10 @@ export default [
     route("entrar", "routes/panel/entrar.tsx"),
     route("cambiar-clave", "routes/panel/cambiar-clave.tsx"),
     route("salir", "routes/panel/salir.tsx"),
-    layout("routes/panel/marco.tsx", [index("routes/panel/inicio.tsx")]),
+    layout("routes/panel/marco.tsx", [
+      index("routes/panel/inicio.tsx"),
+      route("mi-cuenta", "routes/panel/mi-cuenta.tsx"),
+    ]),
   ]),
 
   route("*", "routes/no-encontrado.tsx"),
