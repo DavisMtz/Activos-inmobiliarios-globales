@@ -8,7 +8,16 @@
 @theme {
   --font-sans: "Nunito Variable", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
 
-  /* Marca del sitio actual (D13): el rojo se conserva. */
+  /* Títulos del sitio público (D13: «que se vea premium»). La serif editorial
+     la eligió el usuario el 17/09/2026. Se carga desde `routes/publico/marco`
+     y no desde `root`, para que el panel no la descargue.
+     Va el eje de peso solo (36 KB latin): el de tamaño óptico pesa el doble. */
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+  /* ─── Marca del sitio actual (D13): el rojo se conserva ───────────
+     Cuatro papeles de color, no un acento suelto: papel, tinta, vino y rojo.
+     El vino y la tinta se usan como CAMPOS grandes (portada, cierres, pie),
+     no como bordes: es lo que separa esto de una página blanca con rojo. */
   --color-marca: #a0051c;
   --color-marca-oscuro: #760415;
   --color-marca-suave: #f9e8ea;
@@ -23,11 +32,100 @@
   --color-linea: #e6e0dc;
   --color-exito: #0f6b3a;
   --color-aviso: #8a5a00;
+
+  /* Sobre los campos oscuros. El secundario se tiñe del color que tiene
+     debajo, nunca gris: sobre vino tira a vino, sobre tinta tira a papel. */
+  --color-sobre-oscuro: #f3ece9;
+  --color-sobre-oscuro-suave: #c9bdb8;
+  --color-sobre-vino-suave: #e3c3c8;
+
+  /* ─── Escala tipográfica ──────────────────────────────────────────
+     Fluida entre 390 px y 1440 px: una sola escala para los dos extremos
+     que pide el plan, sin saltos a media pantalla. */
+  --text-display: clamp(2.6rem, 1.45rem + 4.7vw, 5.25rem);
+  --text-display--line-height: 0.96;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 700;
+
+  --text-titulo: clamp(2rem, 1.45rem + 2.4vw, 3.25rem);
+  --text-titulo--line-height: 1.04;
+  --text-titulo--letter-spacing: -0.03em;
+  --text-titulo--font-weight: 700;
+
+  --text-seccion: clamp(1.5rem, 1.25rem + 1.2vw, 2.15rem);
+  --text-seccion--line-height: 1.12;
+  --text-seccion--letter-spacing: -0.02em;
+  --text-seccion--font-weight: 700;
+
+  /* Bajada: la frase que acompaña a un título. */
+  --text-guia: clamp(1.05rem, 0.99rem + 0.3vw, 1.25rem);
+  --text-guia--line-height: 1.55;
+
+  /* Precio: nunca se parte de renglón y siempre en cifras de ancho fijo. */
+  --text-precio: clamp(1.6rem, 1.35rem + 1.1vw, 2.25rem);
+  --text-precio--line-height: 1.05;
+  --text-precio--letter-spacing: -0.02em;
+  --text-precio--font-weight: 800;
+
+  /* ─── Profundidad ─────────────────────────────────────────────────
+     Con desplazamiento y desenfoque suave: un halo sin desplazamiento es
+     decoración, no profundidad. */
+  --shadow-tarjeta: 0 1px 2px rgba(17, 17, 17, 0.05), 0 10px 26px -14px rgba(17, 17, 17, 0.22);
+  --shadow-alzada: 0 2px 4px rgba(17, 17, 17, 0.06), 0 22px 48px -22px rgba(17, 17, 17, 0.32);
+  --shadow-flotante: 0 4px 10px rgba(118, 4, 21, 0.18), 0 16px 32px -14px rgba(17, 17, 17, 0.35);
 }
 
 @layer base {
   :focus-visible {
     outline: 3px solid var(--color-marca);
     outline-offset: 2px;
+  }
+
+  /* Lo que no dibuja nadie también es parte del diseño: la selección, el
+     cursor de texto y la barra de desplazamiento vienen con los colores del
+     navegador, que no son de esta marca. */
+  ::selection {
+    background-color: var(--color-marca);
+    color: #ffffff;
+  }
+
+  html {
+    caret-color: var(--color-marca);
+    scrollbar-color: var(--color-linea) transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Los campos oscuros llevan su propia selección: el rojo sobre vino no se ve. */
+  .campo-oscuro ::selection {
+    background-color: var(--color-sobre-oscuro);
+    color: var(--color-tinta);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Los subrayados del navegador tocan las letras; este respira. */
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  /* Red de seguridad de accesibilidad: aunque GSAP ya va envuelto en
+     matchMedia, cualquier transición suelta también se apaga aquí. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

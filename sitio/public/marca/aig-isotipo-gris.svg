@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="55 270 1089 659" role="img" aria-labelledby="aig-isog-titulo">
+  <title id="aig-isog-titulo">Activos Inmobiliarios Globales</title>
+  <!-- Variante gris claro (favicon de 2020): misma geometría, otros colores. -->
+  <defs><linearGradient id="aig-isog-degradado-cuerpo" gradientUnits="userSpaceOnUse" x1="0" y1="272" x2="0" y2="927"><stop offset="0" stop-color="#F5F5F5"/><stop offset="1" stop-color="#E7E7E7"/></linearGradient><linearGradient id="aig-isog-degradado-cintas" gradientUnits="userSpaceOnUse" x1="0" y1="272" x2="0" y2="776.33"><stop offset="0" stop-color="#F5F5F5"/><stop offset="1" stop-color="#E7E7E7"/></linearGradient></defs>
+  <g class="aig-isotipo">
+    <!-- 1. Cintas del techo (lado derecho): nacen en la cumbre y bajan. El canto negro es la cara lateral de la pierna izquierda. -->
+    <g class="aig-cintas">
+      <g class="aig-cinta aig-cinta-exterior">
+        <path class="aig-franja aig-franja-exterior" fill="url(#aig-isog-degradado-cintas)" d="M858.74 272H862.59L1141.61 775.99H1096.76L838.15 308.88Z"/>
+        <path class="aig-canto aig-canto-exterior" fill="#CECECE" d="M858.74 272H862.59L885.21 312.85L862.69 353.2L838.15 308.88Z"/>
+      </g>
+      <g class="aig-cinta aig-cinta-interior">
+        <path class="aig-franja aig-franja-interior" fill="url(#aig-isog-degradado-cintas)" d="M820.49 340.52L1061.95 776.66H1015.45C914.88 776.66 879.72 728.45 859.47 691.87L742.4 480.41Z"/>
+        <path class="aig-canto aig-canto-interior" fill="#CECECE" d="M820.49 340.52L844.86 384.55L766.77 524.44L742.4 480.41Z"/>
+      </g>
+    </g>
+    <!-- 2. Estelas de velocidad, de arriba abajo. Las "pegadas" terminan escondidas detrás de la pierna izquierda. -->
+    <g class="aig-estelas">
+      <rect class="aig-estela aig-estela-pegada" data-banda="1" fill="url(#aig-isog-degradado-cuerpo)" x="222.82" y="272" width="377.18" height="64.05" rx="32"/>
+      <rect class="aig-estela aig-estela-suelta" data-banda="3" fill="url(#aig-isog-degradado-cuerpo)" x="57" y="399.5" width="231.94" height="64" rx="32"/>
+      <rect class="aig-estela aig-estela-pegada" data-banda="3" fill="url(#aig-isog-degradado-cuerpo)" x="323.05" y="400.1" width="156.95" height="64.05" rx="32"/>
+      <rect class="aig-estela aig-estela-suelta" data-banda="5" fill="url(#aig-isog-degradado-cuerpo)" x="123.07" y="526.12" width="124.62" height="64" rx="32"/>
+      <rect class="aig-estela aig-estela-pegada" data-banda="5" fill="url(#aig-isog-degradado-cuerpo)" x="281.07" y="528.2" width="198.93" height="64.05" rx="32"/>
+    </g>
+    <!-- 3. Pierna izquierda de la A, con las estelas en negativo recortadas. -->
+    <path class="aig-pierna" fill="url(#aig-isog-degradado-cuerpo)" fill-rule="evenodd" d="M500.29 272H860.24L578.56 776.6C543.58 839.26 473.33 927 319.3 927H185.64A29.86 29.86 0 0 1 159.57 882.37L285.76 656.3H468.06A32 32 0 0 0 468.06 592.25H321.52L357.27 528.2H405.42A32 32 0 0 0 405.42 464.15H393.03L428.78 400.1H547.82A32 32 0 0 0 547.82 336.05H464.54ZM525.03 462.91H634.54A32 32 0 0 1 634.54 526.91H525.03A32 32 0 0 1 525.03 462.91Z"/>
+    <!-- 4. Ventana. -->
+    <rect class="aig-ventana" fill="#CECECE" x="689.22" y="664.97" width="107.61" height="106.11"/>
+  </g>
+</svg>

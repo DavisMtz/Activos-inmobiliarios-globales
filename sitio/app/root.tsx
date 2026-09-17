@@ -29,6 +29,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#a0051c" />
+        {/* El isotipo en vector (repo `DavisMtz/AIG-recursos`): el sitio actual
+            no tiene favicon propio y la pestaña sale con la hoja en blanco. */}
+        <link rel="icon" href="/marca/aig-favicon.svg" type="image/svg+xml" />
         {modoDemo ? <meta name="robots" content="noindex,nofollow" /> : null}
         <Meta />
         <Links />

@@ -1,9 +1,12 @@
 import { index, layout, prefix, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
-  // ─── Sitio público (F2 lo completa: listado, servicios, nosotros, contacto…)
-  index("routes/publico/inicio.tsx"),
-  route("propiedades/:slug", "routes/publico/propiedad.tsx"),
+  // ─── Sitio público: todo dentro del mismo marco (cabecera, pie y WhatsApp)
+  layout("routes/publico/marco.tsx", [
+    index("routes/publico/inicio.tsx"),
+    route("propiedades", "routes/publico/listado.tsx"),
+    route("propiedades/:slug", "routes/publico/propiedad.tsx"),
+  ]),
 
   // ─── Panel privado: no se enlaza desde el sitio público (PLAN §11.1)
   ...prefix("panel", [
