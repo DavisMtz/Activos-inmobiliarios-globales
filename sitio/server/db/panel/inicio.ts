@@ -78,7 +78,8 @@ export async function avisosDeInicio(db: D1Database, actor: Actor): Promise<Avis
     consultas.push({
       clave: "prospectos",
       titulo: (n) => (n === 1 ? "1 persona interesada sin atender" : `${n} personas interesadas sin atender`),
-      ruta: "/panel/prospectos",
+      // Con el filtro puesto: el aviso lleva a esa lista, no a la bandeja entera.
+      ruta: "/panel/prospectos?estado=nuevo",
       tono: "urgente",
       sql: `SELECT COUNT(*) AS n FROM prospectos WHERE estado = 'nuevo'${suyos ? " AND asesor_id = ?" : ""}`,
       valores: suyos ? [actor.id] : [],

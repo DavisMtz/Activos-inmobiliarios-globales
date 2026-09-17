@@ -25,7 +25,7 @@ import {
   type EstadoProspecto,
   type TipoProspecto,
 } from "../../../shared/prospecto";
-import { enlaceWhatsApp, numeroInternacionalMX } from "../../../shared/whatsapp";
+import { enlaceWhatsApp, numeroInternacionalMX, numeroLimpio } from "../../../shared/whatsapp";
 import { sentenciaBitacora } from "../../bitacora";
 import { ahora } from "../../fechas";
 import { exito, fallo, type Resultado } from "../../resultado";
@@ -519,7 +519,13 @@ export async function prospectosEnCSV(
     ETIQUETA_ESTADO_PROSPECTO[fila.estado] ?? fila.estado,
     ETIQUETA_TIPO_PROSPECTO[fila.tipo] ?? fila.tipo,
     fila.nombre,
-    fila.telefono ?? "",
+    // Solo las cifras. El teléfono sale como `literal` (un «+52…» legítimo
+    // empieza por «+», y con apóstrofo delante se leería raro), así que es la
+    // única columna sin neutralizar: si saliera tal cual, un teléfono como
+    // `=cmd|' /C calc'!A04431112233` —28 caracteres y 11 cifras, o sea que pasa
+    // la validación del formulario público— colaría una fórmula en el Excel de
+    // quien lo abra. Sin letras ni signos no hay fórmula posible.
+    numeroLimpio(fila.telefono ?? ""),
     fila.correo ?? "",
     fila.mensaje ?? "",
     fila.clave ?? "",

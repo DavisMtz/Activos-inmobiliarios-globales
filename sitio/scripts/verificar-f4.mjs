@@ -249,7 +249,7 @@ try {
 
   ejecutarSql(
     `INSERT INTO prospectos (tipo, propiedad_id, nombre, telefono, correo, mensaje, acepto_aviso, origen, estado, creado_en)
-     VALUES ('propiedad', ${casa}, ${sql(`${MARCA} del asesor`)}, '4432223344', 'f4-asesor@ejemplo.invalid',
+     VALUES ('propiedad', ${casa}, ${sql(`${MARCA} del asesor`)}, ${sql("=cmd|' /C calc'!A04432223344")}, 'f4-asesor@ejemplo.invalid',
              ${sql('=HYPERLINK("http://malo.invalid","Cobra aquí")')}, 1, 'prueba-f4', 'nuevo', ${sql(ahora())});
      INSERT INTO prospectos (tipo, propiedad_id, nombre, telefono, correo, mensaje, acepto_aviso, origen, estado, creado_en)
      VALUES ('general', NULL, ${sql(`${MARCA} sin asignar`)}, '4433334455', 'f4-huerfano@ejemplo.invalid',
@@ -355,11 +355,18 @@ try {
     comoTexto.includes(`"'=HYPERLINK`),
     comoTexto.split("\r\n").find((renglon) => renglon.includes("HYPERLINK"))?.slice(0, 120) ?? "no salió",
   );
-  comprobar("los renglones acaban en CRLF", comoTexto.includes("\r\n"));
-  const renglones = comoTexto.trim().split("\r\n").length;
   comprobar(
-    "trae un renglón por prospecto, más el de los encabezados",
-    renglones === Number(cuantos) + 1,
+    "un TELÉFONO tampoco puede colar una fórmula: en el archivo solo van cifras",
+    !comoTexto.includes("=cmd") && comoTexto.includes('"04432223344"'),
+    comoTexto.split("\r\n").find((renglon) => renglon.includes("04432223344"))?.slice(0, 140) ?? "no salió",
+  );
+  comprobar("los renglones acaban en CRLF", comoTexto.includes("\r\n"));
+  // Se cuentan los renglones que EMPIEZAN por la columna Id y no las líneas del
+  // archivo: un mensaje con salto de línea ocupa dos líneas dentro de su celda.
+  const renglones = comoTexto.split("\r\n").filter((renglon) => /^"\d+",/.test(renglon)).length;
+  comprobar(
+    "trae un renglón por prospecto",
+    renglones === Number(cuantos),
     `${renglones} renglones para ${cuantos} prospectos`,
   );
   comprobar(
@@ -469,6 +476,46 @@ try {
   );
   const sinPermiso = await pedir("/panel/prospectos", { cookie: gente.contenido.cookie });
   comprobar("quien no puede verla recibe 403, no la pantalla", sinPermiso.estado === 403, `estado ${sinPermiso.estado}`);
+
+  // Los tres formularios que el equipo pulsa NO pasan por la API de JSON, sino
+  // por la acción de React Router. Que los nombres de los campos coincidan al
+  // leerlos no basta: en F3, «Leer el texto» no hacía nada y el código se veía
+  // bien (PLAN §17). Así que se pulsan de verdad.
+  const enviar = (formulario, cookie) => pedir("/panel/prospectos", { metodo: "POST", cookie, formulario });
+  const puestoEnCita = await enviar({ que: "estado", id: String(delAsesor), estado: "cita" }, gente.director.cookie);
+  comprobar(
+    "el formulario de estado guarda y devuelve al mismo renglón de la lista",
+    puestoEnCita.estado === 302 && (puestoEnCita.cabeceras.get("location") ?? "").endsWith(`#p-${delAsesor}`),
+    `${puestoEnCita.estado} · ${puestoEnCita.cabeceras.get("location")}`,
+  );
+
+  const notaPuesta = await enviar(
+    { que: "nota", id: String(delAsesor), texto: "Nota escrita desde el formulario" },
+    gente.director.cookie,
+  );
+  const asignada = await enviar(
+    { que: "asignar", id: String(huerfano), asesor_id: gente.asesor.id },
+    gente.director.cookie,
+  );
+  comprobar(
+    "los de nota y asignar también",
+    notaPuesta.estado === 302 && asignada.estado === 302,
+    `nota ${notaPuesta.estado} · asignar ${asignada.estado}`,
+  );
+
+  const trasLosFormularios = consultar(
+    `SELECT (SELECT estado FROM prospectos WHERE id = ${delAsesor}) AS estado,
+            (SELECT asesor_id FROM prospectos WHERE id = ${huerfano}) AS asesor,
+            (SELECT COUNT(*) FROM notas_prospecto WHERE prospecto_id = ${delAsesor} AND texto LIKE 'Nota escrita%') AS notas;`,
+    opciones,
+  )[0];
+  comprobar(
+    "y la base lo confirma: estado «cita», el huérfano asignado y la nota guardada",
+    trasLosFormularios?.estado === "cita" &&
+      trasLosFormularios?.asesor === gente.asesor.id &&
+      Number(trasLosFormularios?.notas) === 1,
+    JSON.stringify(trasLosFormularios ?? null),
+  );
 
   // ─── 6. La bitácora registró los cambios, sin datos de personas ─
   console.log("\n6. La bitácora guarda el rastro, sin los datos de quien escribió");
