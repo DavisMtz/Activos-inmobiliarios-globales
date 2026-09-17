@@ -111,12 +111,42 @@ export function meta({ loaderData }: Route.MetaArgs) {
   ];
 }
 
+// ─── Métricas propias ─────────────────────────────────────────────
+
+/**
+ * Avisa sin estorbar: `sendBeacon` entrega el dato aunque la pestaña se cierre
+ * en ese mismo instante, y nunca retrasa la navegación (PLAN §10.2). Si el
+ * navegador no lo tiene, simplemente no se mide: una métrica no vale una
+ * espera del usuario.
+ */
+function avisarEvento(tipo: "ficha_vista" | "whatsapp_click", slug: string): void {
+  try {
+    const cuerpo = JSON.stringify({ tipo, propiedad: slug });
+    navigator.sendBeacon?.("/api/eventos", new Blob([cuerpo], { type: "application/json" }));
+  } catch {
+    // Medir nunca puede romper la página.
+  }
+}
+
 // ─── Página ───────────────────────────────────────────────────────
 
 export default function Propiedad({ loaderData, actionData }: Route.ComponentProps) {
   const { ficha, parecidas, url, modoDemo, whatsapp } = loaderData;
   const precio = textoPrecio(ficha);
   const cerrada = ficha.estado === "vendida" || ficha.estado === "rentada";
+
+  // Una vista por casa y por sesión de navegador: recargar la ficha veinte
+  // veces no debe inflar el número que va a leer el equipo.
+  useEffect(() => {
+    const llave = `aig:vista:${ficha.clave}`;
+    try {
+      if (sessionStorage.getItem(llave)) return;
+      sessionStorage.setItem(llave, "1");
+    } catch {
+      // Navegación privada o almacenamiento bloqueado: se avisa igual.
+    }
+    avisarEvento("ficha_vista", ficha.slug);
+  }, [ficha.clave, ficha.slug]);
 
   return (
     <div className="pb-24 lg:pb-0">
@@ -200,6 +230,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
               href={whatsapp}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => avisarEvento("whatsapp_click", ficha.slug)}
               className="flex h-12 items-center gap-2 rounded-xl bg-marca px-5 font-extrabold text-white transition-colors hover:bg-marca-oscuro"
             >
               <IconoWhatsApp />
@@ -426,6 +457,7 @@ function Acciones({
           href={whatsapp}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => avisarEvento("whatsapp_click", ficha.slug)}
           className="mt-5 hidden h-13 w-full items-center justify-center gap-2 rounded-xl bg-marca px-5 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro lg:flex"
         >
           <IconoWhatsApp />
