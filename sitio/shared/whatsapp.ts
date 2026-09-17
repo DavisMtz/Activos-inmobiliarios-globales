@@ -16,6 +16,21 @@ export type DatosDePropiedad = {
 export const numeroLimpio = (numero: string): string => numero.replace(/\D+/g, "");
 
 /**
+ * El número con clave de país, que es lo único que acepta `wa.me` (F4).
+ *
+ * Hace falta para contestarle a un prospecto: quien llena el formulario del
+ * sitio teclea diez cifras («443 111 2233»), y `wa.me/4431112233` no abre
+ * ningún chat. Diez cifras se toman como mexicanas; lo que ya trae clave se
+ * deja tal cual, incluido el viejo `521` de los celulares. Vacío si no parece
+ * un número: quien pinta decide si esconde el botón.
+ */
+export function numeroInternacionalMX(numero: string): string {
+  const limpio = numeroLimpio(numero);
+  if (limpio.length === 10) return `52${limpio}`;
+  return limpio.length >= 11 && limpio.length <= 15 ? limpio : "";
+}
+
+/**
  * Rellena `{titulo}`, `{clave}` y `{url}` de la plantilla. Una llave que no
  * exista se deja tal cual: es un texto que escribió una persona en el panel y
  * borrarlo en silencio sería peor que enseñarlo.

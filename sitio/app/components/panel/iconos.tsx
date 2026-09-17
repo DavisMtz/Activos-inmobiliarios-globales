@@ -109,6 +109,14 @@ export const IconoProspectos = ({ className }: Props) => (
   </Marco>
 );
 
+/** Barras, que es como se ven las métricas aquí: cifras, no gráficas. */
+export const IconoMetricas = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M3.75 20.25h16.5" />
+    <path d="M7 20V12M12 20V5.5M17 20v-5.5" />
+  </Marco>
+);
+
 // ─── Interfaz ─────────────────────────────────────────────────────
 
 export const IconoMenuPanel = ({ className }: Props) => (

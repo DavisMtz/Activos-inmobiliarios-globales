@@ -187,6 +187,12 @@ function Sobre({ entrada }: { entrada: { entidad: string; entidadId: string; cam
     return nombre ? <span className="font-semibold text-tinta">la cuenta de {nombre}</span> : null;
   }
 
+  // Un prospecto es una persona, así que en la bitácora va por su número: el
+  // nombre y el teléfono viven en su ficha y no se repiten aquí.
+  if (entrada.entidad === "prospecto") {
+    return <span className="font-semibold text-tinta">el prospecto #{entrada.entidadId}</span>;
+  }
+
   if (entrada.entidad === "configuracion" || entrada.entidad === "contenido" || entrada.entidad === "sistema") {
     return <span className="text-texto-suave">{entrada.entidadId.replace(/_/g, " ").replace(":", " ")}</span>;
   }

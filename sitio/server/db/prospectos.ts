@@ -10,10 +10,12 @@
  * cuando exista `TURNSTILE_SITE_KEY`.
  */
 
+import { TIPOS_PROSPECTO, type TipoProspecto } from "../../shared/prospecto";
 import { correoValido, normalizarCorreo } from "../../shared/validacion";
 
-export const TIPOS_PROSPECTO = ["general", "propiedad", "vender", "credito"] as const;
-export type TipoProspecto = (typeof TIPOS_PROSPECTO)[number];
+// La lista vive en `shared/prospecto.ts`, donde también la lee la bandeja del
+// panel (F4); se reexporta para no cambiarle la puerta al sitio público.
+export { TIPOS_PROSPECTO, type TipoProspecto };
 
 export type Prospecto = {
   tipo: TipoProspecto;

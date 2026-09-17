@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { enlaceDePropiedad, enlaceWhatsApp, numeroLimpio, textoDeWhatsApp } from "../shared/whatsapp";
+import {
+  enlaceDePropiedad,
+  enlaceWhatsApp,
+  numeroInternacionalMX,
+  numeroLimpio,
+  textoDeWhatsApp,
+} from "../shared/whatsapp";
 
 const DATOS = {
   titulo: "Casa en Jesús del Monte",
@@ -11,6 +17,31 @@ describe("numeroLimpio", () => {
   it("deja solo cifras", () => {
     expect(numeroLimpio("+52 443 492 2197")).toBe("524434922197");
     expect(numeroLimpio("(443) 298-3138")).toBe("4432983138");
+  });
+});
+
+describe("numeroInternacionalMX", () => {
+  it("le pone el 52 a las diez cifras que teclea un prospecto", () => {
+    expect(numeroInternacionalMX("443 111 2233")).toBe("524431112233");
+    expect(numeroInternacionalMX("(443) 298-3138")).toBe("524432983138");
+  });
+
+  it("deja tal cual lo que ya trae clave de país", () => {
+    expect(numeroInternacionalMX("+52 443 492 2197")).toBe("524434922197");
+    // El viejo formato de celular, con el 1 después del 52.
+    expect(numeroInternacionalMX("5214434922197")).toBe("5214434922197");
+  });
+
+  it("lo que no parece un número se queda vacío, y entonces no hay botón", () => {
+    expect(numeroInternacionalMX("443 298")).toBe("");
+    expect(numeroInternacionalMX("")).toBe("");
+    expect(numeroInternacionalMX("no tengo")).toBe("");
+  });
+
+  it("con él sí sale un enlace de wa.me que abre chat", () => {
+    expect(enlaceWhatsApp(numeroInternacionalMX("443 111 2233"), "Hola")).toBe(
+      "https://wa.me/524431112233?text=Hola",
+    );
   });
 });
 

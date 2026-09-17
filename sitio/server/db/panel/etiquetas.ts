@@ -26,6 +26,8 @@ export const ETIQUETA_ACCION: Record<string, string> = {
   acomodar: "acomodó las fotos de",
   borrar: "borró",
   ordenar: "ordenó",
+  asignar: "asignó",
+  nota: "anotó en",
   rol: "cambió el rol de",
   activar: "activó",
   desactivar: "desactivó",

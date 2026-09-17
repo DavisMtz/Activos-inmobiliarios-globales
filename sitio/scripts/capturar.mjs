@@ -6,6 +6,13 @@
  *
  * Por CDP y no con --screenshot: la ventana de Chrome no baja de ~491 px, y el
  * truco del iframe no sirve con el panel (manda X-Frame-Options: DENY).
+ *
+ * Para retratar una pantalla del panel hace falta **sesión**: sin cookie,
+ * `/panel` redirige a `/panel/entrar` y lo que se guarda es la pantalla de
+ * acceso. Se pasa por el entorno, no por la línea de comandos, para que el
+ * token no quede en el historial:
+ *
+ *   AIG_COOKIE=<valor de __Host-aig_sesion> node scripts/capturar.mjs …
  */
 import { spawn } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
@@ -47,12 +54,26 @@ const cdp = (method, params = {}) =>
   });
 
 await cdp("Page.enable");
+if (process.env.AIG_COOKIE) {
+  await cdp("Network.enable");
+  await cdp("Network.setCookie", {
+    name: "__Host-aig_sesion",
+    value: process.env.AIG_COOKIE,
+    domain: new URL(url).hostname,
+    path: "/",
+    httpOnly: true,
+    // `__Host-` exige Secure; Chrome trata a localhost como origen seguro.
+    secure: true,
+    sameSite: "Lax",
+  });
+}
 await cdp("Emulation.setDeviceMetricsOverride", { width: Number(ancho), height: Number(alto), deviceScaleFactor: movil === "1" ? 2 : 1, mobile: movil === "1" });
 await cdp("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
 await cdp("Page.navigate", { url });
 await esperar(3500);
 const medida = await cdp("Runtime.evaluate", {
-  expression: "JSON.stringify({ancho: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth, fuentes: [...document.fonts].filter(f=>f.status==='loaded').map(f=>f.family).join(',')})",
+  // El título dice si la sesión entró: con la cookie mala saldría «Entrar».
+  expression: "JSON.stringify({titulo: document.title, ancho: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth, fuentes: [...document.fonts].filter(f=>f.status==='loaded').map(f=>f.family).join(',')})",
   returnByValue: true,
 });
 console.log(medida.result?.result?.value);

@@ -11,3 +11,6 @@ export const enMinutos = (n: number): string => new Date(Date.now() + n * 60_000
 export const enHoras = (n: number): string => enMinutos(n * 60);
 
 export const enDias = (n: number): string => enHoras(n * 24);
+
+/** El principio de una ventana de tiempo: «los últimos 30 días» (métricas, F4). */
+export const haceDias = (n: number): string => enDias(-n);

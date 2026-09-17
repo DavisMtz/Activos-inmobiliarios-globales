@@ -17,6 +17,8 @@ import {
   IconoContenido,
   IconoCuenta,
   IconoInicio,
+  IconoMetricas,
+  IconoProspectos,
   IconoSistema,
   IconoUsuarios,
 } from "./iconos";
@@ -34,6 +36,8 @@ export type Seccion = {
 const SECCIONES: Seccion[] = [
   { ruta: "/panel", titulo: "Inicio", Icono: IconoInicio, permiso: null },
   { ruta: "/panel/propiedades", titulo: "Casas", Icono: IconoCasas, permiso: "propiedades.ver", raiz: true },
+  { ruta: "/panel/prospectos", titulo: "Prospectos", Icono: IconoProspectos, permiso: "prospectos.ver" },
+  { ruta: "/panel/metricas", titulo: "Métricas", Icono: IconoMetricas, permiso: "metricas.ver" },
   { ruta: "/panel/contenido", titulo: "Contenido", Icono: IconoContenido, permiso: "contenido.editar" },
   { ruta: "/panel/configuracion", titulo: "Configuración", Icono: IconoConfiguracion, permiso: "configuracion.contacto" },
   { ruta: "/panel/usuarios", titulo: "Cuentas", Icono: IconoUsuarios, permiso: "usuarios.gestionar" },
