@@ -1,0 +1,33 @@
+@import "tailwindcss" source(none);
+
+/* Rutas explícitas: sin esto Tailwind adivina qué leer y, si se equivoca,
+   borra clases en silencio (ya pasó en la consola de Logidma). */
+@source "..";
+@source "../../shared";
+
+@theme {
+  --font-sans: "Nunito Variable", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+
+  /* Marca del sitio actual (D13): el rojo se conserva. */
+  --color-marca: #a0051c;
+  --color-marca-oscuro: #760415;
+  --color-marca-suave: #f9e8ea;
+  --color-tinta: #111111;
+
+  /* Texto: el gris #808080 del sitio actual no llega a AA sobre blanco (3.9:1).
+     #545454 da 7.4:1 sobre blanco y 7:1 sobre el fondo cálido. */
+  --color-texto: #1d1b1a;
+  --color-texto-suave: #545454;
+  --color-fondo: #f7f5f3;
+  --color-superficie: #ffffff;
+  --color-linea: #e6e0dc;
+  --color-exito: #0f6b3a;
+  --color-aviso: #8a5a00;
+}
+
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-marca);
+    outline-offset: 2px;
+  }
+}

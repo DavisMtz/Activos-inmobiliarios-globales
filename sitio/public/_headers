@@ -1,0 +1,16 @@
+# Cabeceras de los archivos estáticos (JS, CSS, fuentes, logotipos). Las de las
+# páginas y la API las pone el Worker (server/http.ts).
+#
+# X-Robots-Tag: mientras sea propuesta (MODO_DEMO=1) nada se indexa. Al salir a
+# producción (F6) puede quedarse: noindex en un JS o un logotipo no afecta a
+# las páginas, pero conviene revisarlo ese día.
+#
+# /assets/*: los nombres llevan hash; un archivo nuevo tiene otro nombre, así
+# que se puede guardar un año sin riesgo de servir uno viejo.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, nofollow
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -16,6 +16,7 @@ Propuesta funcional del sitio nuevo de la inmobiliaria del papá de David (Morel
 - **Nada del negocio en el código:** teléfonos, dirección, textos y redes van en la tabla `configuracion`; lo técnico en `server/config.ts`.
 - **Permisos en un solo archivo** (`sitio/shared/permisos.ts`), aplicados en el servidor.
 - `MODO_DEMO=1` hasta que el usuario pida salir a producción: `noindex`, sin correos y sin analítica real.
-- **No** tocar DNS, dominio ni correo del sitio real, **no** crear repos remotos y **no** instalar hooks de auto-push sin que el usuario lo pida.
+- **No** tocar DNS, dominio ni correo del sitio real y **no** instalar hooks de auto-push sin que el usuario lo pida.
+- **Repositorio:** `github.com/DavisMtz/Activos-inmobiliarios-globales`, rama `main`, **PÚBLICO**. Se sube a mano, con `git push`, al cerrar cada paso verificado. Por ser público: ni claves, ni `.dev.vars`, ni contraseñas temporales, ni datos de prospectos reales en ningún archivo versionado.
 - Textos de la interfaz en español de México, con acentos correctos. Nombres de código en español, como en los demás proyectos del usuario.
 - **Al cerrar una fase:** verificar contra la app corriendo y anotar los resultados reales en `PLAN.md` §19.

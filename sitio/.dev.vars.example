@@ -1,0 +1,11 @@
+# Copia este archivo como .dev.vars (está en .gitignore) y pon los valores.
+# En producción van como secretos del Worker, SIEMPRE con:
+#   npx wrangler secret bulk <archivo.json>   (y borra el JSON después)
+# `wrangler secret put` por tubería de PowerShell le pega un salto de línea al valor.
+
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+# Solo a partir de F6 (salida a producción):
+# BREVO_API_KEY=
+# TURNSTILE_SECRET=

@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  // Las pruebas importan funciones puras de shared/ y server/: con referencias
+  // de proyecto cada archivo importado tiene que estar listado aquí también.
+  "include": [
+    "vite.config.ts",
+    "react-router.config.ts",
+    "vitest.config.ts",
+    "tests/**/*",
+    "shared/**/*",
+    "server/auth/clave.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "strict": true,
+    // Los scripts .mjs son JavaScript de Node: no se revisan con tipos (las
+    // pruebas los importan, y sin esto tsc los arrastraría al proyecto).
+    "checkJs": false,
+    "types": ["node"],
+    "lib": ["ES2023", "DOM"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "activos-inmobiliarios",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // La propuesta vive en workers.dev hasta que el dueño decida mudarse (PLAN §6.4).
+  // OJO al atar el dominio propio: NO declarar `routes` aquí. El token de esta
+  // máquina no puede atar dominios por la API de zona y el despliegue revienta
+  // con «code: 10000» DESPUÉS de subir el código. Se ata una sola vez con
+  // `PUT /accounts/{id}/workers/domains` (memoria cuponera-morelia).
+  "workers_dev": true,
+  "preview_urls": false,
+
+  "observability": { "enabled": true },
+
+  // Todo lo técnico por entorno. Lo del negocio (teléfonos, textos, redes) NO va
+  // aquí: vive en la tabla `configuracion` y se edita desde el panel.
+  // Único lector de estas variables: server/config.ts.
+  "vars": {
+    // Un solo dominio de verdad: canonical, og:url, sitemap y enlaces de WhatsApp.
+    "SITIO_URL": "https://activos-inmobiliarios.logidma.workers.dev",
+    // "1": noindex en todo, robots.txt con Disallow: / y correos apagados.
+    // Se pasa a "0" solo cuando el usuario pida salir a producción (F6).
+    "MODO_DEMO": "1",
+    "NOMBRE_NEGOCIO": "Activos Inmobiliarios Globales",
+    // Vacío = no se carga la etiqueta. La demo no debe ensuciar la analítica real.
+    "GA4_ID": "",
+    // Nube compartida con otros proyectos del usuario: todo lo de aquí va en `aig/`.
+    "CLOUDINARY_CLOUD_NAME": "srz5sh9l",
+    "CLOUDINARY_CARPETA": "aig",
+    "CORREO_PROVEEDOR": "nulo",
+    "CORREO_AVISOS_A": "",
+    // Vacío = honeypot + límite por IP en los formularios.
+    "TURNSTILE_SITE_KEY": ""
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "activos-inmobiliarios-db",
+      "database_id": "3d5a913b-bb03-468f-8bfd-0300ac51f73f",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Freno de fuerza bruta: es la compensación por no poder subir PBKDF2 de
+  // 100 000 iteraciones en Workers (PLAN §8.1).
+  // Los namespace_id son de la CUENTA, no del Worker: Cuponera ya usa 1001/1002.
+  "ratelimits": [
+    { "name": "LIMITE_ACCESO", "namespace_id": "2001", "simple": { "limit": 8, "period": 60 } },
+    { "name": "LIMITE_FORMULARIOS", "namespace_id": "2002", "simple": { "limit": 5, "period": 60 } }
+  ]
+}

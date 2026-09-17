@@ -45,7 +45,7 @@ El usuario (David) le va a presentar a su papá, dueño del negocio, un sitio qu
 | D9 | Roles: **maestro** (David), **director** (el papá), **asesor** (asesores), **contenido** (la hermana, que sube casas y textos) | Usuario; permisos detallados en §9 |
 | D10 | Mientras no haya dominio, la propuesta vive en `*.workers.dev` y **no se indexa** en Google | Plan (evita contenido duplicado con el sitio vivo) |
 | D11 | **Ninguna función depende de mandar correos** en la propuesta (claves temporales, avisos). El correo entra en F6 | Plan (ver §17, Brevo) |
-| D12 | Git local desde el primer día. **No** instalar hook de auto-push | Plan (memoria `autopush-riesgo-parches`); el usuario decide después |
+| D12 | Git desde el primer día, con remoto **público** en `github.com/DavisMtz/Activos-inmobiliarios-globales` (rama `main`). Se sube a mano al cerrar cada paso verificado; **no** hay hook de auto-push | Plan (memoria `autopush-riesgo-parches`); repo indicado por el usuario el 16/09/2026 |
 | D13 | **Diseño:** los colores de siempre (rojo `#A0051C`, vino `#760415`, negro `#111111`) y la información real del sitio actual, con **animación GSAP profesional para que se vea premium** (reemplaza el «movimiento discreto con CSS» original de §10.4) | Usuario, 16/09/2026 |
 | D14 | La persona de **contenido sí publica** (tal como dice la matriz de §9) | Usuario lo confirmó el 16/09/2026 |
 
@@ -252,6 +252,7 @@ CREATE TABLE sesiones (
   id_hash TEXT PRIMARY KEY,                     -- SHA-256 (hex) del token de la cookie
   usuario_id TEXT NOT NULL REFERENCES usuarios(id),
   solo_cambio_clave INTEGER NOT NULL DEFAULT 0, -- 1 mientras la clave sea temporal
+  huella_temporal TEXT,                         -- (añadida en F0) SHA-256 de «token:temporal»; ver §17
   expira_en TEXT NOT NULL,
   agente TEXT,
   creada_en TEXT NOT NULL
@@ -843,6 +844,14 @@ Orden obligatorio:
 | El único remitente de Brevo verificado es el gmail personal y la clave caduca sin avisar | Nada en la propuesta depende del correo (D11) | memoria `brevo-logidma` |
 | Chrome headless: ventana mínima ~491 px; `file://` no acepta query string; el fallo es silencioso | iframe de 390 px; perfil nuevo; comprobar que el PNG existe | memoria `verificacion-visual-chrome-headless` |
 | Un hook de auto-push publicaría estados a medias | No instalar ninguno (D12) | memoria `autopush-riesgo-parches` |
+| **El limitador de Cloudflare es permisivo en producción.** En local el 429 llega exacto en el 9.º intento; en `workers.dev` una ráfaga dejó pasar 18 y bloqueó desde el 19 (dos mediciones iguales). Cloudflare lo documenta: contadores por máquina, sincronizados en segundo plano | Aceptado: el freno llega y se mantiene. `npm run verificar -- --remote` exige 429 antes de 40 intentos y ninguno que pase después; en local exige el 9.º exacto | medido en F0 (16/09/2026) |
+| **Cloudflare rechaza con `403 error code: 1000` cualquier petición de fuera que traiga `cf-connecting-ip`** | Los scripts solo mandan esa cabecera contra `localhost` | idem |
+| `wrangler d1 execute --remote --file` va por la API de importación: **no devuelve las filas de un SELECT** e imprime líneas de avance antes del JSON aunque se pida `--json` | Lecturas con `--command`; escrituras con archivo temporal y el JSON se lee desde la primera línea que empieza con `[` (`scripts/lib/d1.mjs`) | idem |
+| Una D1 recién creada puede responder `code: 7403` («account is not valid or is not authorized») a las consultas durante unos minutos | Esperar y reintentar; no es de permisos | idem |
+| **Dos PBKDF2 en la misma petición = una de 200 000 iteraciones**, que revienta por CPU | Un solo PBKDF2 por petición. «La nueva no repite la temporal» se comprueba con `sesiones.huella_temporal` (SHA-256 de `token:temporal`). Cambiar la clave desde «Mi cuenta» (F3) irá en dos pasos: confirmar la actual y después guardar la nueva | diseño de F0 |
+| El build copia `.dev.vars` a `build/server/` (para `vite preview`) | `build/` está en `.gitignore`; `wrangler deploy` no lo sube como secreto. Nunca versionar `build/` | idem |
+| React mete `<!-- -->` entre textos contiguos del HTML del servidor («Hola, <!-- -->David») | Las pruebas que buscan texto en el HTML lo quitan antes de comparar | idem |
+| `public/_headers` solo lo aplica Cloudflare; el servidor de Vite no lo lee | La cabecera `noindex` de los estáticos se verifica solo en remoto | idem |
 
 ---
 
@@ -865,7 +874,7 @@ Actualizar al cerrar cada fase, con resultados **medidos**.
 | Fase | Estado | Fecha | Notas (qué se verificó, qué falta, trampas nuevas) |
 |---|---|---|---|
 | Plan | ✅ listo | 16/09/2026 | Análisis en `analisis/`; decisiones D1–D12 |
-| F0 · Cimientos | 🔧 en curso | 16/09/2026 | Plan A o B: |
+| F0 · Cimientos | ✅ listo | 16/09/2026 | **Plan A** (React Router 8.4 en modo framework con SSR sobre `@cloudflare/vite-plugin`; Hono delante para `/api/*`, `robots.txt` y `sitemap.xml`). Versiones reales: React 19.3, Vite 8.3, TS 7.0.2, Wrangler 4.133, Tailwind 4.3, Vitest 5.0.1. Worker `activos-inmobiliarios` en https://activos-inmobiliarios.logidma.workers.dev · D1 `3d5a913b-bb03-468f-8bfd-0300ac51f73f` (WNAM) con `0001_inicial.sql` en local y remoto · secretos de Cloudinary con `secret bulk`. **Medido:** (1) `npm run dev` (puerto 5180), `build` y `deploy` funcionan; la ficha de prueba salió por `curl`, sin JS, con título, precio y `og:image` leídos de D1. (2) `noindex` en páginas, API, `robots.txt` y estáticos. (3) En producción el maestro desechable entró con temporal, fue obligado a cambiarla, salió, volvió a entrar con la nueva (por API y por el formulario) y se borró con su rastro. (4) Sesión de solo cambio → `GET /api/panel/propiedades` 403. (5) Freno: local 429 exacto en el 9.º; **producción 429 en el 19.º** (ver §17), bloqueo sostenido. (6) `/panel` sin sesión → 302 y `/api/panel/*` → 401. (7) Vitest 95/95 (matriz completa de §9 y hash Node ↔ `clave.ts` ↔ `node:crypto`). `npm run verificar`: **40/40 local, 41/41 producción**. Capturas a 390 y 1366 px de `/panel/entrar` y `/` sin desbordes. **Cambios al plan:** columna `sesiones.huella_temporal` (§17, dos PBKDF2); la sesión de solo cambio dura 60 min; con esa sesión también se permiten `GET /api/panel/mi-cuenta` y `DELETE /api/panel/sesion`. **Pendiente para F3:** cambiar la clave desde «Mi cuenta» (dos pasos). Al cerrar se generó la temporal real de `davismartinesad@gmail.com` con `--remote` |
 | F1 · Datos reales | ⏳ pendiente | | |
 | F1.5 · Fotos a Cloudinary | ⏸ espera U1/U2 | | |
 | F2 · Sitio público | ⏳ pendiente | | |
