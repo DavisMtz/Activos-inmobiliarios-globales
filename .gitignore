@@ -1,0 +1,28 @@
+# Dependencias y compilados
+node_modules/
+sitio/build/
+sitio/dist/
+sitio/.react-router/
+*.tsbuildinfo
+
+# Cloudflare: estado local, secretos y tipos generados
+sitio/.wrangler/
+sitio/.mf/
+sitio/.dev.vars
+sitio/.dev.vars.*
+!sitio/.dev.vars.example
+sitio/worker-configuration.d.ts
+.env
+
+# Semilla generada (se rehace con el script)
+sitio/seed/generado/
+
+# Datos crudos pesados que se vuelven a descargar
+analisis/crudo/html/
+analisis/crudo/lh/
+analisis/crudo/fichas/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
