@@ -68,9 +68,12 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
       {/* «financiamiento» mide 8.4 veces el cuerpo del titular: a 1024 px son
           513 px y la mitad de la pantalla da 444, así que se salía. Hasta 1280
           el texto se lleva 3/5; desde ahí nunca baja de 36rem y la foto crece
-          con lo que sobra. Medido con el titular real, no con uno de ejemplo. */}
-      <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)]">
-        <div className="max-w-xl">
+          con lo que sobra. Medido con el titular real, no con uno de ejemplo.
+          Desde 1920 (`3xl`) el texto tiene columna fija de 44rem y el titular
+          sube a 5rem: «financiamiento» mide 42rem y cabe; la vitrina se queda
+          con todo lo demás, sin la columna del texto medio vacía. */}
+      <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)] 3xl:grid-cols-[44rem_minmax(0,1fr)] 3xl:gap-20">
+        <div className="max-w-xl 3xl:max-w-none">
           {/* El isotipo ya no va suelto encima del titular (la cabecera trae el
               logotipo completo): encabeza la frase que dice dónde y qué, la
               misma del título de la página. */}
@@ -79,7 +82,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             Casas en venta y renta en Morelia
           </p>
 
-          <h1 className="mt-5 font-display text-display text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
+          <h1 className="mt-5 font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
             {portada.titular || "Comercialización, renta y financiamiento de inmuebles"}
           </h1>
 
@@ -168,7 +171,9 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </Link>
           </div>
 
-          <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Seis casas: 3 columnas y, desde 2400 px, las seis en un renglón
+              (cada tarjeta mide lo mismo que a 1366 en tres). */}
+          <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 4xl:grid-cols-6">
             {recientes.map((casa) => (
               <li key={casa.clave}>
                 {/* Sin prioridad: la foto que pide ir primero es la de la vitrina.
@@ -305,17 +310,25 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
         to={`/propiedades/${casa.slug}`}
         className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
       >
-        <img
-          src={foto.src}
-          srcSet={foto.srcset ?? undefined}
-          sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
-          alt={foto.alt}
-          width={960}
-          height={720}
-          fetchPriority="high"
-          decoding="async"
-          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
-        />
+        {/* Desde 1920 px la vitrina mide 1000-1600 px: pide la foto de la
+            galería (1600, ya existe) y pasa a 16:10, porque un 4:3 a ese ancho
+            no cabría en la pantalla. Debajo, lo mismo de siempre. */}
+        <picture>
+          {casa.fotoGrande?.srcset ? (
+            <source media="(min-width: 120rem)" srcSet={casa.fotoGrande.srcset} sizes="60vw" />
+          ) : null}
+          <img
+            src={foto.src}
+            srcSet={foto.srcset ?? undefined}
+            sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
+            alt={foto.alt}
+            width={960}
+            height={720}
+            fetchPriority="high"
+            decoding="async"
+            className="aspect-[4/3] w-full object-cover 3xl:aspect-[16/10] transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
+          />
+        </picture>
         {/* Velo de tinta de abajo arriba: el texto blanco se lee sobre
             cualquier foto sin tapar la casa. */}
         <div

@@ -40,6 +40,12 @@ export type Tarjeta = {
   zona: string;
   resumen: string | null;
   foto: FotoVista | null;
+  /**
+   * Solo la casa de la vitrina de la portada: la variante `galeria` (1600 px,
+   * la misma que ya pide la ficha, así que no es un derivado nuevo). Desde
+   * 1920 px la vitrina mide más de 1000 px y la de 960 se veía borrosa.
+   */
+  fotoGrande?: FotoVista | null;
 };
 
 export type Ficha = Tarjeta & {
@@ -344,7 +350,17 @@ export async function destacadas(db: D1Database, cloudName: string, limite = 6):
     )
     .bind(limite)
     .all<FilaTarjeta>();
-  return results.map((fila) => aTarjeta(fila, cloudName));
+  return results.map((fila, i) => {
+    const tarjeta = aTarjeta(fila, cloudName);
+    if (i > 0) return tarjeta;
+    const fotoGrande = fotoVista(
+      { public_id: fila.foto_public_id, url_origen: fila.foto_url_origen, alt: fila.foto_alt },
+      "galeria",
+      cloudName,
+      tarjeta.foto?.alt ?? fila.titulo,
+    );
+    return { ...tarjeta, fotoGrande };
+  });
 }
 
 // ─── Ficha ────────────────────────────────────────────────────────

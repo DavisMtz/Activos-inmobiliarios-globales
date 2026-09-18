@@ -162,7 +162,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
       {/* En escritorio la tarjeta del precio va AL LADO de la galería, desde
           arriba: antes iba debajo y a 1366×768 el precio y WhatsApp quedaban
           bajo el pliegue. En el celular el orden no cambia. */}
-      <div className="mx-auto max-w-sitio px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start lg:gap-12 lg:px-10">
+      <div className="mx-auto max-w-sitio px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start lg:gap-12 lg:px-10 3xl:grid-cols-[minmax(0,1fr)_28rem] 3xl:gap-16">
         <div className="min-w-0">
           <Galeria fotos={ficha.fotos} miniaturas={ficha.miniaturas} titulo={ficha.titulo} />
 
@@ -202,7 +202,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
                   poder partirlo, las columnas quedaban descompensadas. */}
               <div
                 className={`mt-4 max-w-[68ch] leading-relaxed text-texto ${
-                  descripcionLarga ? "xl:max-w-none xl:columns-2 xl:gap-12" : ""
+                  descripcionLarga ? "xl:max-w-none xl:columns-2 xl:gap-12 3xl:columns-3" : ""
                 }`}
               >
                 {parrafos.map((parrafo, i) => (
