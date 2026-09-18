@@ -204,7 +204,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
   });
 
   return (
-    <div className="flex max-w-4xl flex-col gap-6">
+    <div className="flex max-w-4xl flex-col gap-6 xl:max-w-7xl">
       <header className="flex flex-col gap-3">
         <Link to="/panel/propiedades" className="text-sm font-bold text-texto-suave underline underline-offset-4 hover:text-marca">
           Volver a la lista

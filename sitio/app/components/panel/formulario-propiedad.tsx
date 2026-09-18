@@ -26,6 +26,13 @@ import { Aviso as Recuadro, Bloque, Boton, Campo, CampoSelect, CampoTexto } from
  *   llenó, para que una persona lo confirme (§11.3). Nunca pisa lo escrito.
  * - Sin JavaScript también funciona: es un `<form>` con `POST`, y el botón de
  *   pegar es otro `submit` con su propio valor.
+ *
+ * Desde 1280 px (`xl:`) va en dos columnas, pero DENTRO del mismo `<form>`: el
+ * borrador y el pegado leen `nodo.elements`, y partirlo en dos formularios los
+ * rompería. Lo que falta | pegar texto; Lo básico | Características; la
+ * descripción y la publicación a todo lo ancho, porque un texto largo se
+ * corrige mejor con renglones largos. Debajo de 1280 no cambia nada: solo hay
+ * clases con prefijo `xl:`.
  */
 
 export type ValoresDeCasa = Valores;
@@ -142,11 +149,11 @@ export function FormularioDePropiedad({
 
   return (
     <div ref={contenedor}>
-      <Form method="post" ref={refFormulario} onChange={borrador.marcar} className="flex flex-col gap-6">
-      {error ? <Recuadro>{error.mensaje}</Recuadro> : null}
+      <Form method="post" ref={refFormulario} onChange={borrador.marcar} className="flex flex-col gap-6 xl:grid xl:grid-cols-2 xl:items-start">
+      {error ? <Recuadro className="xl:col-span-2">{error.mensaje}</Recuadro> : null}
 
       {borrador.pendiente ? (
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-aviso/30 bg-aviso/10 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-aviso/30 bg-aviso/10 px-4 py-3 xl:col-span-2">
           <IconoAtencion className="h-5 w-5 shrink-0 text-aviso" />
           <p className="flex-1 text-sm font-semibold text-aviso">
             Tienes cambios sin guardar en este navegador, de {cuandoTexto(borrador.pendiente.cuando)}.
@@ -186,6 +193,7 @@ export function FormularioDePropiedad({
 
       {/* ── Pegar texto de Facebook ─────────────────────────────── */}
       <Bloque
+        className={avisos && avisos.length ? undefined : "xl:col-span-2"}
         titulo="Pegar texto de Facebook"
         descripcion="Pega la publicación tal cual. Llena solo los campos vacíos y deja la descripción limpia; lo que llene, confírmalo."
       >
@@ -318,7 +326,7 @@ export function FormularioDePropiedad({
       </Bloque>
 
       {/* ── Descripción ─────────────────────────────────────────── */}
-      <Bloque titulo="Descripción">
+      <Bloque titulo="Descripción" className="xl:col-span-2">
         <div className="flex flex-col gap-5">
           <CampoTexto
             etiqueta="Resumen"
@@ -340,7 +348,7 @@ export function FormularioDePropiedad({
 
       {/* ── Publicación ─────────────────────────────────────────── */}
       {puedePublicar || puedeAsignar ? (
-        <Bloque titulo="Publicación">
+        <Bloque titulo="Publicación" className="xl:col-span-2">
           <div className="grid gap-5 sm:grid-cols-2">
             {puedeAsignar ? (
               <CampoSelect etiqueta="Asesor" name="asesor_id" defaultValue={valores.asesor_id} ayuda="Quien atiende a quien pregunte.">
@@ -370,7 +378,7 @@ export function FormularioDePropiedad({
         </Bloque>
       ) : null}
 
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-linea bg-fondo/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-linea bg-fondo/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 xl:col-span-2">
         {/* La copia local NO se borra al pulsar: se borra sola la próxima vez
             que se abra el formulario, porque entonces coincidirá con lo que
             traiga el servidor. Si el guardado falla, lo escrito sigue a salvo. */}

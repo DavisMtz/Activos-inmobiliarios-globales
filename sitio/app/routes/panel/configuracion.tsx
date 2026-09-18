@@ -57,16 +57,22 @@ export default function Configuracion({ loaderData, actionData }: Route.Componen
   const { contacto, whatsapp, redes, avisoPrivacidad } = configuracion;
 
   return (
-    <div className="flex max-w-3xl flex-col gap-6">
-      <header>
+    // Desde 1280 px, dos columnas: Contacto | WhatsApp y Redes | Aviso de
+    // privacidad. `items-start` para que Redes no se estire a la altura del aviso.
+    <div className="flex max-w-3xl flex-col gap-6 xl:grid xl:max-w-7xl xl:grid-cols-2 xl:items-start">
+      <header className="xl:col-span-2">
         <h1 className="text-2xl font-extrabold text-tinta sm:text-3xl">Configuración</h1>
         <p className="mt-2 text-texto-suave">
           Lo que cambies aquí se ve en todo el sitio: el pie, la página de contacto y el WhatsApp de cada casa.
         </p>
       </header>
 
-      {actionData?.error ? <Aviso>{actionData.error}</Aviso> : null}
-      {guardado ? <Aviso tono="exito">Guardado. Recarga el sitio para verlo.</Aviso> : null}
+      {actionData?.error ? <Aviso className="xl:col-span-2">{actionData.error}</Aviso> : null}
+      {guardado ? (
+        <Aviso tono="exito" className="xl:col-span-2">
+          Guardado. Recarga el sitio para verlo.
+        </Aviso>
+      ) : null}
 
       {puedeContacto ? (
         <>
