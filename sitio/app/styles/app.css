@@ -98,6 +98,35 @@
   --animate-entrada-foto: entrada-foto 1s var(--ease-entrada) both;
   --animate-entrada-bloque: entrada-bloque 0.9s var(--ease-entrada) both;
 
+  /* Cabecera: el panel del menú baja un poco y aparece; el velo solo aparece;
+     el icono de WhatsApp «saluda» al pasar por encima (sin rebote: premium). */
+  --animate-menu: menu 0.35s var(--ease-entrada) both;
+  --animate-velo: velo 0.3s ease-out both;
+  --animate-saludo: saludo 0.6s ease-in-out;
+
+  @keyframes menu {
+    from {
+      opacity: 0;
+      transform: translateY(-0.75rem);
+    }
+  }
+  @keyframes velo {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes saludo {
+    20% {
+      rotate: -14deg;
+    }
+    45% {
+      rotate: 10deg;
+    }
+    70% {
+      rotate: -5deg;
+    }
+  }
+
   @keyframes entrada {
     from {
       opacity: 0;
@@ -315,5 +344,28 @@
 @keyframes bienvenida-ventana {
   from {
     transform: scale(0);
+  }
+}
+
+/* ─── Barra de lectura de la cabecera ──────────────────────────────
+   Crece con lo que va leído de la página. Solo CSS: el navegador la mueve
+   con el scroll, sin JavaScript. Donde no hay `animation-timeline` o se
+   pidió menos movimiento, no se enseña. */
+.barra-lectura {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .barra-lectura {
+      display: block;
+      transform: scaleX(0);
+      animation: barra-lectura linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes barra-lectura {
+  to {
+    transform: scaleX(1);
   }
 }

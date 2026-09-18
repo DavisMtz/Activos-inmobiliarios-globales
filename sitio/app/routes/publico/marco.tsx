@@ -10,6 +10,7 @@ import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import {
   IconoCorreo,
   IconoFacebook,
+  IconoFlecha,
   IconoInstagram,
   IconoTelefono,
   IconoUbicacion,
@@ -141,7 +142,9 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
           no en `root.tsx`: el panel no tiene por qué bajar la serif. */}
       <link rel="preload" as="font" type="font/woff2" href={fuenteFraunces} crossOrigin="anonymous" />
       <link rel="preload" as="font" type="font/woff2" href={fuenteNunito} crossOrigin="anonymous" />
-      <Cabecera nombreNegocio={nombreNegocio} />
+      {/* En la ficha, sin el WhatsApp general: ahí el que cuenta es el de la
+          casa (tarjeta y barra de abajo), con su título y su clave. */}
+      <Cabecera nombreNegocio={nombreNegocio} whatsapp={enFicha ? null : whatsapp} />
 
       <main id="contenido" className="flex-1">
         <Outlet />
@@ -166,73 +169,245 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 
 // ─── Cabecera ─────────────────────────────────────────────────────
 
-function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
+/**
+ * La cabecera (rediseñada el 18/09/2026: «más moderna, animada, con
+ * microinteracciones»). Tres reglas que no se ven y la sostienen:
+ *
+ * - **Su caja nunca cambia de alto.** Es `sticky` y está en el flujo: si se
+ *   encogiera al bajar, empujaría el contenido y la tarjeta de la ficha, que
+ *   se pega a 96 px. Al bajar cambian el fondo, el borde, la sombra y la
+ *   escala del logotipo (transform); al seguir bajando se esconde con
+ *   `translate`, que tampoco mueve nada.
+ * - **Todo es CSS.** Se ve desde el primer pintado y GSAP llega 1-2 s tarde:
+ *   animar lo que ya se ve parpadea (PLAN §19). JavaScript solo pone dos
+ *   atributos y cierra el menú. Sin vidrio esmerilado: ya costó Lighthouse.
+ * - **El menú del celular sigue siendo un `<details>`**: sin JavaScript
+ *   también abre. Con JavaScript, además, se cierra al navegar (antes se
+ *   quedaba abierto en la página siguiente), con Esc y al tocar fuera.
+ */
+function Cabecera({ nombreNegocio, whatsapp }: { nombreNegocio: string; whatsapp: string | null }) {
+  const { pathname } = useLocation();
+  const cabecera = useRef<HTMLElement>(null);
+  const sentinela = useRef<HTMLDivElement>(null);
+  const menu = useRef<HTMLDetailsElement>(null);
+
+  // Al navegar, el marco no se vuelve a montar y `<details open>` persistía.
+  useEffect(() => {
+    if (menu.current) menu.current.open = false;
+  }, [pathname]);
+
+  // «Bajado»: en cuanto la línea de arriba de la página deja de verse. Sin
+  // escuchar el scroll para esto: lo resuelve el navegador.
+  useEffect(() => {
+    const nodo = sentinela.current;
+    const encabezado = cabecera.current;
+    if (!nodo || !encabezado || typeof IntersectionObserver !== "function") return;
+    const observador = new IntersectionObserver(([entrada]) => {
+      encabezado.dataset.bajado = entrada.isIntersecting ? "no" : "si";
+    });
+    observador.observe(nodo);
+    return () => observador.disconnect();
+  }, []);
+
+  // Se esconde al bajar (lejos de arriba) y vuelve en cuanto se sube. Nunca
+  // con el menú abierto ni con el foco dentro: esconder lo que se está usando
+  // es perderlo.
+  useEffect(() => {
+    const encabezado = cabecera.current;
+    if (!encabezado) return;
+    let anterior = window.scrollY;
+    let pendiente = false;
+    const revisar = () => {
+      pendiente = false;
+      const y = window.scrollY;
+      const delta = y - anterior;
+      if (Math.abs(delta) < 6) return;
+      const ocupada = menu.current?.open || encabezado.contains(document.activeElement);
+      encabezado.dataset.oculta = delta > 0 && y > 480 && !ocupada ? "si" : "no";
+      anterior = y;
+    };
+    const alDesplazar = () => {
+      if (pendiente) return;
+      pendiente = true;
+      window.requestAnimationFrame(revisar);
+    };
+    window.addEventListener("scroll", alDesplazar, { passive: true });
+    return () => window.removeEventListener("scroll", alDesplazar);
+  }, []);
+
+  // Menú abierto: Esc y tocar fuera lo cierran, y la página de atrás no se
+  // desplaza mientras tanto.
+  useEffect(() => {
+    const detalle = menu.current;
+    if (!detalle) return;
+    const raiz = document.documentElement;
+    const alTeclear = (evento: KeyboardEvent) => {
+      if (evento.key !== "Escape" || !detalle.open) return;
+      detalle.open = false;
+      detalle.querySelector("summary")?.focus();
+    };
+    const alTocar = (evento: PointerEvent) => {
+      if (!detalle.open) return;
+      const dentro = (evento.target as Element | null)?.closest("[data-menu-panel], summary");
+      if (!dentro) detalle.open = false;
+    };
+    const alCambiar = () => {
+      raiz.style.overflow = detalle.open ? "hidden" : "";
+      if (detalle.open && cabecera.current) cabecera.current.dataset.oculta = "no";
+    };
+    document.addEventListener("keydown", alTeclear);
+    document.addEventListener("pointerdown", alTocar);
+    detalle.addEventListener("toggle", alCambiar);
+    return () => {
+      document.removeEventListener("keydown", alTeclear);
+      document.removeEventListener("pointerdown", alTocar);
+      detalle.removeEventListener("toggle", alCambiar);
+      raiz.style.overflow = "";
+    };
+  }, []);
+
   return (
-    <header className="sticky top-0 z-30 border-b border-linea bg-fondo">
-      <a
-        href="#contenido"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-tinta focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+    <>
+      {/* La línea que dice si ya se bajó: arriba de todo, sin ocupar lugar. */}
+      <div ref={sentinela} aria-hidden="true" className="pointer-events-none absolute top-0 left-0 h-2 w-px" />
+
+      <header
+        ref={cabecera}
+        data-bajado="no"
+        data-oculta="no"
+        className="group/cabecera sticky top-0 z-30 border-b has-[details[open]]:z-50 border-transparent bg-fondo transition-[border-color,box-shadow,translate] duration-300 ease-[var(--ease-entrada)] data-[bajado=si]:border-linea data-[bajado=si]:shadow-tarjeta data-[oculta=si]:-translate-y-full"
       >
-        Saltar al contenido
-      </a>
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-tinta focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+        >
+          Saltar al contenido
+        </a>
 
-      <div className="mx-auto flex max-w-sitio items-center justify-between gap-4 px-5 lg:px-10 py-3.5">
-        <Link to="/" className="shrink-0" aria-label={`${nombreNegocio}, ir al inicio`}>
-          {/* El SVG de `DavisMtz/AIG-recursos` (11.6 KB comprimido), no el PNG
-              de 512 px: se ve nítido a cualquier tamaño y en cualquier pantalla. */}
-          <img
-            src="/marca/aig-logo-horizontal.svg"
-            alt={nombreNegocio}
-            width={4801}
-            height={675}
-            className="h-auto w-44 sm:w-56"
-          />
-        </Link>
+        <div className="mx-auto flex max-w-sitio items-center justify-between gap-4 px-5 lg:px-10 py-3.5">
+          <Link to="/" className="group/logo shrink-0" aria-label={`${nombreNegocio}, ir al inicio`}>
+            {/* El SVG de `DavisMtz/AIG-recursos` (11.6 KB comprimido), no el PNG
+                de 512 px: se ve nítido a cualquier tamaño y en cualquier pantalla.
+                Al bajar se encoge por `scale`: la caja no cambia de alto. */}
+            <img
+              src="/marca/aig-logo-horizontal.svg"
+              alt={nombreNegocio}
+              width={4801}
+              height={675}
+              className="h-auto w-44 origin-left transition-[scale,opacity] duration-300 ease-[var(--ease-entrada)] group-hover/logo:opacity-80 group-data-[bajado=si]/cabecera:scale-[0.92] sm:w-56"
+            />
+          </Link>
 
-        <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
-          {NAVEGACION.map((enlace) => (
-            <NavLink
-              key={enlace.a}
-              to={enlace.a}
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-2 text-sm font-bold transition-colors hover:text-marca ${
-                  isActive ? "text-marca" : "text-tinta"
-                }`
-              }
-            >
-              {enlace.texto}
-            </NavLink>
-          ))}
-        </nav>
+          <div className="hidden items-center gap-2 md:flex lg:gap-4">
+            <nav aria-label="Principal" className="flex items-center gap-1">
+              {NAVEGACION.map((enlace) => (
+                <NavLink key={enlace.a} to={enlace.a} className={claseEnlace}>
+                  {enlace.texto}
+                </NavLink>
+              ))}
+            </nav>
 
-        {/* Sin JavaScript también abre: es un <details>, no un menú hidratado. */}
-        <details className="relative md:hidden">
-          <summary className="flex h-11 cursor-pointer list-none items-center rounded-xl border border-linea px-4 text-sm font-bold text-tinta [&::-webkit-details-marker]:hidden">
-            Menú
-          </summary>
-          <nav
-            aria-label="Principal"
-            className="absolute right-0 z-40 mt-2 flex w-56 flex-col rounded-2xl border border-linea bg-superficie p-2 shadow-alzada"
-          >
-            {NAVEGACION.map((enlace) => (
-              <NavLink
-                key={enlace.a}
-                to={enlace.a}
-                className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm font-bold transition-colors hover:bg-marca-suave ${
-                    isActive ? "text-marca" : "text-tinta"
-                  }`
-                }
+            {whatsapp ? (
+              <a
+                href={whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/wa hidden h-11 items-center gap-2 rounded-full bg-tinta pr-5 pl-4 text-sm font-extrabold text-white transition-[background-color,translate,box-shadow] duration-200 ease-[var(--ease-entrada)] hover:-translate-y-0.5 hover:bg-marca hover:shadow-alzada active:translate-y-0 active:scale-[0.97] lg:inline-flex"
               >
-                {enlace.texto}
-              </NavLink>
-            ))}
-          </nav>
-        </details>
-      </div>
-    </header>
+                <IconoWhatsApp className="h-5 w-5 origin-bottom motion-safe:group-hover/wa:animate-saludo" />
+                Escríbenos
+              </a>
+            ) : null}
+          </div>
+
+          {/* Sin JavaScript también abre: es un <details>, no un menú hidratado. */}
+          <details ref={menu} className="group/menu md:hidden">
+            <summary
+              aria-label="Menú"
+              className="relative flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-linea bg-superficie text-tinta transition-[background-color,border-color,scale] duration-200 active:scale-95 group-open/menu:border-tinta group-open/menu:bg-tinta group-open/menu:text-white [&::-webkit-details-marker]:hidden"
+            >
+              {/* Tres rayas que se vuelven una X: las de fuera giran hacia el
+                  centro y la de en medio se recoge. */}
+              <span aria-hidden="true" className="relative block h-3.5 w-5">
+                <span className="absolute top-0 left-0 h-0.5 w-5 rounded-full bg-current transition-[translate,rotate] duration-300 ease-[var(--ease-entrada)] group-open/menu:translate-y-1.5 group-open/menu:rotate-45" />
+                <span className="absolute top-1.5 left-0 h-0.5 w-5 origin-right rounded-full bg-current transition-[scale,opacity] duration-200 group-open/menu:scale-x-0 group-open/menu:opacity-0" />
+                <span className="absolute top-3 left-0 h-0.5 w-3.5 rounded-full bg-current transition-[translate,rotate,width] duration-300 ease-[var(--ease-entrada)] group-open/menu:w-5 group-open/menu:-translate-y-1.5 group-open/menu:-rotate-45" />
+              </span>
+            </summary>
+
+            {/* El velo cubre la página de atrás; tocarlo cierra el menú. Velo y
+                panel llevan `hidden` + `group-open:block`: Chrome esconde lo de
+                un <details> cerrado con `content-visibility`, que conserva sus
+                medidas, y el panel cerrado «se salía» del ancho a 390 px. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-full hidden h-[calc(100dvh-100%)] bg-tinta/40 group-open/menu:block motion-safe:animate-velo"
+            />
+            <nav
+              aria-label="Principal"
+              data-menu-panel
+              className="absolute inset-x-0 top-full hidden border-b border-linea bg-fondo px-5 pt-4 pb-6 shadow-alzada group-open/menu:block motion-safe:animate-menu"
+            >
+              <ul className="flex flex-col">
+                {NAVEGACION.map((enlace, i) => (
+                  <li
+                    key={enlace.a}
+                    className="border-b border-linea motion-safe:animate-entrada"
+                    style={{ animationDelay: `${60 + i * 50}ms` }}
+                  >
+                    <NavLink
+                      to={enlace.a}
+                      className={({ isActive }) =>
+                        `group/enlace flex items-center justify-between py-4 font-display text-2xl font-semibold transition-colors ${
+                          isActive ? "text-marca" : "text-tinta"
+                        }`
+                      }
+                    >
+                      <span className="flex items-baseline gap-3">
+                        <span className="font-sans text-xs font-bold text-texto-suave tabular-nums">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {enlace.texto}
+                      </span>
+                      <IconoFlecha className="h-5 w-5 transition-transform duration-200 group-hover/enlace:translate-x-1 group-active/enlace:translate-x-1" />
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+              {whatsapp ? (
+                <a
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 font-extrabold text-white transition-colors active:bg-marca-oscuro motion-safe:animate-entrada"
+                  style={{ animationDelay: `${60 + NAVEGACION.length * 50}ms` }}
+                >
+                  <IconoWhatsApp className="h-5 w-5" />
+                  Escríbenos por WhatsApp
+                </a>
+              ) : null}
+            </nav>
+          </details>
+        </div>
+
+        {/* Lo que va leído de la página, en una línea roja. Solo CSS
+            (`animation-timeline: scroll()`); donde no hay soporte, no sale. */}
+        <span aria-hidden="true" className="barra-lectura absolute inset-x-0 bottom-[-1px] h-0.5 origin-left bg-marca" />
+      </header>
+    </>
   );
 }
+
+/**
+ * Enlace de escritorio: una píldora que aparece al pasar por encima (crece
+ * desde el 85 %) y un punto rojo debajo del que está activo.
+ */
+const claseEnlace = ({ isActive }: { isActive: boolean }) =>
+  `relative isolate rounded-full px-4 py-2 text-sm font-bold transition-colors duration-200 ${
+    isActive ? "text-marca" : "text-tinta hover:text-marca-oscuro"
+  } before:absolute before:inset-0 before:-z-10 before:scale-[0.85] before:rounded-full before:bg-marca-suave before:opacity-0 before:transition-[scale,opacity] before:duration-200 before:ease-[var(--ease-entrada)] hover:before:scale-100 hover:before:opacity-100 after:absolute after:bottom-0.5 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-marca after:transition-[scale] after:duration-300 after:ease-[var(--ease-entrada)] ${
+    isActive ? "after:scale-100" : "after:scale-0"
+  }`;
 
 // ─── Pie ──────────────────────────────────────────────────────────
 
