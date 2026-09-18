@@ -195,15 +195,18 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
                   Una descripción larga, en una sola columna, medía más de dos
                   pantallas; en escritorio ancho se reparte en dos. */}
               {/* Un párrafo por bloque, separados por el alto de un renglón, que
-                  es lo mismo que pintaba el renglón en blanco. Así la columna
-                  se corta ENTRE párrafos y la segunda no empieza con un hueco. */}
+                  es lo mismo que pintaba el renglón en blanco. Con el renglón en
+                  blanco la segunda columna podía empezar con un hueco; un margen
+                  junto al corte de columna se descarta. Sin `break-inside-avoid`:
+                  AIG-0047 tiene un párrafo de 10 de sus 15 renglones y, sin
+                  poder partirlo, las columnas quedaban descompensadas. */}
               <div
                 className={`mt-4 max-w-[68ch] leading-relaxed text-texto ${
                   descripcionLarga ? "xl:max-w-none xl:columns-2 xl:gap-12" : ""
                 }`}
               >
                 {parrafos.map((parrafo, i) => (
-                  <p key={i} className="mt-[1.625em] break-inside-avoid whitespace-pre-line first:mt-0">
+                  <p key={i} className="mt-[1.625em] whitespace-pre-line first:mt-0">
                     {parrafo}
                   </p>
                 ))}
