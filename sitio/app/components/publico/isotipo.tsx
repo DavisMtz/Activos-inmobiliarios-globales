@@ -18,7 +18,12 @@ import { useId } from "react";
  * sobre los campos oscuros. El NOMBRE del logotipo sí es negro: sobre oscuro
  * va en tipografía, nunca el PNG ni el SVG completo invertido.
  */
-export function Isotipo({ className }: { className?: string }) {
+/**
+ * `quieto`: sin la coreografía de GSAP. Para el que está sobre el pliegue,
+ * que ya entra con CSS: GSAP llega después del primer pintado y lo volvería a
+ * esconder y a armar delante de quien ya lo estaba viendo.
+ */
+export function Isotipo({ className, quieto = false }: { className?: string; quieto?: boolean }) {
   // `useId` trae dos puntos; en un selector de CSS habría que escaparlos.
   const unico = useId().replace(/:/g, "");
   const cuerpo = `aig-cuerpo-${unico}`;
@@ -42,7 +47,7 @@ export function Isotipo({ className }: { className?: string }) {
         </linearGradient>
       </defs>
 
-      <g className="aig-isotipo">
+      <g className="aig-isotipo" data-quieto={quieto || undefined}>
         {/* Cintas del techo: nacen en la cumbre y bajan. */}
         <g className="aig-cintas">
           <g className="aig-cinta aig-cinta-exterior">

@@ -75,7 +75,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
               logotipo completo): encabeza la frase que dice dónde y qué, la
               misma del título de la página. */}
           <p className="flex items-center gap-3 text-xs font-bold tracking-[0.14em] text-marca uppercase motion-safe:animate-entrada sm:text-sm sm:tracking-widest">
-            <Isotipo className="h-7 w-auto shrink-0 sm:h-8" />
+            <Isotipo quieto className="h-7 w-auto shrink-0 sm:h-8" />
             Casas en venta y renta en Morelia
           </p>
 

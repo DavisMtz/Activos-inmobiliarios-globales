@@ -48,11 +48,15 @@ export async function animarSitioPublico(raiz: HTMLElement): Promise<Limpieza> {
   const mm = gsap.matchMedia();
 
   mm.add("(prefers-reduced-motion: no-preference)", () => {
+    // GSAP llega tarde a propósito (después de `load`). Lo que para entonces
+    // ya está a la vista, o quedó arriba, se deja como está: esconderlo para
+    // volver a sacarlo delante de quien ya lo estaba leyendo es un parpadeo.
+    const porVenir = (el: Element) => el.getBoundingClientRect().top > window.innerHeight * 0.92;
     const buscar = <T extends Element>(selector: string): T[] =>
-      Array.from(raiz.querySelectorAll<T>(selector));
+      Array.from(raiz.querySelectorAll<T>(selector)).filter(porVenir);
 
     // ─── El isotipo, pieza por pieza ─────────────────────────────
-    for (const isotipo of buscar<SVGGElement>(".aig-isotipo")) {
+    for (const isotipo of buscar<SVGGElement>(".aig-isotipo:not([data-quieto])")) {
       const dentro = <T extends Element>(selector: string): T[] =>
         Array.from(isotipo.querySelectorAll<T>(selector));
 

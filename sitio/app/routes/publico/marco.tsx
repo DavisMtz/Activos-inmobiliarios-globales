@@ -88,20 +88,40 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 
     let vivo = true;
     let limpiar: (() => void) | null = null;
+    let ocioso: number | undefined;
+    let reloj: number | undefined;
 
-    void import("../../components/publico/movimiento")
-      .then(({ animarSitioPublico }) => animarSitioPublico(nodo))
-      .then((fin) => {
-        // Si la página ya cambió mientras bajaba GSAP, se deshace enseguida.
-        if (vivo) limpiar = fin;
-        else fin();
-      })
-      .catch(() => {
-        // Sin animación la página está completa igual: no se avisa de nada.
-      });
+    const arrancar = () => {
+      if (!vivo) return;
+      void import("../../components/publico/movimiento")
+        .then(({ animarSitioPublico }) => animarSitioPublico(nodo))
+        .then((fin) => {
+          // Si la página ya cambió mientras bajaba GSAP, se deshace enseguida.
+          if (vivo) limpiar = fin;
+          else fin();
+        })
+        .catch(() => {
+          // Sin animación la página está completa igual: no se avisa de nada.
+        });
+    };
+
+    // GSAP espera a que la página termine de cargar y el navegador quede
+    // libre. Medido el 17/09/2026: bajándolo al hidratar, sus 111 KB caían
+    // antes del titular en cuanto el primer pintado se retrasaba 150 ms, y
+    // Lighthouse los sumaba al LCP (portada de 77 a 69). Nada sobre el
+    // pliegue depende de GSAP: ahí la entrada es CSS.
+    const cuandoQuieto = () => {
+      if (typeof window.requestIdleCallback === "function") ocioso = window.requestIdleCallback(arrancar, { timeout: 2500 });
+      else reloj = window.setTimeout(arrancar, 300);
+    };
+    if (document.readyState === "complete") cuandoQuieto();
+    else window.addEventListener("load", cuandoQuieto, { once: true });
 
     return () => {
       vivo = false;
+      window.removeEventListener("load", cuandoQuieto);
+      if (ocioso !== undefined) window.cancelIdleCallback(ocioso);
+      if (reloj !== undefined) window.clearTimeout(reloj);
       limpiar?.();
     };
   }, [pathname]);
