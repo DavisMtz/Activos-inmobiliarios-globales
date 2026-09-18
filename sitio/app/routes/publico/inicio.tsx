@@ -74,12 +74,12 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           {/* El isotipo ya no va suelto encima del titular (la cabecera trae el
               logotipo completo): encabeza la frase que dice dónde y qué, la
               misma del título de la página. */}
-          <p className="flex items-center gap-3 text-xs font-bold tracking-[0.14em] text-marca uppercase motion-safe:animate-entrada sm:text-sm sm:tracking-widest">
+          <p className="flex items-center gap-3 text-xs font-bold tracking-[0.14em] text-marca uppercase motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)] sm:text-sm sm:tracking-widest">
             <Isotipo quieto className="h-7 w-auto shrink-0 sm:h-8" />
             Casas en venta y renta en Morelia
           </p>
 
-          <h1 className="mt-5 font-display text-display text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:60ms]">
+          <h1 className="mt-5 font-display text-display text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
             {portada.titular || "Comercialización, renta y financiamiento de inmuebles"}
           </h1>
 
@@ -90,7 +90,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           <Form
             method="get"
             action="/propiedades"
-            className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:160ms] sm:p-5"
+            className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)] sm:p-5"
           >
             <CampoTexto
               etiqueta="¿Qué colonia te interesa?"
@@ -258,9 +258,9 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
 
 /** Clases enteras y no un número suelto: Tailwind solo genera las que lee escritas. */
 const RETRASO_CIFRA = [
-  "motion-safe:[animation-delay:300ms]",
-  "motion-safe:[animation-delay:370ms]",
-  "motion-safe:[animation-delay:440ms]",
+  "motion-safe:[animation-delay:calc(var(--rb,0s)_+_300ms)]",
+  "motion-safe:[animation-delay:calc(var(--rb,0s)_+_370ms)]",
+  "motion-safe:[animation-delay:calc(var(--rb,0s)_+_440ms)]",
 ];
 
 /** Valor arriba y etiqueta abajo, pero en el orden que lee un lector de pantalla: etiqueta y valor. */
@@ -299,11 +299,11 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
     <div className="relative mt-12 mr-3 mb-3 sm:mr-5 sm:mb-5 lg:mt-0">
       <div
         aria-hidden="true"
-        className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-marca-oscuro motion-safe:animate-entrada-bloque motion-safe:[animation-delay:380ms] sm:translate-x-5 sm:translate-y-5"
+        className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-marca-oscuro motion-safe:animate-entrada-bloque motion-safe:[animation-delay:calc(var(--rb,0s)_+_380ms)] sm:translate-x-5 sm:translate-y-5"
       />
       <Link
         to={`/propiedades/${casa.slug}`}
-        className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:120ms]"
+        className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
       >
         <img
           src={foto.src}
@@ -314,7 +314,7 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
           height={720}
           fetchPriority="high"
           decoding="async"
-          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:120ms]"
+          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
         />
         {/* Velo de tinta de abajo arriba: el texto blanco se lee sobre
             cualquier foto sin tapar la casa. */}
@@ -322,11 +322,11 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-linear-to-t from-tinta/90 via-tinta/45 to-transparent"
         />
-        <p className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-superficie px-3 py-1.5 text-xs font-bold tracking-wide text-tinta uppercase shadow-tarjeta motion-safe:animate-entrada motion-safe:[animation-delay:640ms]">
+        <p className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-superficie px-3 py-1.5 text-xs font-bold tracking-wide text-tinta uppercase shadow-tarjeta motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_640ms)]">
           <span aria-hidden="true" className="h-2 w-2 rounded-full bg-marca" />
           {OPERACION_VITRINA[casa.operacion]}
         </p>
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 motion-safe:animate-entrada motion-safe:[animation-delay:560ms] sm:p-7">
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_560ms)] sm:p-7">
           <div className="min-w-0 text-white">
             <p className="text-precio tabular-nums">
               {precio.principal}

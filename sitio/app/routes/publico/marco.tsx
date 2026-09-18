@@ -3,7 +3,7 @@ import "@fontsource-variable/fraunces/wght.css";
 import fuenteFraunces from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
 import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router";
 import { leerConfigDelSitio } from "../../../server/db/configuracion";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
@@ -15,6 +15,7 @@ import {
   IconoUbicacion,
   IconoWhatsApp,
 } from "../../components/publico/iconos";
+import { Bienvenida } from "../../components/publico/bienvenida";
 import { Isotipo } from "../../components/publico/isotipo";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/marco";
@@ -71,6 +72,10 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
   // acciones, pegada abajo, que es la que no tapa el precio.
   const enFicha = /^\/propiedades\/[^/]+$/.test(pathname);
   const contenedor = useRef<HTMLDivElement>(null);
+  // Solo si la PRIMERA página que se abre es la portada: el inicializador corre
+  // una vez, igual en el servidor y al hidratar, y el marco no se vuelve a
+  // montar al navegar, así que regresar a `/` no repite la bienvenida.
+  const [conBienvenida] = useState(() => pathname === "/");
 
   /**
    * El movimiento entra DESPUÉS de hidratar y con `import()`, así que GSAP cae
@@ -128,6 +133,7 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 
   return (
     <div ref={contenedor} className="flex min-h-dvh flex-col bg-fondo">
+      {conBienvenida ? <Bienvenida nombreNegocio={nombreNegocio} /> : null}
       {/* Medido en F2: el LCP de la portada NO es una foto, es el titular, con
           el primer dibujado en 3.8 s. El navegador no descubre las fuentes
           hasta parsear el CSS, así que se piden desde el principio. React 19

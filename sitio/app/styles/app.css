@@ -176,3 +176,121 @@
     }
   }
 }
+
+/* ─── Bienvenida de la portada (`components/publico/bienvenida.tsx`) ─────
+   Un telón de tinta: el isotipo se arma pieza por pieza (la coreografía del
+   README de AIG-recursos, pasada a CSS), sale el nombre y el telón sube.
+   Termina a los ~1.6 s. Con «menos movimiento» no existe, y si esta pestaña
+   ya lo vio, el guion le pone `data-vista` y tampoco. Mientras está, el héroe
+   corre su entrada con `--rb` de retraso para que se descubra al subir. */
+@layer components {
+  .bienvenida {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bienvenida:not([data-vista]) {
+      display: flex;
+      animation: bienvenida-telon 0.7s cubic-bezier(0.76, 0, 0.24, 1) 0.95s both;
+    }
+
+    :root:has(.bienvenida:not([data-vista])) {
+      --rb: 1.05s;
+    }
+
+    .bienvenida-contenido {
+      animation: bienvenida-salida 0.45s cubic-bezier(0.5, 0, 0.75, 0) 0.95s both;
+    }
+    .bienvenida-nombre {
+      animation: entrada 0.6s var(--ease-entrada) 0.3s both;
+    }
+
+    /* Las piezas del SVG giran sobre su propia caja, no sobre el lienzo. */
+    .bienvenida .aig-estela,
+    .bienvenida .aig-pierna,
+    .bienvenida .aig-franja,
+    .bienvenida .aig-ventana {
+      transform-box: fill-box;
+    }
+    .bienvenida .aig-estela {
+      transform-origin: 100% 50%;
+      animation: bienvenida-estela 0.45s var(--ease-entrada) both;
+    }
+    .bienvenida .aig-estela:nth-child(2) { animation-delay: 50ms; }
+    .bienvenida .aig-estela:nth-child(3) { animation-delay: 100ms; }
+    .bienvenida .aig-estela:nth-child(4) { animation-delay: 150ms; }
+    .bienvenida .aig-estela:nth-child(5) { animation-delay: 200ms; }
+    .bienvenida .aig-pierna {
+      transform-origin: 0% 100%;
+      animation: bienvenida-pierna 0.5s var(--ease-entrada) 0.08s both;
+    }
+    /* Las cintas se desenrollan desde la cumbre. */
+    .bienvenida .aig-franja {
+      transform-origin: 50% 0%;
+      animation: bienvenida-franja 0.45s var(--ease-entrada) 0.18s both;
+    }
+    .bienvenida .aig-franja-interior {
+      animation-delay: 0.24s;
+    }
+    .bienvenida .aig-canto {
+      animation: bienvenida-aparece 0.25s ease-out 0.5s both;
+    }
+    /* El isotipo lleva negro en los cantos y la ventana; sobre la tinta se
+       perderían. Aquí los cantos van en vino y la ventana se «enciende». */
+    .bienvenida .aig-canto {
+      fill: var(--color-marca-oscuro);
+    }
+    .bienvenida .aig-ventana {
+      fill: var(--color-sobre-oscuro);
+    }
+    .bienvenida .aig-ventana {
+      transform-origin: 50% 50%;
+      animation: bienvenida-ventana 0.4s var(--ease-entrada) 0.55s both;
+    }
+  }
+}
+
+@keyframes bienvenida-telon {
+  from {
+    transform: translateY(0);
+  }
+  99% {
+    visibility: visible;
+  }
+  to {
+    transform: translateY(-101%);
+    visibility: hidden;
+  }
+}
+@keyframes bienvenida-salida {
+  to {
+    opacity: 0;
+    transform: translateY(-2.5rem);
+  }
+}
+@keyframes bienvenida-estela {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes bienvenida-pierna {
+  from {
+    opacity: 0;
+    transform: translate(-6%, 14%);
+  }
+}
+@keyframes bienvenida-franja {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes bienvenida-aparece {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes bienvenida-ventana {
+  from {
+    transform: scale(0);
+  }
+}
