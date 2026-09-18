@@ -68,88 +68,93 @@ export default function Contacto({ loaderData, actionData }: Route.ComponentProp
     : null;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
-      <header className="max-w-2xl">
-        <h1 className="font-display text-titulo text-tinta">Hablemos de tu propiedad</h1>
-        <p className="mt-3 text-guia text-texto-suave">
-          Escríbenos por WhatsApp y te contestamos en el momento, o déjanos tus datos y un asesor te busca.
-        </p>
-      </header>
+    <div className="mx-auto max-w-sitio px-5 lg:px-10 py-10 sm:py-14">
+      {/* En escritorio el titular sube a la columna izquierda y el formulario
+          arranca a su altura: antes la izquierda era un botón solo frente a un
+          formulario de 640 px. En el celular el orden es el mismo. */}
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,36rem)] lg:gap-16">
+        <div>
+          <header className="max-w-2xl">
+            <h1 className="font-display text-titulo text-tinta">Hablemos de tu propiedad</h1>
+            <p className="mt-3 text-guia text-texto-suave">
+              Escríbenos por WhatsApp y te contestamos en el momento, o déjanos tus datos y un asesor te busca.
+            </p>
+          </header>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <section>
-          <ul className="flex flex-col gap-5">
-            {contacto.telefono ? (
-              <li>
-                <a href={telefonoHref} className="flex items-start gap-4 group">
-                  <IconoTelefono className="mt-1 h-5 w-5 shrink-0 text-marca" />
+          <section className="mt-10">
+            <ul className="flex flex-col gap-5">
+              {contacto.telefono ? (
+                <li>
+                  <a href={telefonoHref} className="flex items-start gap-4 group">
+                    <IconoTelefono className="mt-1 h-5 w-5 shrink-0 text-marca" />
+                    <span>
+                      <span className="block text-sm text-texto-suave">Teléfono</span>
+                      <span className="text-lg font-bold text-tinta tabular-nums group-hover:underline">
+                        {contacto.telefono}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ) : null}
+
+              {contacto.correo ? (
+                <li>
+                  <a href={`mailto:${contacto.correo}`} className="flex items-start gap-4 group">
+                    <IconoCorreo className="mt-1 h-5 w-5 shrink-0 text-marca" />
+                    <span className="min-w-0">
+                      <span className="block text-sm text-texto-suave">Correo</span>
+                      <span className="block truncate text-lg font-bold text-tinta group-hover:underline">
+                        {contacto.correo}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ) : null}
+
+              {contacto.direccion ? (
+                <li className="flex items-start gap-4">
+                  <IconoUbicacion className="mt-1 h-5 w-5 shrink-0 text-marca" />
                   <span>
-                    <span className="block text-sm text-texto-suave">Teléfono</span>
-                    <span className="text-lg font-bold text-tinta tabular-nums group-hover:underline">
-                      {contacto.telefono}
-                    </span>
+                    <span className="block text-sm text-texto-suave">Oficina</span>
+                    <span className="text-lg font-bold text-tinta">{contacto.direccion}</span>
+                    {mapa ? (
+                      <a
+                        href={mapa}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 block font-bold text-marca underline underline-offset-4"
+                      >
+                        Abrir en Mapas
+                      </a>
+                    ) : null}
                   </span>
-                </a>
-              </li>
-            ) : null}
+                </li>
+              ) : null}
 
-            {contacto.correo ? (
-              <li>
-                <a href={`mailto:${contacto.correo}`} className="flex items-start gap-4 group">
-                  <IconoCorreo className="mt-1 h-5 w-5 shrink-0 text-marca" />
-                  <span className="min-w-0">
-                    <span className="block text-sm text-texto-suave">Correo</span>
-                    <span className="block truncate text-lg font-bold text-tinta group-hover:underline">
-                      {contacto.correo}
-                    </span>
+              {contacto.horario ? (
+                <li className="flex items-start gap-4">
+                  <span className="mt-1 h-5 w-5 shrink-0" />
+                  <span>
+                    <span className="block text-sm text-texto-suave">Horario</span>
+                    <span className="text-lg font-bold text-tinta">{contacto.horario}</span>
                   </span>
-                </a>
-              </li>
-            ) : null}
+                </li>
+              ) : null}
+            </ul>
 
-            {contacto.direccion ? (
-              <li className="flex items-start gap-4">
-                <IconoUbicacion className="mt-1 h-5 w-5 shrink-0 text-marca" />
-                <span>
-                  <span className="block text-sm text-texto-suave">Oficina</span>
-                  <span className="text-lg font-bold text-tinta">{contacto.direccion}</span>
-                  {mapa ? (
-                    <a
-                      href={mapa}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 block font-bold text-marca underline underline-offset-4"
-                    >
-                      Abrir en Mapas
-                    </a>
-                  ) : null}
-                </span>
-              </li>
+            {whatsapp ? (
+              <a
+                href={whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex h-13 items-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
+              >
+                <IconoWhatsApp />
+                Escribir por WhatsApp
+              </a>
             ) : null}
-
-            {contacto.horario ? (
-              <li className="flex items-start gap-4">
-                <span className="mt-1 h-5 w-5 shrink-0" />
-                <span>
-                  <span className="block text-sm text-texto-suave">Horario</span>
-                  <span className="text-lg font-bold text-tinta">{contacto.horario}</span>
-                </span>
-              </li>
-            ) : null}
-          </ul>
-
-          {whatsapp ? (
-            <a
-              href={whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex h-13 items-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
-            >
-              <IconoWhatsApp />
-              Escribir por WhatsApp
-            </a>
-          ) : null}
-        </section>
+          </section>
+        </div>
 
         <section className="rounded-3xl border border-linea bg-superficie p-6 shadow-tarjeta sm:p-8">
           {listo ? (

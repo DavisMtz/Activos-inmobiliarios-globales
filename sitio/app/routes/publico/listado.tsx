@@ -61,7 +61,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
   const rango = filtros.operacion === "renta" ? catalogo.rangos.renta : catalogo.rangos.venta;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-8 sm:py-12">
+    <div className="mx-auto max-w-sitio px-5 lg:px-10 py-8 sm:py-12">
       <header className="lg:flex lg:items-end lg:justify-between lg:gap-12">
         <div className="max-w-lg">
           <h1 className="font-display text-titulo text-tinta">Propiedades en Morelia y Michoacán</h1>
@@ -241,7 +241,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
 
       {pagina.items.length ? (
         <>
-          <ul data-animar-lista className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul data-animar-lista className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {pagina.items.map((item, i) => (
               <li key={item.clave}>
                 <TarjetaPropiedad item={item} prioridad={i < 2} />

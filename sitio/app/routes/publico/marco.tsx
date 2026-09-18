@@ -150,7 +150,7 @@ function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
         Saltar al contenido
       </a>
 
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
+      <div className="mx-auto flex max-w-sitio items-center justify-between gap-4 px-5 lg:px-10 py-3.5">
         <Link to="/" className="shrink-0" aria-label={`${nombreNegocio}, ir al inicio`}>
           {/* El SVG de `DavisMtz/AIG-recursos` (11.6 KB comprimido), no el PNG
               de 512 px: se ve nítido a cualquier tamaño y en cualquier pantalla. */}
@@ -227,101 +227,113 @@ function Pie({
   // El sitio actual enseña un número y su enlace marca OTRO. Aquí el href sale
   // del mismo texto que se lee, así que no pueden separarse.
   const telefonoHref = `tel:${contacto.telefono.replace(/[^\d+]/g, "")}`;
+  // Lo que no existe no se enseña vacío (PLAN §0.4): sin ningún dato de
+  // contacto capturado, la columna era un título sobre nada.
+  const hayContacto = Boolean(contacto.telefono || contacto.correo || contacto.direccion || contacto.horario);
+  const hayRedes = Boolean(redes.facebook || redes.instagram);
+  const columnas = 1 + (hayContacto ? 1 : 0) + (hayRedes ? 1 : 0);
 
   return (
     <footer className="campo-oscuro bg-tinta text-sobre-oscuro">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
-        {/* Sobre el campo oscuro va el isotipo (que es rojo y se lee) más el
-            nombre en tipografía: el logotipo completo lleva la palabra en negro
-            y no existe versión clara (PLAN §6.4). */}
-        <div className="flex items-center gap-4">
-          <Isotipo className="h-10 w-auto shrink-0" />
-          <p className="font-display text-seccion text-white">{nombreNegocio}</p>
-        </div>
-        <p className="mt-3 max-w-md text-sobre-oscuro-suave">Donde cada propiedad cuenta una historia</p>
+      <div className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
+        {/* Desde 1280 px la marca y las columnas comparten renglón. */}
+        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:gap-16">
+          {/* Sobre el campo oscuro va el isotipo (que es rojo y se lee) más el
+              nombre en tipografía: el logotipo completo lleva la palabra en negro
+              y no existe versión clara (PLAN §6.4). */}
+          <div>
+            <div className="flex items-center gap-4">
+              <Isotipo className="h-10 w-auto shrink-0" />
+              <p className="font-display text-seccion text-white">{nombreNegocio}</p>
+            </div>
+            <p className="mt-3 max-w-md text-sobre-oscuro-suave">Donde cada propiedad cuenta una historia</p>
+          </div>
 
-        <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          <section>
-            <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Contacto</h2>
-            <ul className="mt-4 flex flex-col gap-3 text-sobre-oscuro">
-              {contacto.telefono ? (
-                <li>
-                  <a href={telefonoHref} className="flex items-center gap-3 hover:underline">
-                    <IconoTelefono className="h-5 w-5 shrink-0 text-sobre-oscuro-suave" />
-                    <span className="tabular-nums">{contacto.telefono}</span>
-                  </a>
-                </li>
-              ) : null}
-              {contacto.correo ? (
-                <li>
-                  <a href={`mailto:${contacto.correo}`} className="flex items-center gap-3 break-all hover:underline">
-                    <IconoCorreo className="h-5 w-5 shrink-0 text-sobre-oscuro-suave" />
-                    <span>{contacto.correo}</span>
-                  </a>
-                </li>
-              ) : null}
-              {contacto.direccion ? (
-                <li className="flex items-start gap-3">
-                  <IconoUbicacion className="mt-0.5 h-5 w-5 shrink-0 text-sobre-oscuro-suave" />
-                  <span>{contacto.direccion}</span>
-                </li>
-              ) : null}
-              {/* El horario se oculta mientras nadie lo confirme (PLAN §6.3). */}
-              {contacto.horario ? <li className="pl-8">{contacto.horario}</li> : null}
-            </ul>
-          </section>
+          <div className={`mt-12 grid gap-10 sm:grid-cols-2 xl:mt-0 ${columnas === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
+            {hayContacto ? (
+              <section>
+                <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Contacto</h2>
+                <ul className="mt-4 flex flex-col gap-3 text-sobre-oscuro">
+                  {contacto.telefono ? (
+                    <li>
+                      <a href={telefonoHref} className="flex items-center gap-3 hover:underline">
+                        <IconoTelefono className="h-5 w-5 shrink-0 text-sobre-oscuro-suave" />
+                        <span className="tabular-nums">{contacto.telefono}</span>
+                      </a>
+                    </li>
+                  ) : null}
+                  {contacto.correo ? (
+                    <li>
+                      <a href={`mailto:${contacto.correo}`} className="flex items-center gap-3 break-all hover:underline">
+                        <IconoCorreo className="h-5 w-5 shrink-0 text-sobre-oscuro-suave" />
+                        <span>{contacto.correo}</span>
+                      </a>
+                    </li>
+                  ) : null}
+                  {contacto.direccion ? (
+                    <li className="flex items-start gap-3">
+                      <IconoUbicacion className="mt-0.5 h-5 w-5 shrink-0 text-sobre-oscuro-suave" />
+                      <span>{contacto.direccion}</span>
+                    </li>
+                  ) : null}
+                  {/* El horario se oculta mientras nadie lo confirme (PLAN §6.3). */}
+                  {contacto.horario ? <li className="pl-8">{contacto.horario}</li> : null}
+                </ul>
+              </section>
+            ) : null}
 
-          <section>
-            <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Sitio</h2>
-            <ul className="mt-4 flex flex-col gap-3">
-              {NAVEGACION.map((enlace) => (
-                <li key={enlace.a}>
-                  <Link to={enlace.a} className="hover:underline">
-                    {enlace.texto}
+            <section>
+              <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Sitio</h2>
+              <ul className="mt-4 flex flex-col gap-3">
+                {NAVEGACION.map((enlace) => (
+                  <li key={enlace.a}>
+                    <Link to={enlace.a} className="hover:underline">
+                      {enlace.texto}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link to="/aviso-de-privacidad" className="hover:underline">
+                    Aviso de privacidad
                   </Link>
                 </li>
-              ))}
-              <li>
-                <Link to="/aviso-de-privacidad" className="hover:underline">
-                  Aviso de privacidad
-                </Link>
-              </li>
-            </ul>
-          </section>
-
-          {redes.facebook || redes.instagram ? (
-            <section>
-              <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Redes</h2>
-              <ul className="mt-4 flex gap-3">
-                {redes.facebook ? (
-                  <li>
-                    <a
-                      href={redes.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Facebook"
-                      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60 hover:bg-white/10"
-                    >
-                      <IconoFacebook />
-                    </a>
-                  </li>
-                ) : null}
-                {redes.instagram ? (
-                  <li>
-                    <a
-                      href={redes.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Instagram"
-                      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60 hover:bg-white/10"
-                    >
-                      <IconoInstagram />
-                    </a>
-                  </li>
-                ) : null}
               </ul>
             </section>
-          ) : null}
+
+            {hayRedes ? (
+              <section>
+                <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Redes</h2>
+                <ul className="mt-4 flex gap-3">
+                  {redes.facebook ? (
+                    <li>
+                      <a
+                        href={redes.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60 hover:bg-white/10"
+                      >
+                        <IconoFacebook />
+                      </a>
+                    </li>
+                  ) : null}
+                  {redes.instagram ? (
+                    <li>
+                      <a
+                        href={redes.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60 hover:bg-white/10"
+                      >
+                        <IconoInstagram />
+                      </a>
+                    </li>
+                  ) : null}
+                </ul>
+              </section>
+            ) : null}
+          </div>
         </div>
 
         <p className="mt-14 border-t border-white/15 pt-6 text-sm text-sobre-oscuro-suave">

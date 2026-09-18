@@ -63,7 +63,10 @@ export default function Marco({ loaderData }: Route.ComponentProps) {
         </p>
       ) : null}
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col lg:flex-row">
+      {/* Sin tope de ancho: con `max-w-7xl` centrado, a 1920 px el menú oscuro
+          flotaba como una isla con 320 px vacíos a cada lado. El menú va al
+          borde y cada pantalla pone su propio tope a lo que se lee. */}
+      <div className="flex w-full flex-col lg:flex-row">
         {/* ── Celular: cabecera con menú plegable ─────────────────── */}
         <header className="sticky top-0 z-30 border-b border-linea bg-superficie lg:hidden">
           <div className="flex items-center justify-between gap-3 px-4 py-3">

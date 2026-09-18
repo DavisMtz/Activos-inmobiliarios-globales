@@ -89,7 +89,9 @@ export function TarjetaPropiedad({ item, prioridad = false }: { item: Tarjeta; p
             <img
               src={item.foto.src}
               srcSet={item.foto.srcset ?? undefined}
-              sizes="(min-width: 1024px) 22rem, (min-width: 640px) 45vw, 92vw"
+              // Con el marco ancho la tarjeta mide ~20-28rem: en 1x sigue tomando la de
+              // 640 y en 2x la de 960, las mismas dos que ya existen en Cloudinary.
+              sizes="(min-width: 1024px) 28rem, (min-width: 640px) 45vw, 92vw"
               alt={item.foto.alt}
               width={640}
               height={480}

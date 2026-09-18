@@ -62,7 +62,11 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       {/* ─── Primera pantalla: el titular, el buscador y una casa real ─── */}
-      <section className="mx-auto max-w-6xl px-5 pt-10 pb-12 sm:pt-14 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-14 lg:pt-16">
+      {/* «financiamiento» mide 8.4 veces el cuerpo del titular: a 1024 px son
+          513 px y la mitad de la pantalla da 444, así que se salía. Hasta 1280
+          el texto se lleva 3/5; desde ahí nunca baja de 36rem y la foto crece
+          con lo que sobra. Medido con el titular real, no con uno de ejemplo. */}
+      <section className="mx-auto max-w-sitio px-5 lg:px-10 pt-10 pb-12 sm:pt-14 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:pt-16 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)]">
         <div className="max-w-xl">
           <Isotipo className="h-12 w-auto" />
 
@@ -119,7 +123,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             <img
               src={principal.foto.src}
               srcSet={principal.foto.srcset ?? undefined}
-              sizes="(min-width: 1024px) 34rem, 92vw"
+              sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
               alt={principal.foto.alt}
               width={960}
               height={720}
@@ -133,7 +137,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
 
       {/* ─── Accesos por tipo, con los conteos de verdad ─── */}
       {catalogo.tipos.length ? (
-        <nav aria-label="Por tipo de propiedad" className="mx-auto max-w-6xl px-5">
+        <nav aria-label="Por tipo de propiedad" className="mx-auto max-w-sitio px-5 lg:px-10">
           <ul className="flex flex-wrap gap-2">
             {catalogo.tipos.map((t) => (
               <li key={t.tipo}>
@@ -152,7 +156,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
 
       {/* ─── Las casas ─── */}
       {casas.length ? (
-        <section className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <section className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-display text-seccion text-tinta">Lo más reciente</h2>
             <Link
@@ -177,7 +181,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
       {/* ─── Servicios, en corto ─── */}
       {servicios.length ? (
         <section className="campo-oscuro bg-tinta text-sobre-oscuro">
-          <div className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+          <div className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
             <h2 className="max-w-xl font-display text-seccion text-white">
               {portada.presentacion || "Qué hacemos"}
             </h2>
@@ -207,15 +211,22 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
       ) : null}
 
       {/* ─── Cierre ─── */}
-      <section className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
-        <div data-animar className="rounded-3xl bg-marca-oscuro px-6 py-12 text-center sm:px-12 campo-oscuro">
-          <h2 className="mx-auto max-w-2xl font-display text-seccion text-white">
-            ¿Buscas algo que no está en la lista? Dinos qué necesitas.
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sobre-vino-suave">
-            Tenemos propiedades que aún no publicamos y podemos buscarte una a la medida.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+      <section className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
+        {/* Centrado y angosto en el celular; en escritorio, el texto a la
+            izquierda y los botones a la derecha, a lo ancho de la franja. */}
+        <div
+          data-animar
+          className="rounded-3xl bg-marca-oscuro px-6 py-12 text-center sm:px-12 campo-oscuro lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-14 lg:text-left"
+        >
+          <div>
+            <h2 className="mx-auto max-w-2xl font-display text-seccion text-white lg:mx-0">
+              ¿Buscas algo que no está en la lista? Dinos qué necesitas.
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sobre-vino-suave lg:mx-0">
+              Tenemos propiedades que aún no publicamos y podemos buscarte una a la medida.
+            </p>
+          </div>
+          <div className="mt-8 flex flex-wrap justify-center gap-4 lg:mt-0 lg:shrink-0 lg:justify-end">
             {whatsapp ? (
               <a
                 href={whatsapp}

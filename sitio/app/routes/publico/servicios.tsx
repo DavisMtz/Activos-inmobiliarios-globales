@@ -34,17 +34,20 @@ export default function Servicios({ loaderData }: Route.ComponentProps) {
   const { servicios, intro } = loaderData;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
+    <div className="mx-auto max-w-sitio px-5 lg:px-10 py-10 sm:py-14">
       <header className="max-w-2xl">
         <h1 className="font-display text-titulo text-tinta">Servicios</h1>
         {intro ? <p className="mt-3 text-guia text-texto-suave">{intro}</p> : null}
       </header>
 
-      <div className="mt-10 border-t border-linea">
+      {/* Hasta 1280 px, renglones de título + texto; desde ahí, tres columnas
+          con su filete arriba, que es donde la lista dejaba vacío el 40 %
+          derecho de la pantalla. */}
+      <div className="mt-10 border-t border-linea xl:grid xl:grid-cols-3 xl:gap-x-12 xl:border-t-0">
         {servicios.map((servicio) => (
           <section
             key={servicio.id}
-            className="grid gap-3 border-b border-linea py-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-12"
+            className="grid gap-3 border-b border-linea py-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-1 xl:content-start xl:gap-4 xl:border-t xl:border-b-0"
           >
             <h2 className="font-display text-seccion text-tinta">{servicio.titulo}</h2>
             <p className="max-w-[68ch] leading-relaxed whitespace-pre-line text-texto">{servicio.descripcion}</p>

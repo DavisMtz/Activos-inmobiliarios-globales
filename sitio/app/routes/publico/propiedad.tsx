@@ -134,6 +134,9 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
   const { ficha, parecidas, url, modoDemo, whatsapp } = loaderData;
   const precio = textoPrecio(ficha);
   const cerrada = ficha.estado === "vendida" || ficha.estado === "rentada";
+  const parrafos = (ficha.descripcion ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  // Medido en las 188: la mediana es de 26 renglones con texto y 181 pasan de 14.
+  const descripcionLarga = parrafos.join("\n").split("\n").filter((l) => l.trim()).length >= 14;
 
   // Una vista por casa y por sesión de navegador: recargar la ficha veinte
   // veces no debe inflar el número que va a leer el equipo.
@@ -150,17 +153,20 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
 
   return (
     <div className="pb-24 lg:pb-0">
-      <div className="mx-auto max-w-6xl px-5 pt-6">
+      <div className="mx-auto max-w-sitio px-5 lg:px-10 pt-6">
         <Link to="/propiedades" className="text-sm font-bold text-marca underline underline-offset-4">
           ← Todas las propiedades
         </Link>
       </div>
 
-      <Galeria fotos={ficha.fotos} miniaturas={ficha.miniaturas} titulo={ficha.titulo} />
-
-      <div className="mx-auto max-w-6xl px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-12">
+      {/* En escritorio la tarjeta del precio va AL LADO de la galería, desde
+          arriba: antes iba debajo y a 1366×768 el precio y WhatsApp quedaban
+          bajo el pliegue. En el celular el orden no cambia. */}
+      <div className="mx-auto max-w-sitio px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start lg:gap-12 lg:px-10">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-3">
+          <Galeria fotos={ficha.fotos} miniaturas={ficha.miniaturas} titulo={ficha.titulo} />
+
+          <div className="flex flex-wrap items-center gap-3 lg:mt-6">
             <EtiquetaEstado estado={ficha.estado} operacion={ficha.operacion} />
             <span className="text-sm font-bold tracking-widest text-texto-suave uppercase tabular-nums">
               {ficha.clave}
@@ -185,26 +191,42 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
           {ficha.descripcion ? (
             <section className="mt-10">
               <h2 className="font-display text-seccion text-tinta">Sobre esta propiedad</h2>
-              <div className="mt-4 max-w-[68ch] leading-relaxed whitespace-pre-line text-texto">
-                {ficha.descripcion}
+              {/* El equipo escribe como en Facebook: un renglón corto por dato.
+                  Una descripción larga, en una sola columna, medía más de dos
+                  pantallas; en escritorio ancho se reparte en dos. */}
+              {/* Un párrafo por bloque, separados por el alto de un renglón, que
+                  es lo mismo que pintaba el renglón en blanco. Así la columna
+                  se corta ENTRE párrafos y la segunda no empieza con un hueco. */}
+              <div
+                className={`mt-4 max-w-[68ch] leading-relaxed text-texto ${
+                  descripcionLarga ? "xl:max-w-none xl:columns-2 xl:gap-12" : ""
+                }`}
+              >
+                {parrafos.map((parrafo, i) => (
+                  <p key={i} className="mt-[1.625em] break-inside-avoid whitespace-pre-line first:mt-0">
+                    {parrafo}
+                  </p>
+                ))}
               </div>
             </section>
           ) : null}
         </div>
 
         {/* En escritorio la acción viaja con el scroll; en el celular vive en
-            la barra de abajo, que es la que no tapa el precio. */}
-        <aside className="mt-10 hidden lg:sticky lg:top-24 lg:mt-0 lg:block">
+            la barra de abajo, que es la que no tapa el precio. Solo se pega si
+            cabe entera: más alta que la ventana, el botón «Enviar» quedaría
+            fuera de alcance hasta el final de la descripción. */}
+        <aside className="mt-10 hidden lg:mt-4 lg:block lg:[@media(min-height:54rem)]:sticky lg:[@media(min-height:54rem)]:top-24">
           <Acciones ficha={ficha} precio={precio} whatsapp={whatsapp} actionData={actionData} />
         </aside>
       </div>
 
-      <div className="mx-auto mt-10 max-w-6xl px-5 lg:hidden">
+      <div className="mx-auto mt-10 max-w-sitio px-5 lg:px-10 lg:hidden">
         <Acciones ficha={ficha} precio={precio} whatsapp={whatsapp} actionData={actionData} />
       </div>
 
       {parecidas.length ? (
-        <section className="mx-auto mt-16 max-w-6xl px-5 pb-16">
+        <section className="mx-auto mt-16 max-w-sitio px-5 lg:px-10 pb-16">
           <h2 className="font-display text-seccion text-tinta">Propiedades parecidas</h2>
           <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {parecidas.map((item) => (
@@ -268,7 +290,7 @@ function Galeria({ fotos, miniaturas, titulo }: { fotos: Foto[]; miniaturas: Fot
   const foto = fotos[Math.min(actual, fotos.length - 1)];
 
   return (
-    <section aria-label="Fotos" className="mx-auto mt-4 max-w-6xl px-5">
+    <section aria-label="Fotos" className="mt-4">
       <div className="relative overflow-hidden rounded-3xl bg-marca-suave">
         {/* Sin JavaScript el enlace abre la foto completa; con JavaScript se
             queda en la página y abre el visor. */}
@@ -283,15 +305,17 @@ function Galeria({ fotos, miniaturas, titulo }: { fotos: Foto[]; miniaturas: Fot
           <img
             src={foto.src}
             srcSet={foto.srcset ?? undefined}
-            sizes="(min-width: 1024px) 64rem, 100vw"
+            // La columna de la galería mide ~54-57rem en escritorio.
+            sizes="(min-width: 1024px) 58rem, 100vw"
             alt={foto.alt}
             width={1600}
             height={1067}
             fetchPriority="high"
             decoding="async"
-            // Con tope de alto en escritorio: sin él la foto se come la
-            // primera pantalla y el precio y el botón quedan abajo del pliegue.
-            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:max-h-[58vh]"
+            // El precio y WhatsApp ya viven al lado, así que el tope solo
+            // cuida las ventanas bajitas: sin él, a 1366×768 la foto llenaba
+            // la pantalla entera.
+            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:max-h-[72vh]"
           />
         </a>
         {fotos.length > 1 ? (
@@ -392,7 +416,9 @@ function Caracteristicas({ ficha }: { ficha: Route.ComponentProps["loaderData"][
   return (
     <section className="mt-8">
       {datos.length ? (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        // En escritorio, tantas columnas como quepan: con la columna ancha los
+        // cinco datos van en un solo renglón en vez de 3 + 2 con un hueco.
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))]">
           {datos.map((d, i) => {
             // Con 5 datos en dos columnas el último queda solo y deja un hueco
             // al lado. La clase se decide aquí y no con una variante de
