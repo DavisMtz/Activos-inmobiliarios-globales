@@ -312,7 +312,10 @@ export function FormularioDePropiedad({
 
       {/* ── Características ─────────────────────────────────────── */}
       <Bloque titulo="Características">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* En media pantalla (xl) caben 3 columnas hasta que no: a 1280 px
+            «Año de construcción» se parte en dos renglones y descuadra su
+            campo. Dos columnas hasta 2xl. */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
           <Campo etiqueta="Recámaras" name="recamaras" inputMode="numeric" defaultValue={valores.recamaras} ayuda={marca("recamaras")} />
           <Campo etiqueta="Baños completos" name="banos_completos" inputMode="numeric" defaultValue={valores.banos_completos} ayuda={marca("banos_completos")} />
           <Campo etiqueta="Medios baños" name="medios_banos" inputMode="numeric" defaultValue={valores.medios_banos} ayuda={marca("medios_banos")} />
