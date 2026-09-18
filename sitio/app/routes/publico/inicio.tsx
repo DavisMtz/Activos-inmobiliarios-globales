@@ -1,12 +1,12 @@
 import { Form, Link } from "react-router";
 import { leerConfiguracion, leerServicios } from "../../../server/db/configuracion";
-import { destacadas, leerCatalogo } from "../../../server/db/propiedades";
+import { destacadas, leerCatalogo, type Tarjeta } from "../../../server/db/propiedades";
 import { ETIQUETA_TIPO_PLURAL, rutaDeListado } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
 import { Isotipo } from "../../components/publico/isotipo";
-import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
+import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio } from "../../components/publico/piezas";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/inicio";
 
@@ -26,7 +26,9 @@ export async function loader({ context }: Route.LoaderArgs) {
 
   const [catalogo, casas, configuracion, listaServicios] = await Promise.all([
     leerCatalogo(db),
-    destacadas(db, config.cloudinary.cloudName, 6),
+    // 7 y no 6: la primera va a la vitrina de arriba y las otras seis a «Lo
+    // más reciente», para no enseñar la misma casa dos veces seguidas.
+    destacadas(db, config.cloudinary.cloudName, 7),
     leerConfiguracion(db),
     leerServicios(db),
   ]);
@@ -55,7 +57,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
 
 export default function Inicio({ loaderData }: Route.ComponentProps) {
   const { catalogo, casas, portada, servicios, whatsapp } = loaderData;
-  const principal = casas[0];
+  const principal = casas[0]?.foto ? casas[0] : null;
+  const recientes = (principal ? casas.slice(1) : casas).slice(0, 6);
   const desde = precioMXN(catalogo.rangos.venta.min);
   const ciudades = catalogo.ciudades.length;
 
@@ -66,17 +69,29 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           513 px y la mitad de la pantalla da 444, así que se salía. Hasta 1280
           el texto se lleva 3/5; desde ahí nunca baja de 36rem y la foto crece
           con lo que sobra. Medido con el titular real, no con uno de ejemplo. */}
-      <section className="mx-auto max-w-sitio px-5 lg:px-10 pt-10 pb-12 sm:pt-14 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:pt-16 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)]">
+      <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)]">
         <div className="max-w-xl">
-          <Isotipo className="h-12 w-auto" />
+          {/* El isotipo ya no va suelto encima del titular (la cabecera trae el
+              logotipo completo): encabeza la frase que dice dónde y qué, la
+              misma del título de la página. */}
+          <p className="flex items-center gap-3 text-xs font-bold tracking-[0.14em] text-marca uppercase motion-safe:animate-entrada sm:text-sm sm:tracking-widest">
+            <Isotipo className="h-7 w-auto shrink-0 sm:h-8" />
+            Casas en venta y renta en Morelia
+          </p>
 
-          <h1 className="mt-6 font-display text-display text-tinta">
+          <h1 className="mt-5 font-display text-display text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:60ms]">
             {portada.titular || "Comercialización, renta y financiamiento de inmuebles"}
           </h1>
 
           {portada.lema ? <p className="mt-4 text-guia text-texto-suave">{portada.lema}</p> : null}
 
-          <Form method="get" action="/propiedades" className="mt-8 flex flex-col gap-3">
+          {/* El buscador es la acción principal: va en su propio panel para
+              que se lea como una herramienta y no como texto suelto. */}
+          <Form
+            method="get"
+            action="/propiedades"
+            className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:160ms] sm:p-5"
+          >
             <CampoTexto
               etiqueta="¿Qué colonia te interesa?"
               name="q"
@@ -101,38 +116,23 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </div>
             <button
               type="submit"
-              className="flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
+              className="mt-1 flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
             >
               <IconoBuscar />
               Ver las {catalogo.total} propiedades
             </button>
           </Form>
 
-          {/* Datos reales, en una frase: ni cifras inventadas ni contadores. */}
-          <p className="mt-4 text-sm text-texto-suave">
-            En Morelia y {ciudades - 1} ciudades más de Michoacán
-            {desde ? `, desde ${desde}` : ""}.
-          </p>
+          {/* Tres cifras que salen de la base, no de un texto de venta: si el
+              catálogo cambia, cambian solas. */}
+          <dl className="mt-7 grid grid-cols-3 gap-4 sm:gap-6">
+            <Cifra orden={0} valor={String(catalogo.total)} etiqueta="propiedades publicadas" />
+            <Cifra orden={1} valor={String(ciudades)} etiqueta={ciudades === 1 ? "ciudad de Michoacán" : "ciudades de Michoacán"} />
+            {desde ? <Cifra orden={2} valor={desde} etiqueta="precio desde" /> : null}
+          </dl>
         </div>
 
-        {principal?.foto ? (
-          <Link
-            to={`/propiedades/${principal.slug}`}
-            className="group mt-10 block overflow-hidden rounded-3xl lg:mt-0"
-          >
-            <img
-              src={principal.foto.src}
-              srcSet={principal.foto.srcset ?? undefined}
-              sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
-              alt={principal.foto.alt}
-              width={960}
-              height={720}
-              fetchPriority="high"
-              decoding="async"
-              className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-            />
-          </Link>
-        ) : null}
+        {principal ? <Vitrina casa={principal} /> : null}
       </section>
 
       {/* ─── Accesos por tipo, con los conteos de verdad ─── */}
@@ -155,7 +155,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
       ) : null}
 
       {/* ─── Las casas ─── */}
-      {casas.length ? (
+      {recientes.length ? (
         <section className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-display text-seccion text-tinta">Lo más reciente</h2>
@@ -169,9 +169,12 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           </div>
 
           <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {casas.map((casa, i) => (
+            {recientes.map((casa) => (
               <li key={casa.clave}>
-                <TarjetaPropiedad item={casa} prioridad={i < 1} />
+                {/* Sin prioridad: la foto que pide ir primero es la de la vitrina.
+                    Antes la primera tarjeta era esa misma casa y bajaba la misma
+                    foto; ahora es otra, y en el celular queda bajo el pliegue. */}
+                <TarjetaPropiedad item={casa} />
               </li>
             ))}
           </ul>
@@ -247,6 +250,101 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+// ─── Piezas de la primera pantalla ────────────────────────────────
+
+/** Clases enteras y no un número suelto: Tailwind solo genera las que lee escritas. */
+const RETRASO_CIFRA = [
+  "motion-safe:[animation-delay:300ms]",
+  "motion-safe:[animation-delay:370ms]",
+  "motion-safe:[animation-delay:440ms]",
+];
+
+/** Valor arriba y etiqueta abajo, pero en el orden que lee un lector de pantalla: etiqueta y valor. */
+function Cifra({ valor, etiqueta, orden }: { valor: string; etiqueta: string; orden: number }) {
+  return (
+    <div
+      className={`flex flex-col-reverse justify-end border-l-2 border-marca pl-3 motion-safe:animate-entrada sm:pl-4 ${RETRASO_CIFRA[orden] ?? ""}`}
+    >
+      <dt className="mt-1 text-xs leading-snug text-texto-suave sm:text-sm">{etiqueta}</dt>
+      <dd className="font-display text-[clamp(1.1rem,4.6vw,1.875rem)] leading-none font-bold text-tinta">{valor}</dd>
+    </div>
+  );
+}
+
+const OPERACION_VITRINA: Record<Tarjeta["operacion"], string> = {
+  venta: "En venta",
+  renta: "En renta",
+  venta_renta: "Venta o renta",
+};
+
+/**
+ * La casa de la primera pantalla, contada como lo que es: una casa con precio,
+ * nombre y colonia, no una foto suelta. El bloque vino de atrás da la
+ * profundidad con un color de la marca y sin filtros: las sombras de
+ * `feDropShadow` y el `backdrop-filter` ya costaron Lighthouse (PLAN §17).
+ * Sigue en 4:3 porque es la variante `tarjeta` de Cloudinary; otra
+ * proporción sería otro derivado por casa (§13.5).
+ */
+function Vitrina({ casa }: { casa: Tarjeta }) {
+  const foto = casa.foto;
+  if (!foto) return null;
+  const precio = textoPrecio(casa);
+  const lugar = [casa.zona, casa.clave].filter(Boolean).join(" · ");
+
+  return (
+    <div className="relative mt-12 mr-3 mb-3 sm:mr-5 sm:mb-5 lg:mt-0">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-marca-oscuro motion-safe:animate-entrada-bloque motion-safe:[animation-delay:380ms] sm:translate-x-5 sm:translate-y-5"
+      />
+      <Link
+        to={`/propiedades/${casa.slug}`}
+        className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:120ms]"
+      >
+        <img
+          src={foto.src}
+          srcSet={foto.srcset ?? undefined}
+          sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
+          alt={foto.alt}
+          width={960}
+          height={720}
+          fetchPriority="high"
+          decoding="async"
+          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:120ms]"
+        />
+        {/* Velo de tinta de abajo arriba: el texto blanco se lee sobre
+            cualquier foto sin tapar la casa. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-linear-to-t from-tinta/90 via-tinta/45 to-transparent"
+        />
+        <p className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-superficie px-3 py-1.5 text-xs font-bold tracking-wide text-tinta uppercase shadow-tarjeta motion-safe:animate-entrada motion-safe:[animation-delay:640ms]">
+          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-marca" />
+          {OPERACION_VITRINA[casa.operacion]}
+        </p>
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 motion-safe:animate-entrada motion-safe:[animation-delay:560ms] sm:p-7">
+          <div className="min-w-0 text-white">
+            <p className="text-precio tabular-nums">
+              {precio.principal}
+              {precio.segundo ? (
+                <span className="ml-2 text-base font-semibold text-sobre-oscuro-suave">{precio.segundo}</span>
+              ) : null}
+            </p>
+            <p className="mt-1.5 truncate font-display text-xl font-semibold sm:text-2xl">{casa.titulo}</p>
+            {lugar ? <p className="mt-1 truncate text-sm text-sobre-oscuro">{lugar}</p> : null}
+          </div>
+          <span
+            aria-hidden="true"
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-superficie text-marca-oscuro transition-transform duration-300 group-hover:translate-x-1"
+          >
+            <IconoFlecha className="h-5 w-5" />
+          </span>
+        </div>
+      </Link>
     </div>
   );
 }

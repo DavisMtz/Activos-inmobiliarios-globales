@@ -77,6 +77,43 @@
      en columnas. Se usa como `max-w-sitio`, siempre con `px-5 lg:px-10`. */
   --container-sitio: 90rem;
 
+  /* ─── Entrada de la primera pantalla ──────────────────────────────
+     CSS y no GSAP: GSAP llega 1-2 s después del primer pintado, y animar lo
+     que ya se ve lo pinta, lo esconde y lo vuelve a sacar. Esto corre desde el
+     primer pintado, sin JavaScript. Se usa siempre con `motion-safe:`, así que
+     con «menos movimiento» no hay animación ni retraso.
+     El titular solo se desliza y NUNCA se transparenta: es el LCP, y Chrome no
+     cuenta un elemento en opacidad 0 hasta que se ve. */
+  --ease-entrada: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-entrada: entrada 0.6s var(--ease-entrada) both;
+  --animate-entrada-titular: entrada-titular 0.8s var(--ease-entrada) both;
+  --animate-entrada-foto: entrada-foto 1s var(--ease-entrada) both;
+  --animate-entrada-bloque: entrada-bloque 0.9s var(--ease-entrada) both;
+
+  @keyframes entrada {
+    from {
+      opacity: 0;
+      transform: translateY(0.875rem);
+    }
+  }
+  @keyframes entrada-titular {
+    from {
+      transform: translateY(1.125rem);
+    }
+  }
+  /* La foto se asienta: llega un poco grande y se acomoda en su marco. */
+  @keyframes entrada-foto {
+    from {
+      transform: scale(1.08);
+    }
+  }
+  /* El bloque vino sale de detrás de la foto hasta su desfase. */
+  @keyframes entrada-bloque {
+    from {
+      translate: 0 0;
+    }
+  }
+
   /* ─── Profundidad ─────────────────────────────────────────────────
      Con desplazamiento y desenfoque suave: un halo sin desplazamiento es
      decoración, no profundidad. */
