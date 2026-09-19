@@ -34,6 +34,11 @@ const BASE = values.base.replace(/\/+$/, "");
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
 const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-el-prado-4"];
+/**
+ * `/entregas` solo existe con alguna publicada (si no, 404): se revisa cuando
+ * responde. Para cubrirla, correr antes `verificar:entregas --local --dejar`.
+ */
+const RUTAS_OPCIONALES = ["/entregas"];
 
 /** Lo que anima `app/components/publico/movimiento.ts`. */
 const SELECTOR_ANIMADO =
@@ -142,6 +147,11 @@ async function revisar(cdp, ruta, reducido) {
 }
 
 let fallas = 0;
+for (const ruta of RUTAS_OPCIONALES) {
+  const r = await fetch(BASE + ruta).catch(() => null);
+  if (r?.status === 200) RUTAS.push(ruta);
+  else console.log(`  · ${ruta} no responde 200 (${r?.status ?? "sin respuesta"}): se omite`);
+}
 
 for (const reducido of [false, true]) {
   console.log(`\n=== ${reducido ? "CON «menos movimiento» (la animación no debe correr)" : "Movimiento normal"} ===`);

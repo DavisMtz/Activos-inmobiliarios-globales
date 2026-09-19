@@ -40,6 +40,8 @@ export type EntregaDelPanel = {
   aceptadoEn: string | null;
   enviadoEn: string | null;
   enlaceExpira: string | null;
+  /** Calculado en el servidor: comparar fechas al pintar daría otra cosa al hidratar. */
+  enlaceVencido: boolean;
   creadaEn: string;
   /** Tiene algo que se pueda publicar con los permisos que dio el cliente. */
   publicable: boolean;
@@ -107,6 +109,7 @@ export async function leerEntregasDelPanel(db: D1Database, cloudName: string): P
       aceptadoEn: fila.aceptado_en,
       enviadoEn: fila.enviado_en,
       enlaceExpira: fila.token_expira,
+      enlaceVencido: !fila.enviado_en && (!fila.token_expira || fila.token_expira < ahora()),
       creadaEn: fila.creado_en,
       publicable:
         Boolean(fila.enviado_en) &&

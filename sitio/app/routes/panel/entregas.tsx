@@ -286,7 +286,7 @@ function FichaDeEntrega({ entrega }: { entrega: EntregaDelPanel }) {
           <p className="mt-1 text-sm text-texto-suave">
             {respondio
               ? `Contestó el ${fecha(entrega.enviadoEn)}`
-              : entrega.enlaceExpira && entrega.enlaceExpira < new Date().toISOString()
+              : entrega.enlaceVencido
                 ? "Su enlace ya venció: genera otro."
                 : `Creada el ${fecha(entrega.creadaEn)} · el enlace vence el ${fecha(entrega.enlaceExpira)}`}
           </p>
