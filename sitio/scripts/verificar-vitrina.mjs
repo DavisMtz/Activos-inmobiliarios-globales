@@ -68,6 +68,10 @@ async function abrirChrome() {
     (await cdp("Runtime.evaluate", { expression: expresion, returnByValue: true, awaitPromise: true })).result?.result?.value;
   await cdp("Page.enable");
   await cdp("Runtime.enable");
+  // El paso 8 abre una ficha: en producción eso contaría como una visita de
+  // verdad en las métricas del panel. Aquí no se registra ningún evento.
+  await cdp("Network.enable");
+  await cdp("Network.setBlockedURLs", { urls: ["*/api/eventos*"] });
   // Sin la bienvenida (sale una vez por pestaña): no es lo que se prueba.
   await cdp("Page.addScriptToEvaluateOnNewDocument", { source: "try{sessionStorage.setItem('aig:bienvenida','1')}catch(e){}" });
   return { cdp, ev, errores, cerrar: () => (ws.close(), chrome.kill()) };

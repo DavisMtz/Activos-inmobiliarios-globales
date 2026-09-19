@@ -21,7 +21,7 @@ Para enseñarle la propuesta al dueño (PLAN §15, F5). Todo lo que se enseña a
 
 | Min. | Qué enseñar | Qué decir |
 |---|---|---|
-| 0:00 | **Portada** en incógnito: la bienvenida, el buscador y la vitrina con una casa real | «Son las 188 casas de la página actual, pasadas con sus 3,241 fotos.» |
+| 0:00 | **Portada** en incógnito: la bienvenida, el buscador y la vitrina, que pasa sola por cinco casas reales (una por colonia; se detiene con el ratón encima o con su botón de pausa) | «Son las 188 casas de la página actual, pasadas con sus 3,241 fotos.» Si preguntan cuáles salen ahí: las que el equipo marque como destacadas en el panel; mientras no haya, las más recientes. |
 | 0:45 | **Buscar** por precio y colonia; cambiar a renta | «El buscador de hoy solo llega a un millón y 181 casas cuestan más. Este llega a $65,000,000 y los filtros quedan en la dirección, así que una búsqueda se puede mandar por WhatsApp.» |
 | 1:45 | **Ficha** de una casa: galería, precio, medidas y la **clave** (AIG-0123) | «La clave sirve para identificarla por teléfono.» |
 | 2:30 | El botón de **WhatsApp** (sin enviar): el mensaje ya dice título, clave y enlace | «Hoy el mensaje es genérico y no se sabe qué casa era.» |
@@ -35,7 +35,7 @@ Para enseñarle la propuesta al dueño (PLAN §15, F5). Todo lo que se enseña a
 | 4:00 | **Inicio** del panel y el menú | «Cada quien entra con su correo; la primera vez, con una contraseña temporal que el sistema obliga a cambiar.» |
 | 4:30 | **Prospectos:** el que se acaba de mandar, con su casa; asignarlo, cambiarle el estado, una nota y «Contestar por WhatsApp» | «Un asesor solo ve los suyos. Esto se descarga en Excel.» |
 | 5:30 | **Subir una casa:** pegar el texto de Facebook y pulsar «Leer el texto» | «Llena precio, recámaras, baños y metros; lo que llenó queda marcado para que alguien lo confirme.» |
-| 6:30 | Guardar, **subir fotos desde el celular** y **publicar** | «Lo que sube un asesor queda en revisión y lo publica el director o contenido. Sin precio o sin foto, no deja publicar y dice qué falta.» |
+| 6:30 | Guardar, **subir fotos desde el celular** y **publicar** | «Lo que sube un asesor queda en revisión y lo publica el director o contenido. Sin precio o sin foto, no deja publicar y dice qué falta.» Con la casilla **Destacada**, la casa pasa a la vitrina de la portada (caben cinco). |
 | 7:30 | En una casa: **marcarla como apartada o vendida** | «Apartada sigue en el sitio, marcada; vendida o rentada deja de salir en las búsquedas (su enlace sigue abriendo). Hoy no hay manera de hacerlo.» |
 | 8:00 | **Métricas:** vistas y clics de WhatsApp por casa | «Se ve qué casas mueven y cuáles no.» |
 | 8:30 | **Configuración:** el teléfono, el WhatsApp y las redes | «Se cambian aquí y se ven en todo el sitio, sin pedírselo a nadie.» |
