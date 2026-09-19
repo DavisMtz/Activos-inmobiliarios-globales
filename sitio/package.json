@@ -22,6 +22,7 @@
     "verificar:f3": "node scripts/verificar-f3.mjs",
     "verificar:f3-navegador": "node scripts/verificar-f3-navegador.mjs",
     "verificar:f4": "node scripts/verificar-f4.mjs",
+    "verificar:entregas": "node scripts/verificar-entregas.mjs",
     "capturar": "node scripts/capturar.mjs",
     "fichas:descargar": "node scripts/descargar-fichas.mjs",
     "sembrar": "node scripts/sembrar-desde-wordpress.mjs",

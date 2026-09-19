@@ -1,7 +1,7 @@
 /**
- * Servicios, testimonios y preguntas (PLAN §12). Las tres listas se manejan
- * igual, así que hay una implementación y se monta tres veces, cada una en su
- * ruta: `/servicios`, `/testimonios`, `/preguntas`.
+ * Servicios y preguntas (PLAN §12). Las dos listas se manejan igual, así que
+ * hay una implementación y se monta dos veces: `/servicios` y `/preguntas`.
+ * Los testimonios se volvieron «Entregas» (`./entregas.ts`).
  */
 
 import { Hono } from "hono";

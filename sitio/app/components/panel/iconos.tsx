@@ -64,6 +64,15 @@ export const IconoContenido = ({ className }: Props) => (
   </Marco>
 );
 
+/** Un regalo: al entregar una casa se lleva un obsequio y se toma la foto. */
+export const IconoEntregas = ({ className }: Props) => (
+  <Marco className={className}>
+    <rect x="3.75" y="8.5" width="16.5" height="4" rx="1" />
+    <path d="M5.5 12.5v7.75h13V12.5M12 8.5v11.75" />
+    <path d="M12 8.5c-1.6-3.6-5.4-3.9-5.4-1.6 0 1.3 2 1.6 5.4 1.6Zm0 0c1.6-3.6 5.4-3.9 5.4-1.6 0 1.3-2 1.6-5.4 1.6Z" />
+  </Marco>
+);
+
 export const IconoConfiguracion = ({ className }: Props) => (
   <Marco className={className}>
     <path d="M4 7h16M4 12h16M4 17h16" />

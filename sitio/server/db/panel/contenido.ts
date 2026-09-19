@@ -1,8 +1,10 @@
 /**
- * Servicios, testimonios y preguntas (PLAN §11.2, pantalla «Contenido»). Las
- * tres se editan igual: una lista de fichas con orden y un interruptor de
+ * Servicios y preguntas (PLAN §11.2, pantalla «Contenido»). Las
+ * dos se editan igual: una lista de fichas con orden y un interruptor de
  * «se ve / no se ve». Por eso hay UNA implementación y una tabla que dice en
- * qué se diferencian, en vez de tres módulos casi iguales.
+ * qué se diferencian. Los testimonios eran la tercera lista; desde el
+ * 19/09/2026 son las «Entregas» (`server/db/panel/entregas.ts`), porque llevan
+ * fotos y el permiso del cliente.
  *
  * Los nombres de tabla y de columna salen SOLO de esa tabla de aquí abajo:
  * nunca de lo que mande el navegador.
@@ -13,7 +15,7 @@ import { sentenciaBitacora } from "../../bitacora";
 import { ahora } from "../../fechas";
 import { exito, fallo, type Resultado } from "../../resultado";
 
-export const TIPOS_DE_CONTENIDO = ["servicio", "testimonio", "pregunta"] as const;
+export const TIPOS_DE_CONTENIDO = ["servicio", "pregunta"] as const;
 export type TipoDeContenido = (typeof TIPOS_DE_CONTENIDO)[number];
 
 type Especificacion = {
@@ -36,16 +38,6 @@ const ESPECIFICACION: Record<TipoDeContenido, Especificacion> = {
     conOrden: true,
     conFecha: false,
     etiqueta: "servicio",
-  },
-  testimonio: {
-    tabla: "testimonios",
-    campos: [
-      ["nombre", 80],
-      ["texto", 600],
-    ],
-    conOrden: false,
-    conFecha: true,
-    etiqueta: "testimonio",
   },
   pregunta: {
     tabla: "preguntas",
@@ -90,10 +82,8 @@ export async function leerElementos(db: D1Database, tipo: TipoDeContenido): Prom
 export async function leerTodoElContenido(
   db: D1Database,
 ): Promise<Record<TipoDeContenido, Elemento[]>> {
-  const [servicios, testimonios, preguntas] = await Promise.all(
-    TIPOS_DE_CONTENIDO.map((tipo) => leerElementos(db, tipo)),
-  );
-  return { servicio: servicios, testimonio: testimonios, pregunta: preguntas };
+  const [servicios, preguntas] = await Promise.all(TIPOS_DE_CONTENIDO.map((tipo) => leerElementos(db, tipo)));
+  return { servicio: servicios, pregunta: preguntas };
 }
 
 const SIN_PERMISO = "No tienes permiso para cambiar los textos del sitio.";

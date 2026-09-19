@@ -1,6 +1,6 @@
 import { ahora } from "./fechas";
 
-export type Entidad = "propiedad" | "foto" | "configuracion" | "contenido" | "usuario" | "prospecto" | "sistema";
+export type Entidad = "propiedad" | "foto" | "configuracion" | "contenido" | "usuario" | "prospecto" | "sistema" | "entrega";
 
 /**
  * De dónde sale el id de la entidad: un texto, o una consulta cuando el id

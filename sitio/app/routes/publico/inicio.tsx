@@ -1,10 +1,12 @@
 import { Form, Link } from "react-router";
 import { leerConfiguracion, leerServicios } from "../../../server/db/configuracion";
+import { leerEntregasPublicas } from "../../../server/db/entregas";
 import { destacadas, leerCatalogo, type Tarjeta } from "../../../server/db/propiedades";
 import { ETIQUETA_TIPO_PLURAL, rutaDeListado } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
+import { TarjetaEntrega } from "../../components/publico/entregas";
 import { Isotipo } from "../../components/publico/isotipo";
 import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio, useFotoQueViaja } from "../../components/publico/piezas";
 import { contextoServidor } from "../../contexto";
@@ -14,23 +16,25 @@ import type { Route } from "./+types/inicio";
  * Portada (PLAN §10.1). Manda el catálogo: buscador de verdad arriba, casas
  * reales enseguida y accesos por tipo con conteos reales.
  *
- * Lo que NO lleva, a propósito (PLAN §0.4): testimonios (los del sitio actual
- * son «Lorem ipsum» firmados por «James Oliver»), cifras de ventas, premios ni
- * fotos de equipo. Nada de eso existe. La foto grande es la portada de una
- * casa real del catálogo, no una imagen de banco como la de hoy.
+ * Lo que NO lleva, a propósito (PLAN §0.4): testimonios inventados (los del
+ * sitio actual son «Lorem ipsum» firmados por «James Oliver»), cifras de
+ * ventas, premios ni fotos de equipo. Las «Entregas» sí salen, porque son de
+ * clientes reales que dieron su permiso, y sin ninguna aprobada la sección no
+ * se pinta. La foto grande es la portada de una casa real del catálogo.
  */
 
 export async function loader({ context }: Route.LoaderArgs) {
   const { servicios } = context.get(contextoServidor);
   const { config, db } = servicios;
 
-  const [catalogo, casas, configuracion, listaServicios] = await Promise.all([
+  const [catalogo, casas, configuracion, listaServicios, entregas] = await Promise.all([
     leerCatalogo(db),
     // 7 y no 6: la primera va a la vitrina de arriba y las otras seis a «Lo
     // más reciente», para no enseñar la misma casa dos veces seguidas.
     destacadas(db, config.cloudinary.cloudName, 7),
     leerConfiguracion(db),
     leerServicios(db),
+    leerEntregasPublicas(db, config.cloudinary.cloudName, 3),
   ]);
 
   return {
@@ -40,6 +44,7 @@ export async function loader({ context }: Route.LoaderArgs) {
     servicios: listaServicios.slice(0, 6).map((s) => ({ id: s.id, titulo: s.titulo })),
     whatsapp: enlaceWhatsApp(configuracion.whatsapp.numero, configuracion.whatsapp.plantillaGeneral),
     nombreNegocio: config.nombreNegocio,
+    entregas,
   };
 }
 
@@ -56,7 +61,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function Inicio({ loaderData }: Route.ComponentProps) {
-  const { catalogo, casas, portada, servicios, whatsapp } = loaderData;
+  const { catalogo, casas, portada, servicios, whatsapp, entregas } = loaderData;
   const principal = casas[0]?.foto ? casas[0] : null;
   const recientes = (principal ? casas.slice(1) : casas).slice(0, 6);
   const desde = precioMXN(catalogo.rangos.venta.min);
@@ -178,6 +183,34 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
                     Antes la primera tarjeta era esa misma casa y bajaba la misma
                     foto; ahora es otra, y en el celular queda bajo el pliegue. */}
                 <TarjetaPropiedad item={casa} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {/* ─── Entregas: clientes reales, con su permiso ─── */}
+      {entregas.length ? (
+        <section className="mx-auto max-w-sitio px-5 pb-14 sm:pb-20 lg:px-10">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-seccion text-tinta">Ya estrenaron casa</h2>
+              <p className="mt-2 text-texto-suave">Familias a las que les entregamos su casa, contadas por ellas.</p>
+            </div>
+            <Link
+              to="/entregas"
+              viewTransition
+              className="flex items-center gap-2 font-bold text-marca underline underline-offset-4"
+            >
+              Ver las entregas
+              <IconoFlecha className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <ul data-animar-lista className="mt-6 grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {entregas.map((entrega) => (
+              <li key={entrega.id}>
+                <TarjetaEntrega entrega={entrega} />
               </li>
             ))}
           </ul>

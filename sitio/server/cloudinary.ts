@@ -67,9 +67,23 @@ export type FirmaDeSubida = {
  * Null si faltan credenciales: el panel enseña «Configura Cloudinary» y el
  * resto del formulario sigue funcionando (PLAN §13.2, punto 6).
  */
-export async function firmaDeSubida(nube: NubeDeFotos, clave: string): Promise<FirmaDeSubida | null> {
+export const firmaDeSubida = (nube: NubeDeFotos, clave: string): Promise<FirmaDeSubida | null> =>
+  firmaParaCarpeta(nube, carpetaDePropiedad(nube, clave));
+
+/**
+ * `aig/entregas/3f9c…`: una carpeta por entrega, aparte de las casas. El nombre
+ * es al azar y vive en `testimonios.carpeta`: con el id, la base local y la de
+ * producción (que comparten nube) escribían en las mismas carpetas.
+ */
+export const carpetaDeEntrega = (nube: NubeDeFotos, carpeta: string): string => `${nube.carpeta}/entregas/${carpeta}`;
+
+/** Lo mismo que `publicIdEnCarpeta`, para la carpeta de una entrega. */
+export const publicIdEnEntrega = (nube: NubeDeFotos, carpeta: string, publicId: string): boolean =>
+  /^[0-9a-f]{16}$/.test(carpeta) && publicId.startsWith(`${carpetaDeEntrega(nube, carpeta)}/`) && publicId.length < 200;
+
+/** Firma una subida a una carpeta que ya decidió el servidor. */
+export async function firmaParaCarpeta(nube: NubeDeFotos, folder: string): Promise<FirmaDeSubida | null> {
   if (!nube.configurado) return null;
-  const folder = carpetaDePropiedad(nube, clave);
   const publicId = nombreAlAzar();
   const timestamp = String(Math.floor(Date.now() / 1000));
   // `overwrite=false` no va firmado a propósito: el nombre es nuevo cada vez.

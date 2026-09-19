@@ -3,6 +3,7 @@ import { useRevalidator } from "react-router";
 import type { FotoDelPanel } from "../../../server/db/panel/propiedades";
 import { IconoAdelante, IconoAtencion, IconoAtras, IconoMas, IconoPortada } from "./iconos";
 import { Aviso, Bloque, Boton, Etiqueta, Vacio } from "./piezas";
+import { pedirJson, prepararArchivo, subirACloudinary, type Firma } from "../comun/subida";
 
 /**
  * Fotos de una casa (PLAN §13.2). **El archivo no pasa por el Worker**: el
@@ -17,8 +18,6 @@ import { Aviso, Bloque, Boton, Etiqueta, Vacio } from "./piezas";
  * demás siguen y no se repite ninguna que ya haya subido.
  */
 
-const MAXIMO_LADO = 2000;
-const CALIDAD = 0.85;
 const A_LA_VEZ = 3;
 const INTENTOS = 3;
 /** Menos de esto es casi siempre una foto reenviada por WhatsApp. */
@@ -30,60 +29,6 @@ type EnMarcha = {
   estado: "esperando" | "preparando" | "subiendo" | "lista" | "error";
   mensaje?: string;
 };
-
-type Firma = {
-  url: string;
-  cloudName: string;
-  apiKey: string;
-  timestamp: string;
-  folder: string;
-  publicId: string;
-  signature: string;
-};
-
-/**
- * Reduce la foto sin perder la orientación ni reventar la memoria del teléfono.
- * Si el navegador no sabe decodificarla (HEIC en Chrome), se sube tal cual:
- * Cloudinary sí lo entiende.
- */
-async function prepararArchivo(archivo: File): Promise<Blob> {
-  if (!archivo.type.startsWith("image/")) return archivo;
-  try {
-    const bitmap = await createImageBitmap(archivo);
-    const escala = Math.min(1, MAXIMO_LADO / Math.max(bitmap.width, bitmap.height));
-    if (escala === 1 && archivo.size < 3_000_000) {
-      bitmap.close();
-      return archivo;
-    }
-    const ancho = Math.round(bitmap.width * escala);
-    const alto = Math.round(bitmap.height * escala);
-    const lienzo = document.createElement("canvas");
-    lienzo.width = ancho;
-    lienzo.height = alto;
-    const contexto = lienzo.getContext("2d");
-    if (!contexto) {
-      bitmap.close();
-      return archivo;
-    }
-    contexto.drawImage(bitmap, 0, 0, ancho, alto);
-    bitmap.close();
-    const reducida = await new Promise<Blob | null>((listo) => lienzo.toBlob(listo, "image/jpeg", CALIDAD));
-    return reducida && reducida.size < archivo.size ? reducida : archivo;
-  } catch {
-    return archivo;
-  }
-}
-
-async function pedirJson(ruta: string, cuerpo: unknown): Promise<Record<string, unknown>> {
-  const r = await fetch(ruta, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cuerpo),
-  });
-  const datos = (await r.json().catch(() => ({}))) as Record<string, unknown>;
-  if (!r.ok) throw new Error(typeof datos.mensaje === "string" ? datos.mensaje : `Error ${r.status}`);
-  return datos;
-}
 
 export function FotosDeLaCasa({
   propiedadId,
@@ -114,23 +59,7 @@ export function FotosDeLaCasa({
 
           cambiar(item.id, { estado: "subiendo" });
           const firma = (await pedirJson("/api/panel/fotos/firma", { propiedad_id: propiedadId })) as unknown as Firma;
-
-          // Solo los parámetros firmados, y con el mismo valor: uno de más y
-          // Cloudinary rechaza la firma.
-          const cuerpo = new FormData();
-          cuerpo.append("file", listo, archivo.name);
-          cuerpo.append("api_key", firma.apiKey);
-          cuerpo.append("timestamp", firma.timestamp);
-          cuerpo.append("folder", firma.folder);
-          cuerpo.append("public_id", firma.publicId);
-          cuerpo.append("signature", firma.signature);
-
-          const respuesta = await fetch(firma.url, { method: "POST", body: cuerpo });
-          const subida = (await respuesta.json().catch(() => ({}))) as Record<string, unknown>;
-          if (!respuesta.ok) {
-            const detalle = (subida.error as { message?: string } | undefined)?.message;
-            throw new Error(detalle ?? `Cloudinary respondió ${respuesta.status}`);
-          }
+          const subida = await subirACloudinary(firma, listo, archivo.name);
 
           await pedirJson(`/api/panel/propiedades/${propiedadId}/fotos`, {
             public_id: subida.public_id,

@@ -2,6 +2,12 @@ import { Hono, type Context } from "hono";
 import { leerFicha, leerCatalogo, listar } from "../db/propiedades";
 import { esTipoEvento, guardarEvento } from "../db/eventos";
 import { guardarProspecto, revisarProspecto, TIPOS_PROSPECTO, type TipoProspecto } from "../db/prospectos";
+import {
+  firmaParaElCliente,
+  quitarFotoDelCliente,
+  registrarFotoDelCliente,
+} from "../db/entregas";
+import { borrarDeCloudinary } from "../cloudinary";
 import { leerFiltros } from "../../shared/filtros";
 import { contextoDePeticion } from "../http";
 import type { EntornoHono } from "./tipos";
@@ -85,6 +91,52 @@ apiPublica.post("/prospectos", async (c) => {
   }
 
   await guardarProspecto(servicios.db, revision.valor);
+  return c.json({ ok: true });
+});
+
+// ─── Fotos del cliente en su entrega ──────────────────────────────
+
+/**
+ * Lo que hace el cliente desde su enlace personal (F5). El enlace ES la llave
+ * y el freno: sin él, 404; con él, hasta `FOTOS_DEL_CLIENTE` fotos y solo
+ * mientras no haya enviado su respuesta. Por eso no pasan por el límite por IP
+ * de los formularios, que con cuatro fotos (ocho peticiones) ya saltaría.
+ * La respuesta en sí (comentario y permisos) va por la acción de la página.
+ */
+const falloDeEntrega = (c: Context<EntornoHono>, r: { estado: number; error: string; mensaje: string }) =>
+  c.json({ error: r.error, mensaje: r.mensaje }, r.estado as 400 | 404 | 409);
+
+apiPublica.post("/entregas/:token/firma", async (c) => {
+  const { db, config } = c.var.servicios;
+  const r = await firmaParaElCliente(db, config.cloudinary, c.req.param("token"));
+  return r.ok ? c.json({ ok: true, ...r.valor }) : falloDeEntrega(c, r);
+});
+
+apiPublica.post("/entregas/:token/fotos", async (c) => {
+  const { db, config } = c.var.servicios;
+  let datos: Record<string, unknown> = {};
+  try {
+    datos = (await c.req.json()) as Record<string, unknown>;
+  } catch {
+    return c.json({ error: "datos_invalidos", mensaje: "No pudimos leer la foto." }, 400);
+  }
+  const r = await registrarFotoDelCliente(
+    db,
+    config.cloudinary,
+    c.req.param("token"),
+    { publicId: datos.public_id, version: datos.version, signature: datos.signature, ancho: datos.width, alto: datos.height },
+    (promesa) => c.executionCtx.waitUntil(promesa),
+  );
+  return r.ok ? c.json({ ok: true, id: r.valor.id }) : falloDeEntrega(c, r);
+});
+
+apiPublica.delete("/entregas/:token/fotos/:id", async (c) => {
+  const { db, config } = c.var.servicios;
+  const id = Number(c.req.param("id"));
+  if (!Number.isInteger(id) || id <= 0) return c.json({ error: "no_encontrado", mensaje: "Esa foto ya no está." }, 404);
+  const r = await quitarFotoDelCliente(db, c.req.param("token"), id);
+  if (!r.ok) return falloDeEntrega(c, r);
+  c.executionCtx.waitUntil(borrarDeCloudinary(config.cloudinary, r.valor.publicId));
   return c.json({ ok: true });
 });
 

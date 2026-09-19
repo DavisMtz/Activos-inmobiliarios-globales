@@ -6,6 +6,7 @@ import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-no
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigation } from "react-router";
 import { leerConfigDelSitio } from "../../../server/db/configuracion";
+import { hayEntregasPublicas } from "../../../server/db/entregas";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import {
   IconoCorreo,
@@ -44,16 +45,27 @@ import type { Route } from "./+types/marco";
  * PNG invertido, que volvería gris el isotipo rojo.
  */
 
-const NAVEGACION = [
+type Enlace = { a: string; texto: string };
+
+/**
+ * «Entregas» solo aparece cuando hay alguna publicada: sin ninguna, su página
+ * da 404 y un menú que lleva a una página vacía de testimonios dice lo
+ * contrario de lo que busca.
+ */
+const navegacionDel = (hayEntregas: boolean): Enlace[] => [
   { a: "/propiedades", texto: "Propiedades" },
   { a: "/servicios", texto: "Servicios" },
+  ...(hayEntregas ? [{ a: "/entregas", texto: "Entregas" }] : []),
   { a: "/nosotros", texto: "Nosotros" },
   { a: "/contacto", texto: "Contacto" },
 ];
 
 export async function loader({ context }: Route.LoaderArgs) {
   const { servicios } = context.get(contextoServidor);
-  const { contacto, whatsapp, redes } = await leerConfigDelSitio(servicios.db);
+  const [{ contacto, whatsapp, redes }, hayEntregas] = await Promise.all([
+    leerConfigDelSitio(servicios.db),
+    hayEntregasPublicas(servicios.db),
+  ]);
 
   return {
     nombreNegocio: servicios.config.nombreNegocio,
@@ -62,15 +74,19 @@ export async function loader({ context }: Route.LoaderArgs) {
     // El enlace ya armado: la plantilla y el número no tienen por qué viajar.
     whatsapp: enlaceWhatsApp(whatsapp.numero, whatsapp.plantillaGeneral),
     anio: new Date().getUTCFullYear(),
+    navegacion: navegacionDel(hayEntregas),
   };
 }
 
 export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
-  const { nombreNegocio, contacto, redes, whatsapp, anio } = loaderData;
+  const { nombreNegocio, contacto, redes, whatsapp, anio, navegacion } = loaderData;
   const { pathname } = useLocation();
   // En la ficha el botón flotante estorba: ahí WhatsApp vive en la barra de
   // acciones, pegada abajo, que es la que no tapa el precio.
   const enFicha = /^\/propiedades\/[^/]+$/.test(pathname);
+  // En la página del enlace de una entrega tapaba los campos del formulario
+  // en el celular, y ahí el cliente no viene a preguntar por nada.
+  const sinFlotante = enFicha || pathname.startsWith("/entrega/");
   const contenedor = useRef<HTMLDivElement>(null);
   // Solo si la PRIMERA página que se abre es la portada: el inicializador corre
   // una vez, igual en el servidor y al hidratar, y el marco no se vuelve a
@@ -141,15 +157,15 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
           no en `root.tsx`: el panel no tiene por qué bajar la serif. */}
       <link rel="preload" as="font" type="font/woff2" href={fuenteFraunces} crossOrigin="anonymous" />
       <link rel="preload" as="font" type="font/woff2" href={fuenteNunito} crossOrigin="anonymous" />
-      <Cabecera nombreNegocio={nombreNegocio} />
+      <Cabecera nombreNegocio={nombreNegocio} navegacion={navegacion} />
 
       <main id="contenido" className="flex-1">
         <Outlet />
       </main>
 
-      <Pie nombreNegocio={nombreNegocio} contacto={contacto} redes={redes} anio={anio} />
+      <Pie nombreNegocio={nombreNegocio} contacto={contacto} redes={redes} anio={anio} navegacion={navegacion} />
 
-      {whatsapp && !enFicha ? (
+      {whatsapp && !sinFlotante ? (
         <a
           href={whatsapp}
           target="_blank"
@@ -166,7 +182,7 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 
 // ─── Cabecera ─────────────────────────────────────────────────────
 
-function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
+function Cabecera({ nombreNegocio, navegacion: NAVEGACION }: { nombreNegocio: string; navegacion: Enlace[] }) {
   const { pathname } = useLocation();
   const navegacion = useNavigation();
   // Solo cuando se va a OTRA página: enviar el formulario de contacto también
@@ -267,11 +283,13 @@ function Pie({
   contacto,
   redes,
   anio,
+  navegacion: NAVEGACION,
 }: {
   nombreNegocio: string;
   contacto: Contacto;
   redes: Redes;
   anio: number;
+  navegacion: Enlace[];
 }) {
   // El sitio actual enseña un número y su enlace marca OTRO. Aquí el href sale
   // del mismo texto que se lee, así que no pueden separarse.

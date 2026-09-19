@@ -118,6 +118,8 @@ export function esRutaDeSistema(ruta: string): boolean {
   return (
     ruta.startsWith("/api") ||
     ruta.startsWith("/panel") ||
+    // El enlace personal de una entrega: su llave va en la ruta y no se toca.
+    ruta.startsWith("/entrega/") ||
     ruta.startsWith("/assets/") ||
     ruta.startsWith("/marca/") ||
     ruta.startsWith("/.well-known/") ||

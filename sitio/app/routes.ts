@@ -9,6 +9,9 @@ export default [
     route("servicios", "routes/publico/servicios.tsx"),
     route("nosotros", "routes/publico/nosotros.tsx"),
     route("contacto", "routes/publico/contacto.tsx"),
+    route("entregas", "routes/publico/entregas.tsx"),
+    // El enlace personal que el equipo le manda al cliente (nunca se enlaza).
+    route("entrega/:token", "routes/publico/entrega.tsx"),
     route("aviso-de-privacidad", "routes/publico/aviso.tsx"),
   ]),
 
@@ -25,6 +28,7 @@ export default [
       route("prospectos", "routes/panel/prospectos.tsx"),
       route("metricas", "routes/panel/metricas.tsx"),
       route("contenido", "routes/panel/contenido.tsx"),
+      route("entregas", "routes/panel/entregas.tsx"),
       route("configuracion", "routes/panel/configuracion.tsx"),
       route("usuarios", "routes/panel/usuarios.tsx"),
       route("bitacora", "routes/panel/bitacora.tsx"),

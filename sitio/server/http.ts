@@ -40,6 +40,16 @@ export function aplicarCabeceras(respuesta: Response, url: URL, config: Config):
   h.set("X-Content-Type-Options", "nosniff");
   h.set("Referrer-Policy", "strict-origin-when-cross-origin");
 
+  // El enlace personal de una entrega lleva su llave en la ruta: que no quede
+  // en ninguna caché, que no viaje en el `Referer` a Cloudinary (las fotos de
+  // esa página se piden a otro dominio) y que ningún buscador la guarde.
+  const enlaceDeEntrega = url.pathname.startsWith("/entrega/") || url.pathname.startsWith("/api/entregas/");
+  if (enlaceDeEntrega) {
+    h.set("Cache-Control", "no-store");
+    h.set("Referrer-Policy", "no-referrer");
+    h.set("X-Robots-Tag", "noindex, nofollow");
+  }
+
   if (panel) {
     h.set("Cache-Control", "no-store");
     // Nadie tiene por qué meter el panel en un iframe (clickjacking).

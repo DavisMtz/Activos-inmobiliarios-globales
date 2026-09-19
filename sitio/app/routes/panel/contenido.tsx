@@ -24,7 +24,7 @@ export function meta() {
 
 /**
  * Los textos del sitio (PLAN §11.2). Nada de esto vive en el código: la
- * portada, el «nosotros», los servicios, las preguntas y los testimonios se
+ * portada, el «nosotros», los servicios y las preguntas se
  * escriben aquí y el sitio los lee de la base.
  *
  * Todo funciona sin JavaScript: cada ficha es un `<details>` con su propio
@@ -92,7 +92,7 @@ export async function action({ request, context }: Route.ActionArgs) {
       : data({ error: r.mensaje }, { status: r.estado });
   }
 
-  // ─── Servicios, preguntas y testimonios ──────────────────────
+  // ─── Servicios y preguntas ───────────────────────────────────
   const tipo = String(campo("tipo") ?? "");
   if (!esTipoDeContenido(tipo)) return data({ error: "No entendimos qué guardar." }, { status: 400 });
   const id = Number(campo("id") ?? 0);
@@ -145,16 +145,6 @@ const DE_CADA_TIPO: Record<TipoDeContenido, CamposDeTipo> = {
     conOrden: true,
     descripcion: "Lo que más preguntan por teléfono, contestado una sola vez.",
     vacio: "Todavía no hay ninguna. Agrega la que más te repitan esta semana.",
-  },
-  testimonio: {
-    titulo: "Testimonios",
-    campos: [
-      ["nombre", "Quién lo dice"],
-      ["texto", "Lo que dice"],
-    ],
-    conOrden: false,
-    descripcion: "Solo testimonios reales: no se inventan.",
-    vacio: "Cuando alguien te escriba algo bueno, pídele permiso y ponlo aquí.",
   },
 };
 
