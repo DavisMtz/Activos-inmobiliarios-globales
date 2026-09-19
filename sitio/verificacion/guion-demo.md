@@ -38,7 +38,7 @@ Para enseñarle la propuesta al dueño (PLAN §15, F5). Todo lo que se enseña a
 | 6:30 | Guardar, **subir fotos desde el celular** y **publicar** | «Lo que sube un asesor queda en revisión y lo publica el director o contenido. Sin precio o sin foto, no deja publicar y dice qué falta.» Con la casilla **Destacada**, la casa pasa a la vitrina de la portada (caben cinco). |
 | 7:30 | En una casa: **marcarla como apartada o vendida** | «Apartada sigue en el sitio, marcada; vendida o rentada deja de salir en las búsquedas (su enlace sigue abriendo). Hoy no hay manera de hacerlo.» |
 | 8:00 | **Métricas:** vistas y clics de WhatsApp por casa | «Se ve qué casas mueven y cuáles no.» |
-| 8:30 | **Configuración:** el teléfono, el WhatsApp y las redes | «Se cambian aquí y se ven en todo el sitio, sin pedírselo a nadie.» |
+| 8:30 | **Configuración:** el teléfono, el WhatsApp y las redes. **Contenido:** una pregunta frecuente o un testimonio real, y verlo en la portada al recargar | «Se cambian aquí y se ven en todo el sitio, sin pedírselo a nadie.» Solo testimonios reales: el de «David Martínez» es de prueba. |
 | 9:00 | **Bitácora:** lo que se acaba de hacer, con quién y cuándo | «Queda registro de cada cambio de precio o de estado.» |
 
 ## 3. Cierre (1 minuto)
