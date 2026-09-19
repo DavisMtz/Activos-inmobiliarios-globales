@@ -5,6 +5,8 @@
  *
  * La vitrina se llena en este orden:
  *
+ * 0. **La que abre la vitrina**, si el equipo la eligió en Panel › Contenido
+ *    («Casa de la foto principal»): va primero, aunque no sea reciente.
  * 1. **Las destacadas**, tal como las marcó el equipo en el panel, aunque
  *    sean de la misma colonia: son su decisión.
  * 2. **Las más recientes, una por colonia.** Medido el 18/09/2026: las cuatro
@@ -21,6 +23,8 @@
 export type ReglasPortada<T> = {
   enVitrina: number;
   recientes: number;
+  /** La casa elegida para abrir la vitrina (si la hay y tiene foto). */
+  preferida?: (casa: T) => boolean;
   destacada: (casa: T) => boolean;
   /** La colonia (o la ciudad, si no tiene): dos casas con la misma no van juntas en la vitrina. */
   zona: (casa: T) => string;
@@ -37,6 +41,12 @@ export function repartirPortada<T>(casas: readonly T[], reglas: ReglasPortada<T>
   };
   const cabe = () => elegidas.size < reglas.enVitrina;
 
+  // 0. La que abre la vitrina.
+  const preferida = reglas.preferida
+    ? casas.findIndex((casa) => reglas.preferida!(casa) && reglas.conFoto(casa))
+    : -1;
+  if (preferida >= 0 && cabe()) tomar(preferida);
+
   // 1. Las destacadas.
   casas.forEach((casa, i) => {
     if (cabe() && reglas.destacada(casa) && reglas.conFoto(casa)) tomar(i);
@@ -50,7 +60,10 @@ export function repartirPortada<T>(casas: readonly T[], reglas: ReglasPortada<T>
     if (cabe() && !elegidas.has(i) && reglas.conFoto(casa)) tomar(i);
   });
 
-  const vitrina = [...elegidas].sort((a, b) => a - b).map((i) => casas[i]);
+  // La elegida primero; las demás, en el orden de la consulta.
+  const vitrina = [...elegidas]
+    .sort((a, b) => (a === preferida ? -1 : b === preferida ? 1 : a - b))
+    .map((i) => casas[i]);
   const recientes = casas.filter((_, i) => !elegidas.has(i)).slice(0, reglas.recientes);
   return { vitrina, recientes };
 }

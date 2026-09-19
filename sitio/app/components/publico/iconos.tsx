@@ -102,6 +102,13 @@ export const IconoFlecha = ({ className }: Props) => (
   </Marco>
 );
 
+/** El «+» de las preguntas frecuentes: girado 45° es la «×» de cerrar. */
+export const IconoMas = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M12 5v14M5 12h14" />
+  </Marco>
+);
+
 // Pausa y reproducir van macizos, como en cualquier reproductor: es la forma
 // que la gente ya reconoce, y van chicos (14 px) dentro de su botón.
 export const IconoPausa = ({ className }: Props) => (

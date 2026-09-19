@@ -346,10 +346,13 @@ export async function listar(
  */
 const CANDIDATAS_PORTADA = 40;
 
+type FilaPortada = FilaTarjeta & { destacada: number };
+
 /**
  * Las de la portada: las de la vitrina, que van pasando de una en una, y las de
- * «Lo más reciente», sin repetir ninguna. Primero las marcadas a mano y, si no
- * hay (hoy son cero), las más recientes; el reparto está en
+ * «Lo más reciente», sin repetir ninguna. Abre la vitrina la «Casa de la foto
+ * principal» si el equipo la eligió en Panel › Contenido; después las marcadas
+ * a mano y, si no hay (hoy son cero), las más recientes; el reparto está en
  * `shared/portada.ts`. Las de la vitrina llevan también la foto de la galería.
  */
 export async function casasDePortada(
@@ -357,20 +360,41 @@ export async function casasDePortada(
   cloudName: string,
   cuantas: { vitrina: number; recientes: number },
 ): Promise<{ vitrina: Tarjeta[]; recientes: Tarjeta[] }> {
-  const { results } = await db
-    .prepare(
-      `SELECT ${CAMPOS_TARJETA}, p.destacada ${DESDE_TARJETA}
-        WHERE ${VISIBLES}
-        ORDER BY p.destacada DESC, COALESCE(p.publicada_en, p.creada_en) DESC, p.id DESC
-        LIMIT ?`,
-    )
-    .bind(CANDIDATAS_PORTADA)
-    .all<FilaTarjeta & { destacada: number }>();
+  const [consulta, portada] = await db.batch([
+    db
+      .prepare(
+        `SELECT ${CAMPOS_TARJETA}, p.destacada ${DESDE_TARJETA}
+          WHERE ${VISIBLES}
+          ORDER BY p.destacada DESC, COALESCE(p.publicada_en, p.creada_en) DESC, p.id DESC
+          LIMIT ?`,
+      )
+      .bind(CANDIDATAS_PORTADA),
+    // La casa elegida, en la MISMA ida a la base (el loader no espera a leer
+    // la configuración para pedir las casas). Con el JSON dañado, ninguna.
+    db.prepare(
+      `SELECT CASE WHEN json_valid(valor) THEN TRIM(json_extract(valor, '$.imagen_propiedad_clave')) END AS clave
+         FROM configuracion WHERE clave = 'portada'`,
+    ),
+  ]);
+  const filas = [...(consulta.results as FilaPortada[])];
+  const preferida = String((portada.results[0] as { clave?: unknown } | undefined)?.clave ?? "").toUpperCase() || null;
 
-  const candidatas = results.map((fila) => ({ fila, tarjeta: aTarjeta(fila, cloudName) }));
+  // Si la elegida no está entre las candidatas (es vieja), se pide sola: la
+  // clave es única. Si no está publicada, no sale; sin foto tampoco, que
+  // antepuesta acabaría encabezando «Lo más reciente».
+  if (preferida && !filas.some((fila) => fila.clave === preferida)) {
+    const sola = await db
+      .prepare(`SELECT ${CAMPOS_TARJETA}, p.destacada ${DESDE_TARJETA} WHERE ${VISIBLES} AND p.clave = ?`)
+      .bind(preferida)
+      .first<FilaPortada>();
+    if (sola && (sola.foto_public_id || sola.foto_url_origen)) filas.unshift(sola);
+  }
+
+  const candidatas = filas.map((fila) => ({ fila, tarjeta: aTarjeta(fila, cloudName) }));
   const reparto = repartirPortada(candidatas, {
     enVitrina: cuantas.vitrina,
     recientes: cuantas.recientes,
+    preferida: preferida ? ({ fila }) => fila.clave === preferida : undefined,
     destacada: ({ fila }) => fila.destacada === 1,
     zona: ({ tarjeta }) => tarjeta.zona,
     conFoto: ({ tarjeta }) => tarjeta.foto !== null,

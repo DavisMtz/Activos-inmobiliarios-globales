@@ -1,10 +1,11 @@
 import { Form, Link } from "react-router";
-import { leerConfiguracion, leerServicios } from "../../../server/db/configuracion";
+import { leerConfiguracion, leerPreguntas, leerServicios, leerTestimonios } from "../../../server/db/configuracion";
 import { casasDePortada, leerCatalogo } from "../../../server/db/propiedades";
 import { ETIQUETA_TIPO_PLURAL, rutaDeListado } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
+import { Antetitulo, Preguntas, Testimonios } from "../../components/publico/contenido-portada";
 import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
 import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
 import { contextoServidor } from "../../contexto";
@@ -14,23 +15,29 @@ import type { Route } from "./+types/inicio";
  * Portada (PLAN §10.1). Manda el catálogo: buscador de verdad arriba, casas
  * reales enseguida y accesos por tipo con conteos reales.
  *
- * Lo que NO lleva, a propósito (PLAN §0.4): testimonios (los del sitio actual
- * son «Lorem ipsum» firmados por «James Oliver»), cifras de ventas, premios ni
- * fotos de equipo. Nada de eso existe. La foto grande es la portada de una
- * casa real del catálogo, no una imagen de banco como la de hoy.
+ * Lo que NO lleva, a propósito (PLAN §0.4): cifras de ventas, premios ni fotos
+ * de equipo. Nada de eso existe. Los testimonios y las preguntas frecuentes
+ * salen SOLO si el equipo los escribe en Panel › Contenido (los del sitio
+ * anterior eran «Lorem ipsum» firmados por «James Oliver»). La foto grande es
+ * la portada de una casa real del catálogo, no una imagen de banco.
  */
+
+/** El titular cuando el equipo no escribió uno en el panel. */
+const TITULAR_POR_OMISION = "Comercialización, renta y financiamiento de inmuebles";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const { servicios } = context.get(contextoServidor);
   const { config, db } = servicios;
 
-  const [catalogo, casas, configuracion, listaServicios] = await Promise.all([
+  const [catalogo, casas, configuracion, listaServicios, testimonios, preguntas] = await Promise.all([
     leerCatalogo(db),
     // Las de la vitrina de arriba (van pasando de una en una) y seis para «Lo
     // más reciente»: ninguna casa sale dos veces en la portada.
     casasDePortada(db, config.cloudinary.cloudName, { vitrina: CASAS_EN_VITRINA, recientes: 6 }),
     leerConfiguracion(db),
     leerServicios(db),
+    leerTestimonios(db, 3),
+    leerPreguntas(db),
   ]);
 
   return {
@@ -39,6 +46,8 @@ export async function loader({ context }: Route.LoaderArgs) {
     recientes: casas.recientes,
     portada: configuracion.portada,
     servicios: listaServicios.slice(0, 6).map((s) => ({ id: s.id, titulo: s.titulo })),
+    testimonios,
+    preguntas,
     whatsapp: enlaceWhatsApp(configuracion.whatsapp.numero, configuracion.whatsapp.plantillaGeneral),
     nombreNegocio: config.nombreNegocio,
   };
@@ -47,8 +56,11 @@ export async function loader({ context }: Route.LoaderArgs) {
 export function meta({ loaderData }: Route.MetaArgs) {
   const nombre = loaderData?.nombreNegocio ?? "Activos Inmobiliarios Globales";
   const total = loaderData?.catalogo.total ?? 0;
+  // El titular que escribe el equipo, no una frase fija: la de antes decía
+  // «en Morelia» y el negocio es para toda la República (18/09/2026).
+  const titular = loaderData?.portada.titular || TITULAR_POR_OMISION;
   return [
-    { title: `${nombre} · Casas en venta y renta en Morelia` },
+    { title: `${nombre} · ${titular}` },
     {
       name: "description",
       content: `${total} casas, departamentos y terrenos en Morelia y Michoacán. Busca por colonia, precio o recámaras y pregunta por WhatsApp.`,
@@ -57,7 +69,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function Inicio({ loaderData }: Route.ComponentProps) {
-  const { catalogo, vitrina, recientes, portada, servicios, whatsapp } = loaderData;
+  const { catalogo, vitrina, recientes, portada, servicios, testimonios, preguntas, whatsapp } = loaderData;
   const desde = precioMXN(catalogo.rangos.venta.min);
   const ciudades = catalogo.ciudades.length;
 
@@ -73,11 +85,19 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           con todo lo demás, sin la columna del texto medio vacía. */}
       <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)] 3xl:grid-cols-[44rem_minmax(0,1fr)] 3xl:gap-20">
         <div className="max-w-xl 3xl:max-w-none">
-          {/* Nada encima del titular: el logotipo ya va siempre en la cabecera,
-              y «Casas en venta y renta en Morelia» se quitó a pedido del
-              usuario (18/09/2026): el negocio es para toda la República. */}
-          <h1 className="font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
-            {portada.titular || "Comercialización, renta y financiamiento de inmuebles"}
+          {/* Encima del titular, solo el «Saludo» del panel, si el equipo lo
+              escribió; vacío, no sale nada. El logotipo ya va siempre en la
+              cabecera, y «Casas en venta y renta en Morelia» se quitó a pedido
+              del usuario (18/09/2026): el negocio es para toda la República. */}
+          {portada.saludo ? (
+            <Antetitulo className="motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
+              {portada.saludo}
+            </Antetitulo>
+          ) : null}
+          <h1
+            className={`font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)] ${portada.saludo ? "mt-5" : ""}`}
+          >
+            {portada.titular || TITULAR_POR_OMISION}
           </h1>
 
           {portada.lema ? <p className="mt-4 text-guia text-texto-suave">{portada.lema}</p> : null}
@@ -189,6 +209,11 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             <h2 className="max-w-xl font-display text-seccion text-white">
               {portada.presentacion || "Qué hacemos"}
             </h2>
+            {/* «Antes de los servicios» (Panel › Contenido): también arriba de
+                la página de Servicios. */}
+            {portada.introServicios ? (
+              <p className="mt-4 max-w-2xl text-guia text-sobre-oscuro-suave">{portada.introServicios}</p>
+            ) : null}
 
             <ul className="mt-10 grid gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
               {servicios.map((servicio) => (
@@ -213,6 +238,11 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           </div>
         </section>
       ) : null}
+
+      {/* ─── Lo que escribe el equipo: testimonios y preguntas ─── */}
+      {/* Cada una existe solo si hay algo marcado «Se ve en el sitio». */}
+      <Testimonios testimonios={testimonios} />
+      <Preguntas preguntas={preguntas} whatsapp={whatsapp} />
 
       {/* ─── Cierre ─── */}
       <section className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">

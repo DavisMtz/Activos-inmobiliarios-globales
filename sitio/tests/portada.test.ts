@@ -71,6 +71,20 @@ describe("repartirPortada", () => {
     expect(claves(recientes)[0]).toBe("AIG-0188");
   });
 
+  it("la casa elegida en el panel abre la vitrina, aunque sea vieja", () => {
+    const { vitrina, recientes } = repartirPortada(RECIENTES, { ...REGLAS, preferida: (c: Casa) => c.clave === "AIG-0177" });
+    // Campo Elíseos primero; luego una por colonia, sin repetir la suya.
+    expect(claves(vitrina)).toEqual(["AIG-0177", "AIG-0188", "AIG-0184", "AIG-0183", "AIG-0182"]);
+    expect(claves(recientes)).not.toContain("AIG-0177");
+  });
+
+  it("la elegida sin foto, o que no está entre las candidatas, no cambia nada", () => {
+    const normal = ["AIG-0188", "AIG-0184", "AIG-0183", "AIG-0182", "AIG-0181"];
+    const sinFoto = RECIENTES.map((c) => (c.clave === "AIG-0177" ? { ...c, foto: false } : c));
+    expect(claves(repartirPortada(sinFoto, { ...REGLAS, preferida: (c: Casa) => c.clave === "AIG-0177" }).vitrina)).toEqual(normal);
+    expect(claves(repartirPortada(RECIENTES, { ...REGLAS, preferida: (c: Casa) => c.clave === "AIG-9999" }).vitrina)).toEqual(normal);
+  });
+
   it("ninguna casa sale dos veces y se respetan los topes", () => {
     for (const enVitrina of [0, 1, 3, 5, 20]) {
       const { vitrina, recientes } = repartirPortada(RECIENTES, { ...REGLAS, enVitrina });

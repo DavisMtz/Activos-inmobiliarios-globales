@@ -297,6 +297,26 @@
   }
 }
 
+/* ─── Preguntas frecuentes de la portada (`contenido-portada.tsx`) ───────
+   Abren con suavidad donde el navegador sabe animar hasta `auto` (Chrome
+   131+); en los demás abren al instante. Con «menos movimiento», el bloque
+   global de arriba apaga la transición. */
+@layer components {
+  .pregunta {
+    interpolate-size: allow-keywords;
+  }
+  .pregunta::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 0.5s var(--ease-entrada),
+      content-visibility 0.5s allow-discrete;
+  }
+  .pregunta[open]::details-content {
+    block-size: auto;
+  }
+}
+
 @keyframes bienvenida-telon {
   from {
     transform: translateY(0);

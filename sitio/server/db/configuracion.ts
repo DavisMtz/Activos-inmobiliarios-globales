@@ -52,6 +52,10 @@ export type AvisoPrivacidad = {
 
 export type Servicio = { id: number; titulo: string; descripcion: string; icono: string | null };
 
+export type Testimonio = { id: number; nombre: string; texto: string };
+
+export type Pregunta = { id: number; pregunta: string; respuesta: string };
+
 /** Lo que necesita el marco de TODAS las páginas públicas: pie y botón de WhatsApp. */
 export type ConfigDelSitio = {
   contacto: Contacto;
@@ -185,6 +189,28 @@ export async function leerServicios(db: D1Database): Promise<Servicio[]> {
   const { results } = await db
     .prepare("SELECT id, titulo, descripcion, icono FROM servicios WHERE visible = 1 ORDER BY orden, id")
     .all<Servicio>();
+  return results;
+}
+
+/**
+ * Los testimonios que el equipo marcó «Se ve en el sitio» (Panel › Contenido),
+ * del más nuevo al más viejo: la tabla no tiene orden y el panel no lo pide.
+ * Solo reales, nunca inventados (PLAN §0.4): sin ninguno, la portada no enseña
+ * la sección.
+ */
+export async function leerTestimonios(db: D1Database, limite = 3): Promise<Testimonio[]> {
+  const { results } = await db
+    .prepare("SELECT id, nombre, texto FROM testimonios WHERE visible = 1 ORDER BY creado_en DESC, id DESC LIMIT ?")
+    .bind(limite)
+    .all<Testimonio>();
+  return results;
+}
+
+/** Las preguntas frecuentes visibles, en el orden que les dio el equipo en el panel. */
+export async function leerPreguntas(db: D1Database): Promise<Pregunta[]> {
+  const { results } = await db
+    .prepare("SELECT id, pregunta, respuesta FROM preguntas WHERE visible = 1 ORDER BY orden, id")
+    .all<Pregunta>();
   return results;
 }
 

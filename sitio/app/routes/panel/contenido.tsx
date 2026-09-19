@@ -143,7 +143,7 @@ const DE_CADA_TIPO: Record<TipoDeContenido, CamposDeTipo> = {
       ["respuesta", "Respuesta"],
     ],
     conOrden: true,
-    descripcion: "Lo que más preguntan por teléfono, contestado una sola vez.",
+    descripcion: "Salen en la portada, en este orden: lo que más preguntan por teléfono, contestado una sola vez.",
     vacio: "Todavía no hay ninguna. Agrega la que más te repitan esta semana.",
   },
   testimonio: {
@@ -153,7 +153,7 @@ const DE_CADA_TIPO: Record<TipoDeContenido, CamposDeTipo> = {
       ["texto", "Lo que dice"],
     ],
     conOrden: false,
-    descripcion: "Solo testimonios reales: no se inventan.",
+    descripcion: "Los 3 más recientes salen en la portada. Solo testimonios reales: no se inventan.",
     vacio: "Cuando alguien te escriba algo bueno, pídele permiso y ponlo aquí.",
   },
 };
@@ -176,16 +176,40 @@ export default function Contenido({ loaderData, actionData }: Route.ComponentPro
       <Bloque titulo="Portada" descripcion="El titular y el lema que se leen al entrar.">
         <Form method="post" className="flex flex-col gap-5">
           <input type="hidden" name="que" value="portada" />
-          <Campo etiqueta="Saludo" name="saludo" defaultValue={portada.saludo} maxLength={80} />
-          <Campo etiqueta="Titular" name="titular" defaultValue={portada.titular} maxLength={140} />
-          <Campo etiqueta="Lema" name="lema" defaultValue={portada.lema} maxLength={140} />
-          <CampoTexto etiqueta="Presentación" name="presentacion" defaultValue={portada.presentacion} filas={3} />
-          <CampoTexto etiqueta="Antes de los servicios" name="intro_servicios" defaultValue={portada.introServicios} filas={2} />
+          <Campo
+            etiqueta="Saludo"
+            name="saludo"
+            defaultValue={portada.saludo}
+            maxLength={80}
+            ayuda="Una línea corta arriba del titular. Vacío: no sale nada."
+          />
+          <Campo
+            etiqueta="Titular"
+            name="titular"
+            defaultValue={portada.titular}
+            maxLength={140}
+            ayuda="Lo más grande de la portada; también es el título de la pestaña. Vacío: «Comercialización, renta y financiamiento de inmuebles»."
+          />
+          <Campo etiqueta="Lema" name="lema" defaultValue={portada.lema} maxLength={140} ayuda="Debajo del titular." />
+          <CampoTexto
+            etiqueta="Presentación"
+            name="presentacion"
+            defaultValue={portada.presentacion}
+            filas={3}
+            ayuda="La frase grande de la franja oscura de servicios. Vacío: «Qué hacemos»."
+          />
+          <CampoTexto
+            etiqueta="Antes de los servicios"
+            name="intro_servicios"
+            defaultValue={portada.introServicios}
+            filas={2}
+            ayuda="Debajo de la presentación, y arriba de la página de Servicios."
+          />
           <Campo
             etiqueta="Casa de la foto principal"
             name="imagen_propiedad_clave"
             defaultValue={portada.imagenPropiedadClave ?? ""}
-            ayuda="La clave, como AIG-0042. Vacío: la casa más reciente."
+            ayuda="La clave, como AIG-0042: esa casa abre la vitrina de la portada. Vacío: las destacadas y luego las más recientes."
           />
           <div>
             <Boton type="submit">Guardar la portada</Boton>
