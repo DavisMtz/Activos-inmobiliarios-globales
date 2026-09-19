@@ -97,7 +97,7 @@ export default function CasaNueva({ loaderData, actionData }: Route.ComponentPro
   const { apoyo, puedePublicar, puedeAsignar, valores } = loaderData;
 
   return (
-    <div className="flex max-w-4xl flex-col gap-6">
+    <div className="flex max-w-4xl flex-col gap-6 xl:max-w-7xl">
       <header>
         <h1 className="text-2xl font-extrabold text-tinta sm:text-3xl">Subir una casa</h1>
         <p className="mt-2 text-texto-suave">

@@ -1,7 +1,7 @@
 import { Isotipo } from "./isotipo";
 
 /**
- * Bienvenida de la portada: un telón de tinta donde el isotipo se arma pieza
+ * Bienvenida del sitio: un telón de tinta donde el isotipo se arma pieza
  * por pieza, y que luego se levanta. La coreografía vive en `app.css`
  * (`.bienvenida`), en CSS y no en GSAP, por las mismas razones que la entrada
  * del héroe: corre desde el primer pintado y sin JavaScript.
@@ -15,8 +15,10 @@ import { Isotipo } from "./isotipo";
  *   `data-vista` y el CSS no lo enseña. Sin JavaScript sale siempre, y con
  *   «menos movimiento», nunca.
  *
- * Se monta desde el marco solo cuando la primera página que se abre es la
- * portada; volver a `/` navegando dentro del sitio no la repite.
+ * El marco la monta en la PRIMERA página que se abre, sea cual sea (antes
+ * solo en la portada; 19/09/2026): a mucha gente le llega primero el enlace de
+ * una casa. Moverse por el sitio no la repite, y el guion de aquí dentro la
+ * calla si esta pestaña ya la vio, aunque se recargue.
  */
 const MARCAR_SI_YA_SE_VIO = `(function(){var t=document.currentScript&&document.currentScript.parentElement;if(!t)return;try{if(sessionStorage.getItem("aig:bienvenida")){t.setAttribute("data-vista","")}else{sessionStorage.setItem("aig:bienvenida","1")}}catch(e){}})();`;
 

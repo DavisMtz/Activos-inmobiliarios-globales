@@ -15,6 +15,10 @@
  *      todo debe verse igual. Es a la vez la prueba de accesibilidad y la de
  *      que la página está completa sin movimiento.
  *
+ * En la portada revisa además la vitrina, que cambia de casa sola: en reposo
+ * una sola casa entera a la vista; con movimiento tiene que cambiar, y con
+ * «menos movimiento» no debe cambiar ni tener botón de pausa (~15 s más).
+ *
  * Trampas que ya costaron una corrida (memoria `verificacion-visual-chrome-headless`):
  * - Medir sin subir por los ancestros da decenas de falsos positivos: todo lo
  *   que cuelga de un `display:none` mide cero sin que le pase nada.
@@ -122,8 +126,81 @@ const SONDA = `(() => {
   return JSON.stringify({ animados: animados.length, invisibles });
 })()`;
 
+/**
+ * La vitrina de la portada (`components/publico/vitrina.tsx`) cambia de casa
+ * sola, y lo que la sonda de arriba busca no la cubre. Aquí, EN REPOSO (no a
+ * media cortina): una sola casa a la vista, entera (sin recorte, opaca) y con
+ * sus renglones en su sitio; las demás, escondidas.
+ */
+const SONDA_VITRINA = `(() => {
+  const casas = [...document.querySelectorAll('[data-diapositiva]')];
+  if (!casas.length) return JSON.stringify({ hay: false });
+  const enCambio = casas.some((c) => c.style.clipPath || c.style.visibility);
+  const vistas = casas.filter((c) => getComputedStyle(c).visibility === 'visible');
+  const activa = vistas[0];
+  const estilo = activa ? getComputedStyle(activa) : null;
+  const movidos = activa ? [...activa.querySelectorAll('[data-linea]')].filter((l) => {
+    const t = getComputedStyle(l).transform;
+    return t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)';
+  }).length : 0;
+  return JSON.stringify({
+    hay: true,
+    enCambio,
+    vistas: vistas.length,
+    indice: activa ? Number(activa.dataset.diapositiva) : -1,
+    opacidad: estilo ? Number(estilo.opacity) : 0,
+    recorte: estilo ? estilo.clipPath : '',
+    movidos,
+    pausa: Boolean(document.querySelector('[data-rotacion]')),
+  });
+})()`;
+
+async function vitrinaEnReposo(cdp) {
+  for (let i = 0; i < 30; i++) {
+    const r = await cdp("Runtime.evaluate", { expression: SONDA_VITRINA, returnByValue: true });
+    const v = JSON.parse(r.result?.result?.value ?? '{"hay":false}');
+    if (!v.hay || !v.enCambio) return v;
+    await esperar(150);
+  }
+  return { hay: true, enCambio: true };
+}
+
+/** Devuelve las fallas (textos) de la vitrina en esta pasada. */
+async function revisarVitrina(cdp, reducido) {
+  const fallas = [];
+  const entera = (v, momento) => {
+    if (v.enCambio) fallas.push(`${momento}: seguía a media cortina después de 4.5 s`);
+    else if (v.vistas !== 1) fallas.push(`${momento}: ${v.vistas} casas a la vista (debe ser 1)`);
+    else if (v.opacidad < 0.99 || (v.recorte && v.recorte !== "none") || v.movidos > 0) {
+      fallas.push(`${momento}: la casa a la vista no está entera (opacidad ${v.opacidad}, recorte ${v.recorte}, ${v.movidos} renglones movidos)`);
+    }
+  };
+  const antes = await vitrinaEnReposo(cdp);
+  if (!antes.hay) return ["no se encontró la vitrina"];
+  entera(antes, "al revisar");
+  // Casi dos ciclos de 7 s: con movimiento tiene que haber cambiado de casa.
+  let despues = antes;
+  for (let i = 0; i < 28; i++) {
+    await esperar(500);
+    despues = await vitrinaEnReposo(cdp);
+    if (!reducido && despues.indice !== antes.indice) break;
+  }
+  entera(despues, "después de esperar");
+  if (reducido) {
+    if (despues.indice !== antes.indice) fallas.push(`con «menos movimiento» cambió sola (${antes.indice} → ${despues.indice})`);
+    if (despues.pausa) fallas.push("con «menos movimiento» no debe haber botón de pausa: nada se mueve solo");
+  } else {
+    if (despues.indice === antes.indice) fallas.push(`no cambió de casa en 14 s (siguió en la ${antes.indice})`);
+    if (!despues.pausa) fallas.push("falta el botón de pausa (WCAG 2.2.2)");
+  }
+  return fallas;
+}
+
 async function revisar(cdp, ruta, reducido) {
   await cdp("Page.enable");
+  // Abrir la ficha en producción contaría como visita real en las métricas.
+  await cdp("Network.enable");
+  await cdp("Network.setBlockedURLs", { urls: ["*/api/eventos*"] });
   await cdp("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
   await cdp("Page.navigate", { url: BASE + ruta });
   await esperar(2500);
@@ -168,6 +245,15 @@ for (const reducido of [false, true]) {
       if (animados === 0) {
         console.log("        → OJO: no se encontró nada animado; ¿cambió el selector?");
         fallas++;
+      }
+      if (ruta === "/") {
+        const deLaVitrina = await revisarVitrina(cdp, reducido);
+        if (deLaVitrina.length) fallas++;
+        console.log(
+          `  ${deLaVitrina.length ? "✖" : "✔"} ${"/ (vitrina)".padEnd(34)} ${
+            deLaVitrina.length ? deLaVitrina.join("; ") : reducido ? "quieta y entera, sin pausa" : "cambia sola y queda entera en reposo"
+          }`,
+        );
       }
     }
   } finally {

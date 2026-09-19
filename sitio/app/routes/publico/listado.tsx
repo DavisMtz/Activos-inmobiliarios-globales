@@ -1,4 +1,4 @@
-import { Form, Link, useSubmit } from "react-router";
+import { Form, Link, useLocation, useSubmit } from "react-router";
 import { leerCatalogo, listar } from "../../../server/db/propiedades";
 import {
   ETIQUETA_ORDEN,
@@ -9,8 +9,9 @@ import {
   rutaDeListado,
 } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
-import { CampoSelect, CampoTexto, Paginacion, TarjetaPropiedad } from "../../components/publico/piezas";
+import { CampoSelect, CampoTexto } from "../../components/publico/piezas";
 import { IconoBuscar } from "../../components/publico/iconos";
+import { ListaInfinita } from "../../components/publico/lista-infinita";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/listado";
 
@@ -57,6 +58,10 @@ const CHIP =
 export default function Listado({ loaderData }: Route.ComponentProps) {
   const { filtros, catalogo, pagina } = loaderData;
   const enviar = useSubmit();
+  // Otra búsqueda u otro orden = otra lista, desde cero. Por la búsqueda y no
+  // por la llave de la entrada del historial: un salto a un ancla (`#…`) crea
+  // entrada nueva y reiniciaría la lista sin que nada cambiara.
+  const { search } = useLocation();
   const puestos = cuantosFiltros(filtros);
   const rango = filtros.operacion === "renta" ? catalogo.rangos.renta : catalogo.rangos.venta;
 
@@ -90,7 +95,9 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
         ) : null}
       </header>
 
-      <Form method="get" className="mt-7">
+      {/* `scroll-mt`: al volver desde el final de la lista («Volver a los
+          filtros»), que la cabecera fija no tape el buscador. */}
+      <Form id="filtros" method="get" className="mt-7 scroll-mt-28">
         <div className="rounded-2xl border border-linea bg-superficie p-4 shadow-tarjeta sm:p-5">
           <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
             <CampoTexto
@@ -240,16 +247,8 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
       </p>
 
       {pagina.items.length ? (
-        <>
-          <ul data-animar-lista className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {pagina.items.map((item, i) => (
-              <li key={item.clave}>
-                <TarjetaPropiedad item={item} prioridad={i < 2} />
-              </li>
-            ))}
-          </ul>
-          <Paginacion filtros={filtros} paginas={pagina.paginas} />
-        </>
+        // Sigue cargando al bajar; sin JavaScript, la paginación de siempre.
+        <ListaInfinita key={search} filtros={filtros} inicial={pagina} />
       ) : (
         <div className="mt-6 rounded-2xl border border-linea bg-superficie p-10 text-center">
           <p className="font-display text-seccion text-tinta">No encontramos propiedades así</p>

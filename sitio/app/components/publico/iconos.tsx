@@ -102,6 +102,28 @@ export const IconoFlecha = ({ className }: Props) => (
   </Marco>
 );
 
+/** El «+» de las preguntas frecuentes: girado 45° es la «×» de cerrar. */
+export const IconoMas = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M12 5v14M5 12h14" />
+  </Marco>
+);
+
+// Pausa y reproducir van macizos, como en cualquier reproductor: es la forma
+// que la gente ya reconoce, y van chicos (14 px) dentro de su botón.
+export const IconoPausa = ({ className }: Props) => (
+  <Marco className={className} macizo>
+    <rect x="6" y="4.5" width="4" height="15" rx="1.25" />
+    <rect x="14" y="4.5" width="4" height="15" rx="1.25" />
+  </Marco>
+);
+
+export const IconoReproducir = ({ className }: Props) => (
+  <Marco className={className} macizo>
+    <path d="M7.5 5.6v12.8a1.1 1.1 0 0 0 1.68.93l10.1-6.4a1.1 1.1 0 0 0 0-1.86l-10.1-6.4A1.1 1.1 0 0 0 7.5 5.6Z" />
+  </Marco>
+);
+
 // ─── Características de una casa ──────────────────────────────────
 
 export const IconoRecamara = ({ className }: Props) => (

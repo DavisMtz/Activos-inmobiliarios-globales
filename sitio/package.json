@@ -18,6 +18,8 @@
     "verificar": "node scripts/verificar.mjs",
     "verificar:navegador": "node scripts/verificar-navegador.mjs",
     "verificar:movimiento": "node scripts/verificar-movimiento.mjs",
+    "verificar:vitrina": "node scripts/verificar-vitrina.mjs",
+    "verificar:listado": "node scripts/verificar-listado.mjs",
     "verificar:f2": "node scripts/verificar-f2.mjs",
     "verificar:f3": "node scripts/verificar-f3.mjs",
     "verificar:f3-navegador": "node scripts/verificar-f3-navegador.mjs",
@@ -30,7 +32,7 @@
     "fotos:migrar": "node scripts/migrar-fotos-a-cloudinary.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/jost": "^5.3.0",
     "@fontsource-variable/nunito": "5.3.0",
     "gsap": "^3.15.0",
     "hono": "4.13.8",

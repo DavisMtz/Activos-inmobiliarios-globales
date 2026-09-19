@@ -72,10 +72,10 @@ export default function Contacto({ loaderData, actionData }: Route.ComponentProp
       {/* En escritorio el titular sube a la columna izquierda y el formulario
           arranca a su altura: antes la izquierda era un botón solo frente a un
           formulario de 640 px. En el celular el orden es el mismo. */}
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,36rem)] lg:gap-16">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,36rem)] lg:gap-16 3xl:grid-cols-[minmax(0,1fr)_48rem] 3xl:items-center 3xl:gap-24">
         <div>
-          <header className="max-w-2xl">
-            <h1 className="font-display text-titulo text-tinta">Hablemos de tu propiedad</h1>
+          <header className="max-w-2xl 3xl:max-w-4xl">
+            <h1 className="font-display text-titulo text-tinta 3xl:text-display">Hablemos de tu propiedad</h1>
             <p className="mt-3 text-guia text-texto-suave">
               Escríbenos por WhatsApp y te contestamos en el momento, o déjanos tus datos y un asesor te busca.
             </p>

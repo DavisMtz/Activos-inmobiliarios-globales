@@ -49,7 +49,7 @@ export default function Nosotros({ loaderData }: Route.ComponentProps) {
         <section className="campo-oscuro bg-marca-oscuro text-sobre-oscuro">
           <div className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
             <h2 className="text-sm font-bold tracking-widest text-sobre-vino-suave uppercase">Nuestra misión</h2>
-            <p className="mt-5 max-w-[46ch] font-display text-seccion leading-tight text-white">{nosotros.mision}</p>
+            <p className="mt-5 max-w-[46ch] font-display text-seccion leading-tight text-white 3xl:max-w-[56ch] 3xl:text-titulo">{nosotros.mision}</p>
           </div>
         </section>
       ) : null}

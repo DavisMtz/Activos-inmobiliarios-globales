@@ -285,7 +285,7 @@ try {
   const antesPortada = await pedir("/");
   const antesPagina = await pedir("/entregas");
   comprobar("sin ninguna publicada: /entregas da 404, y ni la portada ni el menú la ofrecen",
-    antesPagina.estado === 404 && !antesPortada.texto.includes("Ya estrenaron casa") && !antesPortada.texto.includes('href="/entregas"'),
+    antesPagina.estado === 404 && !antesPortada.texto.includes("Lo que dicen de nosotros") && !antesPortada.texto.includes('href="/entregas"'),
     `/entregas ${antesPagina.estado}`);
 
   // ─── Crear y enlace ─────────────────────────────────────────
@@ -409,7 +409,13 @@ try {
   const publica = await pedir("/entregas");
   const portada = await pedir("/");
   comprobar("publicada: sale en /entregas, en la portada y en el menú",
-    publica.estado === 200 && publica.texto.includes("Laura M.") && portada.texto.includes("Ya estrenaron casa") && portada.texto.includes('href="/entregas"'),
+    publica.estado === 200 &&
+      publica.texto.includes("Laura M.") &&
+      // La sección de la portada es la de «Lo que dicen de nosotros», que desde
+      // el 19/09/2026 se alimenta de las entregas.
+      portada.texto.includes("Lo que dicen de nosotros") &&
+      portada.texto.includes("Laura M.") &&
+      portada.texto.includes('href="/entregas"'),
     `/entregas ${publica.estado}`);
   comprobar("del nombre solo sale la inicial: ni «Martínez» ni el nombre que capturó el equipo",
     !publica.texto.includes("Martínez") && !publica.texto.includes(MARCA) && !portada.texto.includes(MARCA));

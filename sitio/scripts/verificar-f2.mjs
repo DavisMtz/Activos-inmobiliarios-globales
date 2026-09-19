@@ -263,6 +263,9 @@ try {
     });
 
   await cdp("Page.enable");
+  // Abrir la ficha en producción contaría como visita real en las métricas.
+  await cdp("Network.enable");
+  await cdp("Network.setBlockedURLs", { urls: ["*/api/eventos*"] });
   await cdp("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
 
   for (const ruta of ["/", "/propiedades", `/propiedades/${casa.slug}`]) {

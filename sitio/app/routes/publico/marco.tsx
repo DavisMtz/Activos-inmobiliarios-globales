@@ -1,6 +1,6 @@
-import "@fontsource-variable/fraunces/wght.css";
+import "@fontsource-variable/jost/wght.css";
 // Las dos fuentes, por su URL con hash, para precargarlas (ver más abajo).
-import fuenteFraunces from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
+import fuenteJost from "@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url";
 import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 
 import { useEffect, useRef, useState } from "react";
@@ -11,6 +11,7 @@ import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import {
   IconoCorreo,
   IconoFacebook,
+  IconoFlecha,
   IconoInstagram,
   IconoTelefono,
   IconoUbicacion,
@@ -29,8 +30,9 @@ import type { Route } from "./+types/marco";
  * de catálogo con buscador encima que trae el sitio actual.
  * MUNDO: papel cálido (#f7f5f3) y tinta (#111) como CAMPOS enteros, no como
  * bordes; el rojo #A0051C y el vino #760415 mandan en la portada, los cierres
- * y el pie. Títulos en serif editorial (Fraunces, elegida por el usuario el
- * 17/09/2026), cifras y texto en Nunito con cifras de ancho fijo.
+ * y el pie. Títulos en Jost, sans geométrica ligera (la eligió el usuario el
+ * 18/09/2026 y sustituyó a la serif Fraunces), texto en Nunito con cifras de
+ * ancho fijo.
  * HISTORIA: quien llega entiende en un vistazo que son 188 casas reales de
  * Morelia, filtra a las suyas y escribe por WhatsApp sabiendo cuál pregunta.
  * PRIMERA PANTALLA: titular en serif a ancho completo sobre papel, buscador
@@ -49,8 +51,8 @@ type Enlace = { a: string; texto: string };
 
 /**
  * «Entregas» solo aparece cuando hay alguna publicada: sin ninguna, su página
- * da 404 y un menú que lleva a una página vacía de testimonios dice lo
- * contrario de lo que busca.
+ * da 404 y un menú que lleva a una página vacía dice lo contrario de lo que
+ * busca.
  */
 const navegacionDel = (hayEntregas: boolean): Enlace[] => [
   { a: "/propiedades", texto: "Propiedades" },
@@ -81,17 +83,24 @@ export async function loader({ context }: Route.LoaderArgs) {
 export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
   const { nombreNegocio, contacto, redes, whatsapp, anio, navegacion } = loaderData;
   const { pathname } = useLocation();
+  const enMarcha = useNavigation();
+  // Hilo de carga: solo cuando se va a OTRA página (enviar un formulario
+  // también pone la navegación en marcha, y ahí el botón ya avisa).
+  const cargando = enMarcha.state === "loading" && enMarcha.location.pathname !== pathname;
   // En la ficha el botón flotante estorba: ahí WhatsApp vive en la barra de
   // acciones, pegada abajo, que es la que no tapa el precio.
   const enFicha = /^\/propiedades\/[^/]+$/.test(pathname);
-  // En la página del enlace de una entrega tapaba los campos del formulario
-  // en el celular, y ahí el cliente no viene a preguntar por nada.
+  // En la página del enlace de una entrega el botón flotante tapaba los campos
+  // del formulario en el celular, y ahí el cliente no viene a preguntar nada.
   const sinFlotante = enFicha || pathname.startsWith("/entrega/");
   const contenedor = useRef<HTMLDivElement>(null);
-  // Solo si la PRIMERA página que se abre es la portada: el inicializador corre
-  // una vez, igual en el servidor y al hidratar, y el marco no se vuelve a
-  // montar al navegar, así que regresar a `/` no repite la bienvenida.
-  const [conBienvenida] = useState(() => pathname === "/");
+  // En la PRIMERA página que se abre del sitio, sea cual sea (pedido del
+  // 19/09/2026: antes solo salía si se entraba por la portada, y a mucha gente
+  // le llega primero el enlace de una casa). El inicializador corre una sola
+  // vez y el marco no se vuelve a montar al navegar, así que moverse por el
+  // sitio no la repite; el guion de `Bienvenida` la calla si esta pestaña ya
+  // la vio, aunque se recargue.
+  const [conBienvenida] = useState(true);
 
   /**
    * El movimiento entra DESPUÉS de hidratar y con `import()`, así que GSAP cae
@@ -154,10 +163,17 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
           el primer dibujado en 3.8 s. El navegador no descubre las fuentes
           hasta parsear el CSS, así que se piden desde el principio. React 19
           sube estos enlaces al <head> solo. Van aquí, en el marco público, y
-          no en `root.tsx`: el panel no tiene por qué bajar la serif. */}
-      <link rel="preload" as="font" type="font/woff2" href={fuenteFraunces} crossOrigin="anonymous" />
+          no en `root.tsx`: el panel no tiene por qué bajar la de títulos. */}
+      <link rel="preload" as="font" type="font/woff2" href={fuenteJost} crossOrigin="anonymous" />
       <link rel="preload" as="font" type="font/woff2" href={fuenteNunito} crossOrigin="anonymous" />
-      <Cabecera nombreNegocio={nombreNegocio} navegacion={navegacion} />
+      {/* En la ficha, sin el WhatsApp general: ahí el que cuenta es el de la
+          casa (tarjeta y barra de abajo), con su título y su clave. */}
+      {/* Un hilo rojo arriba de todo mientras llega la página siguiente: la
+          cabecera es una cápsula redonda y una barra pegada a su borde se
+          vería como un adorno roto. Sale con 150 ms de retraso (app.css), así
+          que en las navegaciones rápidas ni aparece. */}
+      {cargando ? <div aria-hidden="true" className="hilo-carga fixed inset-x-0 top-0 z-50 h-0.5 bg-marca" /> : null}
+      <Cabecera nombreNegocio={nombreNegocio} whatsapp={enFicha ? null : whatsapp} navegacion={navegacion} />
 
       <main id="contenido" className="flex-1">
         <Outlet />
@@ -182,94 +198,267 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 
 // ─── Cabecera ─────────────────────────────────────────────────────
 
-function Cabecera({ nombreNegocio, navegacion: NAVEGACION }: { nombreNegocio: string; navegacion: Enlace[] }) {
+/**
+ * La cabecera es una **isla**: una cápsula blanca que flota a unos píxeles
+ * del borde, con la página pasando por detrás (segunda versión del
+ * 18/09/2026; la franja con barra de lectura «no gustó»: se pidió algo más
+ * premium). Lo que la sostiene y no se ve:
+ *
+ * - **La caja del `<header>` nunca cambia de alto.** Es `sticky` y está en el
+ *   flujo: si se encogiera, empujaría el contenido y la tarjeta de la ficha,
+ *   que se pega a 96 px. Al bajar solo cambian el ANCHO de la cápsula (se
+ *   recoge hacia el centro) y su sombra; el alto sigue igual.
+ * - **Todo el movimiento es CSS.** Se ve desde el primer pintado y GSAP llega
+ *   1-2 s tarde: animar lo que ya se ve parpadea (PLAN §19). JavaScript solo
+ *   dice si ya se bajó, dónde va la píldora del menú y cierra el menú. Sin
+ *   vidrio esmerilado: ya costó Lighthouse; la cápsula es blanca y sólida.
+ * - **El menú del celular es un `<details>`**: sin JavaScript también abre.
+ *   Con JavaScript se cierra al navegar (antes se quedaba abierto en la
+ *   página siguiente), con Esc y al tocar fuera.
+ */
+function Cabecera({
+  nombreNegocio,
+  whatsapp,
+  navegacion: NAVEGACION,
+}: {
+  nombreNegocio: string;
+  whatsapp: string | null;
+  navegacion: Enlace[];
+}) {
   const { pathname } = useLocation();
-  const navegacion = useNavigation();
-  // Solo cuando se va a OTRA página: enviar el formulario de contacto también
-  // pone la navegación en marcha y ahí el botón ya dice «Enviando».
-  const cargando = navegacion.state === "loading" && navegacion.location.pathname !== pathname;
+  const cabecera = useRef<HTMLElement>(null);
+  const sentinela = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDetailsElement>(null);
+  const navegacion = useRef<HTMLElement>(null);
+  const pildora = useRef<HTMLSpanElement>(null);
+  // El enlace sobre el que está la píldora: el que tiene el puntero encima
+  // o, si no hay ninguno, el de la sección en la que se está.
+  const [resaltado, setResaltado] = useState<string | null>(null);
+  // Hasta que la píldora está puesta (sin JavaScript, o antes de hidratar),
+  // el enlace activo va en rojo: en blanco no se vería sobre el carril claro.
+  const [pildoraLista, setPildoraLista] = useState(false);
+  const activo = NAVEGACION.find((enlace) => pathname === enlace.a || pathname.startsWith(`${enlace.a}/`))?.a ?? null;
+  const bajo = resaltado ?? activo;
 
-  // El menú del celular es un <details> y el marco no se vuelve a montar al
-  // navegar: sin esto se quedaba abierto encima de la página nueva. Se cierra
-  // al pulsar, no al cambiar de ruta: un efecto corre DESPUÉS de que la
-  // transición retrata la página nueva, y el menú viajaba abierto en ella.
-  const cerrarMenu = () => {
+  // Al navegar, el marco no se vuelve a montar y `<details open>` persistía.
+  useEffect(() => {
     if (menu.current) menu.current.open = false;
-  };
+    setResaltado(null);
+  }, [pathname]);
+
+  // «Bajado»: en cuanto la línea de arriba de la página deja de verse. Sin
+  // escuchar el scroll: lo resuelve el navegador.
+  useEffect(() => {
+    const nodo = sentinela.current;
+    const encabezado = cabecera.current;
+    if (!nodo || !encabezado || typeof IntersectionObserver !== "function") return;
+    const observador = new IntersectionObserver(([entrada]) => {
+      encabezado.dataset.bajado = entrada.isIntersecting ? "no" : "si";
+    });
+    observador.observe(nodo);
+    return () => observador.disconnect();
+  }, []);
+
+  // La píldora se mide contra el enlace que le toca y viaja con `translate`
+  // y `width`. Se vuelve a medir al cambiar de ancho la ventana y cuando la
+  // cápsula termina de recogerse (su ancho cambia al bajar).
+  useEffect(() => {
+    const lista = navegacion.current;
+    const marca = pildora.current;
+    if (!lista || !marca) return;
+    const colocar = () => {
+      const destino = bajo ? lista.querySelector<HTMLElement>(`a[href="${bajo}"]`) : null;
+      if (!destino) {
+        marca.style.opacity = "0";
+        return;
+      }
+      marca.style.width = `${destino.offsetWidth}px`;
+      marca.style.translate = `${destino.offsetLeft}px 0`;
+      marca.style.opacity = "1";
+      setPildoraLista(true);
+    };
+    colocar();
+    const observador = typeof ResizeObserver === "function" ? new ResizeObserver(colocar) : null;
+    observador?.observe(lista);
+    return () => observador?.disconnect();
+  }, [bajo]);
+
+  // Menú abierto: Esc y tocar fuera lo cierran, y la página de atrás no se
+  // desplaza mientras tanto.
+  useEffect(() => {
+    const detalle = menu.current;
+    if (!detalle) return;
+    const raiz = document.documentElement;
+    const alTeclear = (evento: KeyboardEvent) => {
+      if (evento.key !== "Escape" || !detalle.open) return;
+      detalle.open = false;
+      detalle.querySelector("summary")?.focus();
+    };
+    const alTocar = (evento: PointerEvent) => {
+      if (!detalle.open) return;
+      const dentro = (evento.target as Element | null)?.closest("[data-menu-panel], summary");
+      if (!dentro) detalle.open = false;
+    };
+    const alCambiar = () => {
+      raiz.style.overflow = detalle.open ? "hidden" : "";
+    };
+    document.addEventListener("keydown", alTeclear);
+    document.addEventListener("pointerdown", alTocar);
+    detalle.addEventListener("toggle", alCambiar);
+    return () => {
+      document.removeEventListener("keydown", alTeclear);
+      document.removeEventListener("pointerdown", alTocar);
+      detalle.removeEventListener("toggle", alCambiar);
+      raiz.style.overflow = "";
+    };
+  }, []);
 
   return (
-    // Con nombre propio en la transición entre páginas: se queda quieta
-    // mientras el contenido cambia debajo (app.css).
-    <header className="sticky top-0 z-30 border-b border-linea bg-fondo [view-transition-name:cabecera]">
-      {cargando ? (
-        <div aria-hidden="true" className="hilo-carga absolute inset-x-0 -bottom-px h-0.5 bg-marca" />
-      ) : null}
-      <a
-        href="#contenido"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-tinta focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+    <>
+      {/* La línea que dice si ya se bajó: arriba de todo, sin ocupar lugar. */}
+      <div ref={sentinela} aria-hidden="true" className="pointer-events-none absolute top-0 left-0 h-2 w-px" />
+
+      {/* El <header> es transparente: lo que se ve es la cápsula de dentro, y
+          la página pasa por detrás de sus orillas. */}
+      <header
+        ref={cabecera}
+        data-bajado="no"
+        // Con nombre propio en la transición entre páginas: la isla se queda
+        // quieta mientras el contenido cambia por debajo (app.css).
+        className="group/cabecera pointer-events-none sticky top-0 z-30 px-3 pt-3 has-[details[open]]:z-50 sm:px-5 lg:px-6 [view-transition-name:cabecera]"
       >
-        Saltar al contenido
-      </a>
+        <a
+          href="#contenido"
+          className="pointer-events-auto sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-tinta focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+        >
+          Saltar al contenido
+        </a>
 
-      <div className="mx-auto flex max-w-sitio items-center justify-between gap-4 px-5 lg:px-10 py-3.5">
-        <Link to="/" viewTransition className="shrink-0" aria-label={`${nombreNegocio}, ir al inicio`}>
-          {/* El SVG de `DavisMtz/AIG-recursos` (11.6 KB comprimido), no el PNG
-              de 512 px: se ve nítido a cualquier tamaño y en cualquier pantalla. */}
-          <img
-            src="/marca/aig-logo-horizontal.svg"
-            alt={nombreNegocio}
-            width={4801}
-            height={675}
-            className="h-auto w-44 sm:w-56"
-          />
-        </Link>
+        <div className="pointer-events-auto relative mx-auto flex h-16 max-w-sitio items-center justify-between gap-4 rounded-full border border-linea/80 bg-superficie pr-2 pl-5 shadow-tarjeta transition-[max-width,box-shadow,border-color] duration-500 ease-[var(--ease-entrada)] group-data-[bajado=si]/cabecera:max-w-[76rem] group-data-[bajado=si]/cabecera:border-linea group-data-[bajado=si]/cabecera:shadow-alzada lg:pl-7">
+          <Link to="/" viewTransition className="shrink-0 transition-opacity duration-200 hover:opacity-75" aria-label={`${nombreNegocio}, ir al inicio`}>
+            {/* El SVG de `DavisMtz/AIG-recursos` (11.6 KB comprimido), no el PNG
+                de 512 px: se ve nítido a cualquier tamaño y en cualquier pantalla. */}
+            <img src="/marca/aig-logo-horizontal.svg" alt={nombreNegocio} width={4801} height={675} className="h-auto w-40 sm:w-52" />
+          </Link>
 
-        <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
-          {NAVEGACION.map((enlace) => (
-            <NavLink
-              key={enlace.a}
-              to={enlace.a}
-              viewTransition
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-2 text-sm font-bold transition-colors hover:text-marca ${
-                  isActive ? "text-marca" : "text-tinta"
-                }`
-              }
-            >
-              {enlace.texto}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Sin JavaScript también abre: es un <details>, no un menú hidratado. */}
-        <details ref={menu} className="relative md:hidden">
-          <summary className="flex h-11 cursor-pointer list-none items-center rounded-xl border border-linea px-4 text-sm font-bold text-tinta [&::-webkit-details-marker]:hidden">
-            Menú
-          </summary>
+          {/* Escritorio: los enlaces en su propio carril, con una píldora de
+              tinta que viaja al que tiene el puntero y vuelve al activo. */}
           <nav
+            ref={navegacion}
             aria-label="Principal"
-            className="absolute right-0 z-40 mt-2 flex w-56 flex-col rounded-2xl border border-linea bg-superficie p-2 shadow-alzada"
+            onMouseLeave={() => setResaltado(null)}
+            className="relative hidden items-center rounded-full bg-fondo p-1 md:flex"
           >
+            <span
+              ref={pildora}
+              aria-hidden="true"
+              className="absolute top-1 bottom-1 left-0 rounded-full bg-tinta opacity-0 shadow-tarjeta transition-[translate,width,opacity] duration-500 ease-[var(--ease-entrada)] motion-reduce:transition-none"
+            />
             {NAVEGACION.map((enlace) => (
               <NavLink
                 key={enlace.a}
                 to={enlace.a}
                 viewTransition
-                onClick={cerrarMenu}
-                className={({ isActive }) =>
-                  `rounded-xl px-4 py-3 text-sm font-bold transition-colors hover:bg-marca-suave ${
-                    isActive ? "text-marca" : "text-tinta"
-                  }`
-                }
+                onMouseEnter={() => setResaltado(enlace.a)}
+                onFocus={() => setResaltado(enlace.a)}
+                onBlur={() => setResaltado(null)}
+                className={`relative z-10 rounded-full px-4 py-2 text-sm font-bold transition-colors duration-300 lg:px-5 ${
+                  pildoraLista && bajo === enlace.a
+                    ? "text-white"
+                    : activo === enlace.a
+                      ? "text-marca"
+                      : "text-texto-suave hover:text-tinta"
+                }`}
               >
                 {enlace.texto}
               </NavLink>
             ))}
           </nav>
-        </details>
-      </div>
-    </header>
+
+          <div className="flex items-center gap-2">
+            {whatsapp ? (
+              <a
+                href={whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/cta hidden h-12 items-center gap-3 rounded-full bg-marca pr-1.5 pl-5 text-sm font-extrabold text-white transition-[background-color,box-shadow] duration-300 hover:bg-marca-oscuro hover:shadow-flotante active:scale-[0.98] lg:inline-flex"
+              >
+                Escríbenos
+                <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white text-marca">
+                  {/* La flecha sale por la derecha y entra otra por la izquierda. */}
+                  <span className="relative block h-4 w-4">
+                    <IconoFlecha className="absolute inset-0 h-4 w-4 transition-transform duration-500 ease-[var(--ease-entrada)] group-hover/cta:translate-x-6" />
+                    <IconoFlecha className="absolute inset-0 h-4 w-4 -translate-x-6 transition-transform duration-500 ease-[var(--ease-entrada)] group-hover/cta:translate-x-0" />
+                  </span>
+                </span>
+              </a>
+            ) : null}
+
+            {/* Sin JavaScript también abre: es un <details>, no un menú hidratado. */}
+            <details ref={menu} className="group/menu md:hidden">
+              <summary
+                aria-label="Menú"
+                className="flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-full bg-tinta text-white transition-transform duration-200 active:scale-95 [&::-webkit-details-marker]:hidden"
+              >
+                {/* Dos rayas que se cruzan en una X. */}
+                <span aria-hidden="true" className="relative block h-3 w-5">
+                  <span className="absolute top-0 left-0 h-0.5 w-5 rounded-full bg-current transition-[translate,rotate] duration-500 ease-[var(--ease-entrada)] group-open/menu:translate-y-[5px] group-open/menu:rotate-45" />
+                  <span className="absolute bottom-0 left-0 h-0.5 w-3 rounded-full bg-current transition-[translate,rotate,width] duration-500 ease-[var(--ease-entrada)] group-open/menu:w-5 group-open/menu:-translate-y-[5px] group-open/menu:-rotate-45" />
+                </span>
+              </summary>
+
+              {/* Velo y panel llevan `hidden` + `group-open:block`: Chrome
+                  esconde lo de un <details> cerrado con `content-visibility`,
+                  que conserva sus medidas, y el panel cerrado «se salía» del
+                  ancho a 390 px. Tocar el velo cierra el menú. */}
+              <div aria-hidden="true" className="pointer-events-auto fixed inset-0 -z-10 hidden bg-tinta/30 group-open/menu:block motion-safe:animate-velo" />
+              <nav
+                aria-label="Principal"
+                data-menu-panel
+                className="absolute inset-x-0 top-full mt-2 hidden origin-top rounded-[2rem] bg-tinta p-3 text-white shadow-flotante group-open/menu:block motion-safe:animate-menu"
+              >
+                <ul className="flex flex-col">
+                  {NAVEGACION.map((enlace, i) => (
+                    <li key={enlace.a} className="motion-safe:animate-entrada" style={{ animationDelay: `${80 + i * 50}ms` }}>
+                      <NavLink
+                        to={enlace.a}
+                        viewTransition
+                        // Al pulsar, no en un efecto: la transición retrata la
+                        // página nueva ANTES de que corran los efectos, y el
+                        // menú viajaba abierto en ella.
+                        onClick={() => {
+                          if (menu.current) menu.current.open = false;
+                        }}
+                        className={({ isActive }) =>
+                          `flex items-center justify-between rounded-2xl px-4 py-3.5 font-display text-2xl font-semibold transition-colors active:bg-white/10 ${
+                            isActive ? "bg-white/10 text-white" : "text-sobre-oscuro"
+                          }`
+                        }
+                      >
+                        {enlace.texto}
+                        <IconoFlecha className="h-5 w-5 text-sobre-oscuro-suave" />
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+                {whatsapp ? (
+                  <a
+                    href={whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 flex h-14 items-center justify-center gap-2 rounded-2xl bg-marca px-6 font-extrabold text-white transition-colors active:bg-marca-oscuro motion-safe:animate-entrada"
+                    style={{ animationDelay: `${80 + NAVEGACION.length * 50}ms` }}
+                  >
+                    <IconoWhatsApp className="h-5 w-5" />
+                    Escríbenos por WhatsApp
+                  </a>
+                ) : null}
+              </nav>
+            </details>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }
 

@@ -237,7 +237,7 @@ export function FotosDeLaCasa({
             Las fotos se reducen solas antes de subir, así que puedes mandarlas tal como salen del teléfono.
           </Vacio>
         ) : (
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {fotos.map((foto, indice) => (
               <li key={foto.id} className="flex flex-col gap-2 rounded-xl border border-linea bg-fondo p-2">
                 <span className="relative block overflow-hidden rounded-lg bg-linea">

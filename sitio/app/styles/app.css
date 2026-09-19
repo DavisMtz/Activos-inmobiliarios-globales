@@ -8,11 +8,14 @@
 @theme {
   --font-sans: "Nunito Variable", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
 
-  /* Títulos del sitio público (D13: «que se vea premium»). La serif editorial
-     la eligió el usuario el 17/09/2026. Se carga desde `routes/publico/marco`
-     y no desde `root`, para que el panel no la descargue.
-     Va el eje de peso solo (36 KB latin): el de tamaño óptico pesa el doble. */
-  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  /* Títulos del sitio público (D13: «que se vea premium»). Jost, sans
+     geométrica, la eligió el usuario el 18/09/2026 entre cuatro puestas sobre
+     su portada («moderno, de lujo»); sustituye a la serif Fraunces del
+     17/09. Se carga desde `routes/publico/marco` y no desde `root`, para que
+     el panel no la descargue. Solo el eje de peso: 27 KB latin.
+     Los respaldos son geométricas del sistema, para que el cambio al llegar
+     la fuente no mueva tanto el texto. */
+  --font-display: "Jost Variable", "Futura", "Century Gothic", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
 
   /* ─── Marca del sitio actual (D13): el rojo se conserva ───────────
      Cuatro papeles de color, no un acento suelto: papel, tinta, vino y rojo.
@@ -45,20 +48,24 @@
   /* El tope era 5.25rem y a 1366 px la palabra «financiamiento» del titular
      real se salía de su columna y se encimaba con la foto. La escala se mide
      con el texto de verdad, no con una frase de ejemplo. */
+  /* Con Jost, el peso baja a medida que crece el tamaño: el titular grande va
+     ligero (es lo que hace que se vea de lujo y no de anuncio), los títulos
+     de página en regular y los de sección en medio. Lo chico (tarjetas,
+     cifras) conserva su seminegrita o negrita, para que se lea. */
   --text-display: clamp(2.4rem, 1.5rem + 3.6vw, 4.25rem);
-  --text-display--line-height: 0.96;
-  --text-display--letter-spacing: -0.035em;
-  --text-display--font-weight: 700;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 300;
 
   --text-titulo: clamp(2rem, 1.45rem + 2.4vw, 3.25rem);
-  --text-titulo--line-height: 1.04;
-  --text-titulo--letter-spacing: -0.03em;
-  --text-titulo--font-weight: 700;
+  --text-titulo--line-height: 1.08;
+  --text-titulo--letter-spacing: -0.02em;
+  --text-titulo--font-weight: 400;
 
   --text-seccion: clamp(1.5rem, 1.25rem + 1.2vw, 2.15rem);
-  --text-seccion--line-height: 1.12;
-  --text-seccion--letter-spacing: -0.02em;
-  --text-seccion--font-weight: 700;
+  --text-seccion--line-height: 1.15;
+  --text-seccion--letter-spacing: -0.015em;
+  --text-seccion--font-weight: 500;
 
   /* Bajada: la frase que acompaña a un título. */
   --text-guia: clamp(1.05rem, 0.99rem + 0.3vw, 1.25rem);
@@ -74,8 +81,16 @@
      Era `max-w-6xl` (72rem): a 1920 px dejaba ~400 px vacíos a cada lado y la
      ficha no cabía con el precio junto a la foto. Se ensancha el MARCO, no los
      textos: los párrafos conservan sus topes en `ch`, y lo ganado se reparte
-     en columnas. Se usa como `max-w-sitio`, siempre con `px-5 lg:px-10`. */
-  --container-sitio: 90rem;
+     en columnas. Se usa como `max-w-sitio`, siempre con `px-5 lg:px-10`.
+     Después fue 90rem y tampoco bastó: el dueño lo ve en un monitor de 2560
+     px, donde 90rem llenaba el 56 % (18/09/2026). Todas las mediciones de F5
+     habían llegado hasta 1920. Ahora el tope es 160rem y desde 1920 crece
+     también la letra base (abajo), para que lo ganado no sean huecos. */
+  --container-sitio: 160rem;
+
+  /* Pantallas grandes: Tailwind acaba en `2xl` (1536). */
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 150rem;
 
   /* ─── Entrada de la primera pantalla ──────────────────────────────
      CSS y no GSAP: GSAP llega 1-2 s después del primer pintado, y animar lo
@@ -89,6 +104,23 @@
   --animate-entrada-titular: entrada-titular 0.8s var(--ease-entrada) both;
   --animate-entrada-foto: entrada-foto 1s var(--ease-entrada) both;
   --animate-entrada-bloque: entrada-bloque 0.9s var(--ease-entrada) both;
+
+  /* Cabecera: el panel del menú baja un poco y aparece; el velo solo aparece;
+     sin rebote: premium. */
+  --animate-menu: menu 0.35s var(--ease-entrada) both;
+  --animate-velo: velo 0.3s ease-out both;
+
+  @keyframes menu {
+    from {
+      opacity: 0;
+      transform: translateY(-0.75rem);
+    }
+  }
+  @keyframes velo {
+    from {
+      opacity: 0;
+    }
+  }
 
   @keyframes entrada {
     from {
@@ -140,6 +172,21 @@
     caret-color: var(--color-marca);
     scrollbar-color: var(--color-linea) transparent;
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* En monitores grandes crece todo en proporción (letra, campos, columnas
+     en rem): con el cuerpo en 16 px, un 2560 se veía como un 1440 con
+     márgenes enormes. Los cortes se miden en px de pantalla, así que esto no
+     los mueve. Debajo de 1920 no cambia nada. */
+  @media (min-width: 120rem) {
+    html {
+      font-size: 106.25%;
+    }
+  }
+  @media (min-width: 150rem) {
+    html {
+      font-size: 112.5%;
+    }
   }
 
   /* Los campos oscuros llevan su propia selección: el rojo sobre vino no se ve. */
@@ -247,6 +294,26 @@
       transform-origin: 50% 50%;
       animation: bienvenida-ventana 0.4s var(--ease-entrada) 0.55s both;
     }
+  }
+}
+
+/* ─── Preguntas frecuentes de la portada (`contenido-portada.tsx`) ───────
+   Abren con suavidad donde el navegador sabe animar hasta `auto` (Chrome
+   131+); en los demás abren al instante. Con «menos movimiento», el bloque
+   global de arriba apaga la transición. */
+@layer components {
+  .pregunta {
+    interpolate-size: allow-keywords;
+  }
+  .pregunta::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 0.5s var(--ease-entrada),
+      content-visibility 0.5s allow-discrete;
+  }
+  .pregunta[open]::details-content {
+    block-size: auto;
   }
 }
 

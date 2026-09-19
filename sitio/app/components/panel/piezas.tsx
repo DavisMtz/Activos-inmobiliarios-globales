@@ -221,7 +221,16 @@ export function BotonEnlace({
 
 // ─── Avisos, etiquetas y superficies ──────────────────────────────
 
-export function Aviso({ tono = "error", children }: { tono?: "error" | "info" | "exito"; children: ReactNode }) {
+export function Aviso({
+  tono = "error",
+  className,
+  children,
+}: {
+  tono?: "error" | "info" | "exito";
+  /** Solo para colocarlo en una rejilla (p. ej. `xl:col-span-2`). */
+  className?: string;
+  children: ReactNode;
+}) {
   const estilos = {
     error: "border-marca/30 bg-marca-suave text-marca-oscuro",
     info: "border-linea bg-superficie text-texto",
@@ -230,7 +239,7 @@ export function Aviso({ tono = "error", children }: { tono?: "error" | "info" | 
   return (
     <p
       role={tono === "error" ? "alert" : "status"}
-      className={`rounded-xl border px-4 py-3 text-sm font-semibold ${estilos}`}
+      className={`rounded-xl border px-4 py-3 text-sm font-semibold ${estilos}${className ? ` ${className}` : ""}`}
     >
       {children}
     </p>
@@ -260,15 +269,18 @@ export function Bloque({
   titulo,
   descripcion,
   acciones,
+  className,
   children,
 }: {
   titulo?: string;
   descripcion?: ReactNode;
   acciones?: ReactNode;
+  /** Solo para colocarlo en una rejilla (p. ej. `xl:col-span-2`), nunca para cambiar su aspecto. */
+  className?: string;
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-linea bg-superficie">
+    <section className={`rounded-2xl border border-linea bg-superficie${className ? ` ${className}` : ""}`}>
       {titulo ? (
         <header className="flex flex-wrap items-start justify-between gap-3 border-b border-linea px-5 py-4">
           <div>

@@ -1,14 +1,14 @@
 import { Form, Link } from "react-router";
-import { leerConfiguracion, leerServicios } from "../../../server/db/configuracion";
+import { leerConfiguracion, leerPreguntas, leerServicios } from "../../../server/db/configuracion";
 import { leerEntregasPublicas } from "../../../server/db/entregas";
-import { destacadas, leerCatalogo, type Tarjeta } from "../../../server/db/propiedades";
+import { casasDePortada, leerCatalogo } from "../../../server/db/propiedades";
 import { ETIQUETA_TIPO_PLURAL, rutaDeListado } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
-import { TarjetaEntrega } from "../../components/publico/entregas";
-import { Isotipo } from "../../components/publico/isotipo";
-import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio, useFotoQueViaja } from "../../components/publico/piezas";
+import { Antetitulo, Preguntas, Testimonios } from "../../components/publico/contenido-portada";
+import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
+import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/inicio";
 
@@ -16,43 +16,54 @@ import type { Route } from "./+types/inicio";
  * Portada (PLAN §10.1). Manda el catálogo: buscador de verdad arriba, casas
  * reales enseguida y accesos por tipo con conteos reales.
  *
- * Lo que NO lleva, a propósito (PLAN §0.4): testimonios inventados (los del
- * sitio actual son «Lorem ipsum» firmados por «James Oliver»), cifras de
- * ventas, premios ni fotos de equipo. Las «Entregas» sí salen, porque son de
- * clientes reales que dieron su permiso, y sin ninguna aprobada la sección no
- * se pinta. La foto grande es la portada de una casa real del catálogo.
+ * Lo que NO lleva, a propósito (PLAN §0.4): cifras de ventas, premios ni fotos
+ * de equipo. Nada de eso existe. Los testimonios y las preguntas frecuentes
+ * salen SOLO si el equipo los escribe en Panel › Contenido (los del sitio
+ * anterior eran «Lorem ipsum» firmados por «James Oliver»). La foto grande es
+ * la portada de una casa real del catálogo, no una imagen de banco.
  */
+
+/** El titular cuando el equipo no escribió uno en el panel. */
+const TITULAR_POR_OMISION = "Comercialización, renta y financiamiento de inmuebles";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const { servicios } = context.get(contextoServidor);
   const { config, db } = servicios;
 
-  const [catalogo, casas, configuracion, listaServicios, entregas] = await Promise.all([
+  const [catalogo, casas, configuracion, listaServicios, entregas, preguntas] = await Promise.all([
     leerCatalogo(db),
-    // 7 y no 6: la primera va a la vitrina de arriba y las otras seis a «Lo
-    // más reciente», para no enseñar la misma casa dos veces seguidas.
-    destacadas(db, config.cloudinary.cloudName, 7),
+    // Las de la vitrina de arriba (van pasando de una en una) y seis para «Lo
+    // más reciente»: ninguna casa sale dos veces en la portada.
+    casasDePortada(db, config.cloudinary.cloudName, { vitrina: CASAS_EN_VITRINA, recientes: 6 }),
     leerConfiguracion(db),
     leerServicios(db),
+    // Lo que dicen los clientes sale de las ENTREGAS, con el permiso de cada
+    // uno, y ya no de testimonios escritos por el equipo (19/09/2026).
     leerEntregasPublicas(db, config.cloudinary.cloudName, 3),
+    leerPreguntas(db),
   ]);
 
   return {
     catalogo,
-    casas,
+    vitrina: casas.vitrina,
+    recientes: casas.recientes,
     portada: configuracion.portada,
     servicios: listaServicios.slice(0, 6).map((s) => ({ id: s.id, titulo: s.titulo })),
+    entregas,
+    preguntas,
     whatsapp: enlaceWhatsApp(configuracion.whatsapp.numero, configuracion.whatsapp.plantillaGeneral),
     nombreNegocio: config.nombreNegocio,
-    entregas,
   };
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
   const nombre = loaderData?.nombreNegocio ?? "Activos Inmobiliarios Globales";
   const total = loaderData?.catalogo.total ?? 0;
+  // El titular que escribe el equipo, no una frase fija: la de antes decía
+  // «en Morelia» y el negocio es para toda la República (18/09/2026).
+  const titular = loaderData?.portada.titular || TITULAR_POR_OMISION;
   return [
-    { title: `${nombre} · Casas en venta y renta en Morelia` },
+    { title: `${nombre} · ${titular}` },
     {
       name: "description",
       content: `${total} casas, departamentos y terrenos en Morelia y Michoacán. Busca por colonia, precio o recámaras y pregunta por WhatsApp.`,
@@ -61,9 +72,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function Inicio({ loaderData }: Route.ComponentProps) {
-  const { catalogo, casas, portada, servicios, whatsapp, entregas } = loaderData;
-  const principal = casas[0]?.foto ? casas[0] : null;
-  const recientes = (principal ? casas.slice(1) : casas).slice(0, 6);
+  const { catalogo, vitrina, recientes, portada, servicios, entregas, preguntas, whatsapp } = loaderData;
   const desde = precioMXN(catalogo.rangos.venta.min);
   const ciudades = catalogo.ciudades.length;
 
@@ -73,19 +82,25 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
       {/* «financiamiento» mide 8.4 veces el cuerpo del titular: a 1024 px son
           513 px y la mitad de la pantalla da 444, así que se salía. Hasta 1280
           el texto se lleva 3/5; desde ahí nunca baja de 36rem y la foto crece
-          con lo que sobra. Medido con el titular real, no con uno de ejemplo. */}
-      <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)]">
-        <div className="max-w-xl">
-          {/* El isotipo ya no va suelto encima del titular (la cabecera trae el
-              logotipo completo): encabeza la frase que dice dónde y qué, la
-              misma del título de la página. */}
-          <p className="flex items-center gap-3 text-xs font-bold tracking-[0.14em] text-marca uppercase motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)] sm:text-sm sm:tracking-widest">
-            <Isotipo quieto className="h-7 w-auto shrink-0 sm:h-8" />
-            Casas en venta y renta en Morelia
-          </p>
-
-          <h1 className="mt-5 font-display text-display text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
-            {portada.titular || "Comercialización, renta y financiamiento de inmuebles"}
+          con lo que sobra. Medido con el titular real, no con uno de ejemplo.
+          Desde 1920 (`3xl`) el texto tiene columna fija de 44rem y el titular
+          sube a 5rem: «financiamiento» mide 42rem y cabe; la vitrina se queda
+          con todo lo demás, sin la columna del texto medio vacía. */}
+      <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)] 3xl:grid-cols-[44rem_minmax(0,1fr)] 3xl:gap-20">
+        <div className="max-w-xl 3xl:max-w-none">
+          {/* Encima del titular, solo el «Saludo» del panel, si el equipo lo
+              escribió; vacío, no sale nada. El logotipo ya va siempre en la
+              cabecera, y «Casas en venta y renta en Morelia» se quitó a pedido
+              del usuario (18/09/2026): el negocio es para toda la República. */}
+          {portada.saludo ? (
+            <Antetitulo className="motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
+              {portada.saludo}
+            </Antetitulo>
+          ) : null}
+          <h1
+            className={`font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)] ${portada.saludo ? "mt-5" : ""}`}
+          >
+            {portada.titular || TITULAR_POR_OMISION}
           </h1>
 
           {portada.lema ? <p className="mt-4 text-guia text-texto-suave">{portada.lema}</p> : null}
@@ -95,7 +110,6 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           <Form
             method="get"
             action="/propiedades"
-            viewTransition
             className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)] sm:p-5"
           >
             <CampoTexto
@@ -138,7 +152,9 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           </dl>
         </div>
 
-        {principal ? <Vitrina casa={principal} /> : null}
+        {/* La llave: si cambian las casas (el loader se vuelve a correr), la
+            vitrina arranca de cero en vez de heredar a medias el ciclo viejo. */}
+        {vitrina.length ? <Vitrina key={vitrina.map((casa) => casa.clave).join(" ")} casas={vitrina} /> : null}
       </section>
 
       {/* ─── Accesos por tipo, con los conteos de verdad ─── */}
@@ -148,7 +164,6 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             {catalogo.tipos.map((t) => (
               <li key={t.tipo}>
                 <Link
-                  viewTransition
                   to={rutaDeListado({ tipo: t.tipo })}
                   className="flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2.5 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
                 >
@@ -167,7 +182,6 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-display text-seccion text-tinta">Lo más reciente</h2>
             <Link
-              viewTransition
               to="/propiedades"
               className="flex items-center gap-2 font-bold text-marca underline underline-offset-4"
             >
@@ -176,41 +190,15 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </Link>
           </div>
 
-          <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Seis casas: 3 columnas y, desde 2400 px, las seis en un renglón
+              (cada tarjeta mide lo mismo que a 1366 en tres). */}
+          <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 4xl:grid-cols-6">
             {recientes.map((casa) => (
               <li key={casa.clave}>
                 {/* Sin prioridad: la foto que pide ir primero es la de la vitrina.
                     Antes la primera tarjeta era esa misma casa y bajaba la misma
                     foto; ahora es otra, y en el celular queda bajo el pliegue. */}
                 <TarjetaPropiedad item={casa} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
-      {/* ─── Entregas: clientes reales, con su permiso ─── */}
-      {entregas.length ? (
-        <section className="mx-auto max-w-sitio px-5 pb-14 sm:pb-20 lg:px-10">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2 className="font-display text-seccion text-tinta">Ya estrenaron casa</h2>
-              <p className="mt-2 text-texto-suave">Familias a las que les entregamos su casa, contadas por ellas.</p>
-            </div>
-            <Link
-              to="/entregas"
-              viewTransition
-              className="flex items-center gap-2 font-bold text-marca underline underline-offset-4"
-            >
-              Ver las entregas
-              <IconoFlecha className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <ul data-animar-lista className="mt-6 grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {entregas.map((entrega) => (
-              <li key={entrega.id}>
-                <TarjetaEntrega entrega={entrega} />
               </li>
             ))}
           </ul>
@@ -224,12 +212,16 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             <h2 className="max-w-xl font-display text-seccion text-white">
               {portada.presentacion || "Qué hacemos"}
             </h2>
+            {/* «Antes de los servicios» (Panel › Contenido): también arriba de
+                la página de Servicios. */}
+            {portada.introServicios ? (
+              <p className="mt-4 max-w-2xl text-guia text-sobre-oscuro-suave">{portada.introServicios}</p>
+            ) : null}
 
             <ul className="mt-10 grid gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
               {servicios.map((servicio) => (
                 <li key={servicio.id} className="border-t border-white/15 pt-4">
                   <Link
-                    viewTransition
                     to="/servicios"
                     className="font-display text-xl font-semibold text-white hover:text-sobre-vino-suave"
                   >
@@ -240,7 +232,6 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </ul>
 
             <Link
-              viewTransition
               to="/servicios"
               className="mt-10 inline-flex items-center gap-2 font-bold text-white underline underline-offset-4"
             >
@@ -250,6 +241,11 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           </div>
         </section>
       ) : null}
+
+      {/* ─── Lo que dicen los clientes (Entregas) y las preguntas ─── */}
+      {/* Cada una existe solo si hay algo publicado: nada vacío. */}
+      <Testimonios entregas={entregas} />
+      <Preguntas preguntas={preguntas} whatsapp={whatsapp} />
 
       {/* ─── Cierre ─── */}
       <section className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
@@ -280,7 +276,6 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
               </a>
             ) : null}
             <Link
-              viewTransition
               to="/contacto"
               className="inline-flex h-13 items-center rounded-xl border border-white/40 px-6 py-3.5 font-bold text-white transition-colors hover:bg-white/10"
             >
@@ -310,83 +305,6 @@ function Cifra({ valor, etiqueta, orden }: { valor: string; etiqueta: string; or
     >
       <dt className="mt-1 text-xs leading-snug text-texto-suave sm:text-sm">{etiqueta}</dt>
       <dd className="font-display text-[clamp(1.1rem,4.6vw,1.875rem)] leading-none font-bold text-tinta">{valor}</dd>
-    </div>
-  );
-}
-
-const OPERACION_VITRINA: Record<Tarjeta["operacion"], string> = {
-  venta: "En venta",
-  renta: "En renta",
-  venta_renta: "Venta o renta",
-};
-
-/**
- * La casa de la primera pantalla, contada como lo que es: una casa con precio,
- * nombre y colonia, no una foto suelta. El bloque vino de atrás da la
- * profundidad con un color de la marca y sin filtros: las sombras de
- * `feDropShadow` y el `backdrop-filter` ya costaron Lighthouse (PLAN §17).
- * Sigue en 4:3 porque es la variante `tarjeta` de Cloudinary; otra
- * proporción sería otro derivado por casa (§13.5).
- */
-function Vitrina({ casa }: { casa: Tarjeta }) {
-  const foto = casa.foto;
-  if (!foto) return null;
-  const precio = textoPrecio(casa);
-  const lugar = [casa.zona, casa.clave].filter(Boolean).join(" · ");
-  const viaja = useFotoQueViaja(`/propiedades/${casa.slug}`);
-
-  return (
-    <div className="relative mt-12 mr-3 mb-3 sm:mr-5 sm:mb-5 lg:mt-0">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-marca-oscuro motion-safe:animate-entrada-bloque motion-safe:[animation-delay:calc(var(--rb,0s)_+_380ms)] sm:translate-x-5 sm:translate-y-5"
-      />
-      <Link
-        viewTransition
-        to={`/propiedades/${casa.slug}`}
-        className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
-      >
-        <img
-          src={foto.src}
-          srcSet={foto.srcset ?? undefined}
-          sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
-          alt={foto.alt}
-          width={960}
-          height={720}
-          fetchPriority="high"
-          decoding="async"
-          style={viaja}
-          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
-        />
-        {/* Velo de tinta de abajo arriba: el texto blanco se lee sobre
-            cualquier foto sin tapar la casa. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-linear-to-t from-tinta/90 via-tinta/45 to-transparent"
-        />
-        <p className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-superficie px-3 py-1.5 text-xs font-bold tracking-wide text-tinta uppercase shadow-tarjeta motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_640ms)]">
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-marca" />
-          {OPERACION_VITRINA[casa.operacion]}
-        </p>
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_560ms)] sm:p-7">
-          <div className="min-w-0 text-white">
-            <p className="text-precio tabular-nums">
-              {precio.principal}
-              {precio.segundo ? (
-                <span className="ml-2 text-base font-semibold text-sobre-oscuro-suave">{precio.segundo}</span>
-              ) : null}
-            </p>
-            <p className="mt-1.5 truncate font-display text-xl font-semibold sm:text-2xl">{casa.titulo}</p>
-            {lugar ? <p className="mt-1 truncate text-sm text-sobre-oscuro">{lugar}</p> : null}
-          </div>
-          <span
-            aria-hidden="true"
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-superficie text-marca-oscuro transition-transform duration-300 group-hover:translate-x-1"
-          >
-            <IconoFlecha className="h-5 w-5" />
-          </span>
-        </div>
-      </Link>
     </div>
   );
 }

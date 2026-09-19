@@ -52,6 +52,8 @@ export type AvisoPrivacidad = {
 
 export type Servicio = { id: number; titulo: string; descripcion: string; icono: string | null };
 
+export type Pregunta = { id: number; pregunta: string; respuesta: string };
+
 /** Lo que necesita el marco de TODAS las páginas públicas: pie y botón de WhatsApp. */
 export type ConfigDelSitio = {
   contacto: Contacto;
@@ -185,6 +187,14 @@ export async function leerServicios(db: D1Database): Promise<Servicio[]> {
   const { results } = await db
     .prepare("SELECT id, titulo, descripcion, icono FROM servicios WHERE visible = 1 ORDER BY orden, id")
     .all<Servicio>();
+  return results;
+}
+
+/** Las preguntas frecuentes visibles, en el orden que les dio el equipo en el panel. */
+export async function leerPreguntas(db: D1Database): Promise<Pregunta[]> {
+  const { results } = await db
+    .prepare("SELECT id, pregunta, respuesta FROM preguntas WHERE visible = 1 ORDER BY orden, id")
+    .all<Pregunta>();
   return results;
 }
 

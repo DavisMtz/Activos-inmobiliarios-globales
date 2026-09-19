@@ -20,6 +20,7 @@ import {
   type Tipo,
 } from "../../shared/filtros";
 import { fotoVista, type FotoVista } from "../../shared/fotos";
+import { repartirPortada } from "../../shared/portada";
 import { slugificar } from "../../shared/texto";
 
 // ─── Lo que ve la interfaz ────────────────────────────────────────
@@ -40,6 +41,12 @@ export type Tarjeta = {
   zona: string;
   resumen: string | null;
   foto: FotoVista | null;
+  /**
+   * Solo las casas de la vitrina de la portada: la variante `galeria` (1600
+   * px, la misma que ya pide la ficha, así que no es un derivado nuevo). Desde
+   * 1920 px la vitrina mide más de 1000 px y la de 960 se veía borrosa.
+   */
+  fotoGrande?: FotoVista | null;
 };
 
 export type Ficha = Tarjeta & {
@@ -331,20 +338,80 @@ export async function listar(
 }
 
 /**
- * Las de la portada: primero las marcadas a mano y, si no hay ninguna (hoy son
- * cero), las más recientes. Una sola consulta sirve para los dos casos.
+ * Cuántas se piden para repartir. Sobran a propósito: para llenar la vitrina
+ * con una casa por colonia hay que poder saltarse las repetidas. Pedir 40 y no
+ * 11 no lee más filas: según `EXPLAIN QUERY PLAN`, SQLite une TODAS las
+ * visibles con su zona y su foto y las ordena en un árbol temporal antes de
+ * cortar. Al navegador solo viajan las que se pintan.
  */
-export async function destacadas(db: D1Database, cloudName: string, limite = 6): Promise<Tarjeta[]> {
-  const { results } = await db
-    .prepare(
-      `SELECT ${CAMPOS_TARJETA} ${DESDE_TARJETA}
-        WHERE ${VISIBLES}
-        ORDER BY p.destacada DESC, COALESCE(p.publicada_en, p.creada_en) DESC, p.id DESC
-        LIMIT ?`,
-    )
-    .bind(limite)
-    .all<FilaTarjeta>();
-  return results.map((fila) => aTarjeta(fila, cloudName));
+const CANDIDATAS_PORTADA = 40;
+
+type FilaPortada = FilaTarjeta & { destacada: number };
+
+/**
+ * Las de la portada: las de la vitrina, que van pasando de una en una, y las de
+ * «Lo más reciente», sin repetir ninguna. Abre la vitrina la «Casa de la foto
+ * principal» si el equipo la eligió en Panel › Contenido; después las marcadas
+ * a mano y, si no hay (hoy son cero), las más recientes; el reparto está en
+ * `shared/portada.ts`. Las de la vitrina llevan también la foto de la galería.
+ */
+export async function casasDePortada(
+  db: D1Database,
+  cloudName: string,
+  cuantas: { vitrina: number; recientes: number },
+): Promise<{ vitrina: Tarjeta[]; recientes: Tarjeta[] }> {
+  const [consulta, portada] = await db.batch([
+    db
+      .prepare(
+        `SELECT ${CAMPOS_TARJETA}, p.destacada ${DESDE_TARJETA}
+          WHERE ${VISIBLES}
+          ORDER BY p.destacada DESC, COALESCE(p.publicada_en, p.creada_en) DESC, p.id DESC
+          LIMIT ?`,
+      )
+      .bind(CANDIDATAS_PORTADA),
+    // La casa elegida, en la MISMA ida a la base (el loader no espera a leer
+    // la configuración para pedir las casas). Con el JSON dañado, ninguna.
+    db.prepare(
+      `SELECT CASE WHEN json_valid(valor) THEN TRIM(json_extract(valor, '$.imagen_propiedad_clave')) END AS clave
+         FROM configuracion WHERE clave = 'portada'`,
+    ),
+  ]);
+  const filas = [...(consulta.results as FilaPortada[])];
+  const preferida = String((portada.results[0] as { clave?: unknown } | undefined)?.clave ?? "").toUpperCase() || null;
+
+  // Si la elegida no está entre las candidatas (es vieja), se pide sola: la
+  // clave es única. Si no está publicada, no sale; sin foto tampoco, que
+  // antepuesta acabaría encabezando «Lo más reciente».
+  if (preferida && !filas.some((fila) => fila.clave === preferida)) {
+    const sola = await db
+      .prepare(`SELECT ${CAMPOS_TARJETA}, p.destacada ${DESDE_TARJETA} WHERE ${VISIBLES} AND p.clave = ?`)
+      .bind(preferida)
+      .first<FilaPortada>();
+    if (sola && (sola.foto_public_id || sola.foto_url_origen)) filas.unshift(sola);
+  }
+
+  const candidatas = filas.map((fila) => ({ fila, tarjeta: aTarjeta(fila, cloudName) }));
+  const reparto = repartirPortada(candidatas, {
+    enVitrina: cuantas.vitrina,
+    recientes: cuantas.recientes,
+    preferida: preferida ? ({ fila }) => fila.clave === preferida : undefined,
+    destacada: ({ fila }) => fila.destacada === 1,
+    zona: ({ tarjeta }) => tarjeta.zona,
+    conFoto: ({ tarjeta }) => tarjeta.foto !== null,
+  });
+
+  return {
+    vitrina: reparto.vitrina.map(({ fila, tarjeta }) => ({
+      ...tarjeta,
+      fotoGrande: fotoVista(
+        { public_id: fila.foto_public_id, url_origen: fila.foto_url_origen, alt: fila.foto_alt },
+        "galeria",
+        cloudName,
+        tarjeta.foto?.alt ?? fila.titulo,
+      ),
+    })),
+    recientes: reparto.recientes.map(({ tarjeta }) => tarjeta),
+  };
 }
 
 // ─── Ficha ────────────────────────────────────────────────────────
