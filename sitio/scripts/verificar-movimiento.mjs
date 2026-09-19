@@ -193,6 +193,9 @@ async function revisarVitrina(cdp, reducido) {
 
 async function revisar(cdp, ruta, reducido) {
   await cdp("Page.enable");
+  // Abrir la ficha en producción contaría como visita real en las métricas.
+  await cdp("Network.enable");
+  await cdp("Network.setBlockedURLs", { urls: ["*/api/eventos*"] });
   await cdp("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
   await cdp("Page.navigate", { url: BASE + ruta });
   await esperar(2500);

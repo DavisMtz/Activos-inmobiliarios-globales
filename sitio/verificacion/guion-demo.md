@@ -22,7 +22,7 @@ Para enseñarle la propuesta al dueño (PLAN §15, F5). Todo lo que se enseña a
 | Min. | Qué enseñar | Qué decir |
 |---|---|---|
 | 0:00 | **Portada** en incógnito: la bienvenida, el buscador y la vitrina, que pasa sola por cinco casas reales (una por colonia; se detiene con el ratón encima o con su botón de pausa) | «Son las 188 casas de la página actual, pasadas con sus 3,241 fotos.» Si preguntan cuáles salen ahí: las que el equipo marque como destacadas en el panel; mientras no haya, las más recientes. |
-| 0:45 | **Buscar** por precio y colonia; cambiar a renta | «El buscador de hoy solo llega a un millón y 181 casas cuestan más. Este llega a $65,000,000 y los filtros quedan en la dirección, así que una búsqueda se puede mandar por WhatsApp.» |
+| 0:45 | **Buscar** por precio y colonia; cambiar a renta. Bajar por la lista: las casas siguen llegando solas, y al volver de una ficha la lista sigue donde estaba | «El buscador de hoy solo llega a un millón y 181 casas cuestan más. Este llega a $65,000,000 y los filtros quedan en la dirección, así que una búsqueda se puede mandar por WhatsApp.» |
 | 1:45 | **Ficha** de una casa: galería, precio, medidas y la **clave** (AIG-0123) | «La clave sirve para identificarla por teléfono.» |
 | 2:30 | El botón de **WhatsApp** (sin enviar): el mensaje ya dice título, clave y enlace | «Hoy el mensaje es genérico y no se sabe qué casa era.» |
 | 3:00 | Mandar el **formulario de informes** de esa ficha con datos de prueba | «Esto llega al panel con la casa pegada.» Usa un nombre que se note que es prueba. |
