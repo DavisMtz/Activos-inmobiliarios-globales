@@ -231,7 +231,7 @@ export default function Contacto({ loaderData, actionData }: Route.ComponentProp
                 <input type="checkbox" name="acepto" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#a0051c]" />
                 <span>
                   Acepto el{" "}
-                  <Link to="/aviso-de-privacidad" className="font-bold text-marca underline underline-offset-4">
+                  <Link to="/aviso-de-privacidad" viewTransition className="font-bold text-marca underline underline-offset-4">
                     aviso de privacidad
                   </Link>
                   .

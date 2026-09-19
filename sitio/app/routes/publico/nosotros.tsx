@@ -78,6 +78,7 @@ export default function Nosotros({ loaderData }: Route.ComponentProps) {
 
       <div className="mx-auto max-w-sitio px-5 lg:px-10 pb-16">
         <Link
+          viewTransition
           to="/propiedades"
           className="inline-flex h-12 items-center rounded-xl bg-marca px-6 font-extrabold text-white transition-colors hover:bg-marca-oscuro"
         >

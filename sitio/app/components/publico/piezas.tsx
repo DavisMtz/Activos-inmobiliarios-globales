@@ -1,5 +1,5 @@
 import { useId, type ReactNode, type SelectHTMLAttributes, type InputHTMLAttributes } from "react";
-import { Link } from "react-router";
+import { Link, useViewTransitionState } from "react-router";
 import { m2, precioMXN } from "../../../shared/formato";
 import { rutaDeListado, type Filtros } from "../../../shared/filtros";
 import type { Tarjeta } from "../../../server/db/propiedades";
@@ -60,6 +60,16 @@ export function EtiquetaEstado({ estado, operacion }: { estado: string; operacio
 
 // ─── Tarjeta de una casa ──────────────────────────────────────────
 
+/**
+ * La foto de la casa viaja de la tarjeta a la galería de la ficha (app.css,
+ * `foto-casa`). El nombre se pone SOLO en la tarjeta que se pulsó y solo
+ * mientras dura la transición: dos elementos con el mismo nombre en una
+ * página cancelan la transición entera, y en el listado hay 12 tarjetas.
+ */
+export function useFotoQueViaja(destino: string) {
+  return useViewTransitionState(destino) ? { viewTransitionName: "foto-casa" } : undefined;
+}
+
 function Dato({ icono, children }: { icono: ReactNode; children: ReactNode }) {
   return (
     <span className="flex items-center gap-1.5">
@@ -77,11 +87,14 @@ function Dato({ icono, children }: { icono: ReactNode; children: ReactNode }) {
 export function TarjetaPropiedad({ item, prioridad = false }: { item: Tarjeta; prioridad?: boolean }) {
   const precio = textoPrecio(item);
   const superficie = m2(item.m2Construccion) ?? m2(item.m2Terreno);
+  const destino = `/propiedades/${item.slug}`;
+  const viaja = useFotoQueViaja(destino);
 
   return (
     <article className="group h-full">
       <Link
-        to={`/propiedades/${item.slug}`}
+        to={destino}
+        viewTransition
         className="flex h-full flex-col overflow-hidden rounded-2xl border border-linea bg-superficie shadow-tarjeta transition-shadow hover:shadow-alzada"
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-marca-suave">
@@ -98,6 +111,7 @@ export function TarjetaPropiedad({ item, prioridad = false }: { item: Tarjeta; p
               loading={prioridad ? "eager" : "lazy"}
               fetchPriority={prioridad ? "high" : undefined}
               decoding="async"
+              style={viaja}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           ) : null}

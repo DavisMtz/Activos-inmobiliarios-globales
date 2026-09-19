@@ -4,7 +4,7 @@ import fuenteFraunces from "@fontsource-variable/fraunces/files/fraunces-latin-w
 import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router";
+import { Link, NavLink, Outlet, useLocation, useNavigation } from "react-router";
 import { leerConfigDelSitio } from "../../../server/db/configuracion";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import {
@@ -167,8 +167,28 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
 // ─── Cabecera ─────────────────────────────────────────────────────
 
 function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
+  const { pathname } = useLocation();
+  const navegacion = useNavigation();
+  // Solo cuando se va a OTRA página: enviar el formulario de contacto también
+  // pone la navegación en marcha y ahí el botón ya dice «Enviando».
+  const cargando = navegacion.state === "loading" && navegacion.location.pathname !== pathname;
+  const menu = useRef<HTMLDetailsElement>(null);
+
+  // El menú del celular es un <details> y el marco no se vuelve a montar al
+  // navegar: sin esto se quedaba abierto encima de la página nueva. Se cierra
+  // al pulsar, no al cambiar de ruta: un efecto corre DESPUÉS de que la
+  // transición retrata la página nueva, y el menú viajaba abierto en ella.
+  const cerrarMenu = () => {
+    if (menu.current) menu.current.open = false;
+  };
+
   return (
-    <header className="sticky top-0 z-30 border-b border-linea bg-fondo">
+    // Con nombre propio en la transición entre páginas: se queda quieta
+    // mientras el contenido cambia debajo (app.css).
+    <header className="sticky top-0 z-30 border-b border-linea bg-fondo [view-transition-name:cabecera]">
+      {cargando ? (
+        <div aria-hidden="true" className="hilo-carga absolute inset-x-0 -bottom-px h-0.5 bg-marca" />
+      ) : null}
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-tinta focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
@@ -177,7 +197,7 @@ function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
       </a>
 
       <div className="mx-auto flex max-w-sitio items-center justify-between gap-4 px-5 lg:px-10 py-3.5">
-        <Link to="/" className="shrink-0" aria-label={`${nombreNegocio}, ir al inicio`}>
+        <Link to="/" viewTransition className="shrink-0" aria-label={`${nombreNegocio}, ir al inicio`}>
           {/* El SVG de `DavisMtz/AIG-recursos` (11.6 KB comprimido), no el PNG
               de 512 px: se ve nítido a cualquier tamaño y en cualquier pantalla. */}
           <img
@@ -194,6 +214,7 @@ function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
             <NavLink
               key={enlace.a}
               to={enlace.a}
+              viewTransition
               className={({ isActive }) =>
                 `rounded-lg px-3 py-2 text-sm font-bold transition-colors hover:text-marca ${
                   isActive ? "text-marca" : "text-tinta"
@@ -206,7 +227,7 @@ function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
         </nav>
 
         {/* Sin JavaScript también abre: es un <details>, no un menú hidratado. */}
-        <details className="relative md:hidden">
+        <details ref={menu} className="relative md:hidden">
           <summary className="flex h-11 cursor-pointer list-none items-center rounded-xl border border-linea px-4 text-sm font-bold text-tinta [&::-webkit-details-marker]:hidden">
             Menú
           </summary>
@@ -218,6 +239,8 @@ function Cabecera({ nombreNegocio }: { nombreNegocio: string }) {
               <NavLink
                 key={enlace.a}
                 to={enlace.a}
+                viewTransition
+                onClick={cerrarMenu}
                 className={({ isActive }) =>
                   `rounded-xl px-4 py-3 text-sm font-bold transition-colors hover:bg-marca-suave ${
                     isActive ? "text-marca" : "text-tinta"
@@ -313,13 +336,13 @@ function Pie({
               <ul className="mt-4 flex flex-col gap-3">
                 {NAVEGACION.map((enlace) => (
                   <li key={enlace.a}>
-                    <Link to={enlace.a} className="hover:underline">
+                    <Link to={enlace.a} viewTransition className="hover:underline">
                       {enlace.texto}
                     </Link>
                   </li>
                 ))}
                 <li>
-                  <Link to="/aviso-de-privacidad" className="hover:underline">
+                  <Link to="/aviso-de-privacidad" viewTransition className="hover:underline">
                     Aviso de privacidad
                   </Link>
                 </li>

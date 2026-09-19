@@ -6,7 +6,7 @@ import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
 import { Isotipo } from "../../components/publico/isotipo";
-import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio } from "../../components/publico/piezas";
+import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio, useFotoQueViaja } from "../../components/publico/piezas";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/inicio";
 
@@ -90,6 +90,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           <Form
             method="get"
             action="/propiedades"
+            viewTransition
             className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)] sm:p-5"
           >
             <CampoTexto
@@ -142,6 +143,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             {catalogo.tipos.map((t) => (
               <li key={t.tipo}>
                 <Link
+                  viewTransition
                   to={rutaDeListado({ tipo: t.tipo })}
                   className="flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2.5 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
                 >
@@ -160,6 +162,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-display text-seccion text-tinta">Lo más reciente</h2>
             <Link
+              viewTransition
               to="/propiedades"
               className="flex items-center gap-2 font-bold text-marca underline underline-offset-4"
             >
@@ -193,6 +196,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
               {servicios.map((servicio) => (
                 <li key={servicio.id} className="border-t border-white/15 pt-4">
                   <Link
+                    viewTransition
                     to="/servicios"
                     className="font-display text-xl font-semibold text-white hover:text-sobre-vino-suave"
                   >
@@ -203,6 +207,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </ul>
 
             <Link
+              viewTransition
               to="/servicios"
               className="mt-10 inline-flex items-center gap-2 font-bold text-white underline underline-offset-4"
             >
@@ -242,6 +247,7 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
               </a>
             ) : null}
             <Link
+              viewTransition
               to="/contacto"
               className="inline-flex h-13 items-center rounded-xl border border-white/40 px-6 py-3.5 font-bold text-white transition-colors hover:bg-white/10"
             >
@@ -294,6 +300,7 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
   if (!foto) return null;
   const precio = textoPrecio(casa);
   const lugar = [casa.zona, casa.clave].filter(Boolean).join(" · ");
+  const viaja = useFotoQueViaja(`/propiedades/${casa.slug}`);
 
   return (
     <div className="relative mt-12 mr-3 mb-3 sm:mr-5 sm:mb-5 lg:mt-0">
@@ -302,6 +309,7 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
         className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-marca-oscuro motion-safe:animate-entrada-bloque motion-safe:[animation-delay:calc(var(--rb,0s)_+_380ms)] sm:translate-x-5 sm:translate-y-5"
       />
       <Link
+        viewTransition
         to={`/propiedades/${casa.slug}`}
         className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
       >
@@ -314,6 +322,7 @@ function Vitrina({ casa }: { casa: Tarjeta }) {
           height={720}
           fetchPriority="high"
           decoding="async"
+          style={viaja}
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
         />
         {/* Velo de tinta de abajo arriba: el texto blanco se lee sobre

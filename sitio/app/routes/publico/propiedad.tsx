@@ -154,7 +154,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
   return (
     <div className="pb-24 lg:pb-0">
       <div className="mx-auto max-w-sitio px-5 lg:px-10 pt-6">
-        <Link to="/propiedades" className="text-sm font-bold text-marca underline underline-offset-4">
+        <Link to="/propiedades" viewTransition className="text-sm font-bold text-marca underline underline-offset-4">
           ← Todas las propiedades
         </Link>
       </div>
@@ -315,6 +315,9 @@ function Galeria({ fotos, miniaturas, titulo }: { fotos: Foto[]; miniaturas: Fot
             height={1067}
             fetchPriority="high"
             decoding="async"
+            // La misma foto que traía la tarjeta pulsada: llega volando a su
+            // lugar (app.css, `foto-casa`).
+            style={{ viewTransitionName: "foto-casa" }}
             // El precio y WhatsApp ya viven al lado, así que el tope solo
             // cuida las ventanas bajitas: sin él, a 1366×768 la foto llenaba
             // la pantalla entera.
@@ -552,7 +555,7 @@ function Acciones({
             />
             <span>
               Acepto el{" "}
-              <Link to="/aviso-de-privacidad" className="font-bold text-marca underline underline-offset-4">
+              <Link to="/aviso-de-privacidad" viewTransition className="font-bold text-marca underline underline-offset-4">
                 aviso de privacidad
               </Link>
               .

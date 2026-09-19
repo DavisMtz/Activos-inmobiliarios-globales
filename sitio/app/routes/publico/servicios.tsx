@@ -57,12 +57,14 @@ export default function Servicios({ loaderData }: Route.ComponentProps) {
 
       <div className="mt-12 flex flex-wrap gap-4">
         <Link
+          viewTransition
           to="/propiedades"
           className="inline-flex h-12 items-center rounded-xl bg-marca px-6 font-extrabold text-white transition-colors hover:bg-marca-oscuro"
         >
           Ver las propiedades
         </Link>
         <Link
+          viewTransition
           to="/contacto"
           className="inline-flex h-12 items-center rounded-xl border border-linea bg-superficie px-6 font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
         >

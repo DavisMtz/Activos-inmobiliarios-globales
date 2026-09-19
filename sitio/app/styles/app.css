@@ -294,3 +294,100 @@
     transform: scale(0);
   }
 }
+
+/* ─── Transición entre páginas del sitio público ───────────────────
+   View Transitions nativas: React Router las pide solo en los enlaces del
+   sitio público que llevan `viewTransition`, así que el panel nunca entra
+   aquí y la primera carga (lo que mide Lighthouse) tampoco. 0 KB de JS.
+   - La cabecera tiene nombre propio y NO se anima: se queda quieta mientras
+     el contenido cambia debajo, que es lo que la hace sentir una sola pieza.
+     Su foto VIEJA se quita: sin animación se quedaba opaca encima de la nueva
+     y el menú marcaba la página anterior hasta el final.
+   - La página vieja se va rápido (se desvanece y sube un poco) y la nueva
+     llega con la curva de la entrada, un poco después: se cruzan, no se pisan.
+   - `foto-casa` es la foto de la tarjeta que se pulsó y la de la galería de
+     la ficha: la misma casa viaja de un lugar al otro.
+   Con «menos movimiento» no se anima nada (la regla de `*` no alcanza a los
+   pseudoelementos de la transición). */
+::view-transition-group(cabecera),
+::view-transition-new(cabecera) {
+  animation: none;
+}
+::view-transition-old(cabecera) {
+  display: none;
+}
+
+::view-transition-old(root),
+::view-transition-old(foto-casa):only-child {
+  animation: pagina-sale 0.2s cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(root),
+::view-transition-new(foto-casa):only-child {
+  animation: pagina-llega 0.55s var(--ease-entrada) 0.08s both;
+}
+
+::view-transition-group(foto-casa) {
+  animation-duration: 0.6s;
+  animation-timing-function: var(--ease-entrada);
+  border-radius: 1.25rem;
+  overflow: clip;
+}
+/* Las dos fotos no tienen la misma proporción (4:3 en la tarjeta, 16:10 en
+   la ficha): recortadas y no estiradas mientras cambian de forma. */
+::view-transition-old(foto-casa),
+::view-transition-new(foto-casa) {
+  height: 100%;
+  object-fit: cover;
+  animation-duration: 0.6s;
+  animation-timing-function: var(--ease-entrada);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+@keyframes pagina-sale {
+  to {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+@keyframes pagina-llega {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+/* Hilo de carga: si la página siguiente tarda en llegar de la base, un hilo
+   rojo avanza bajo la cabecera para que el clic nunca se sienta muerto. Sale
+   con 150 ms de retraso, así que en las navegaciones rápidas ni se ve. */
+.hilo-carga {
+  transform-origin: 0 50%;
+  animation:
+    hilo-aparece 0.2s linear 0.15s both,
+    hilo-avanza 8s cubic-bezier(0.1, 0.7, 0.2, 1) 0.15s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hilo-carga {
+    animation: hilo-aparece 0.2s linear 0.15s both;
+    transform: scaleX(0.6);
+  }
+}
+@keyframes hilo-aparece {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes hilo-avanza {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(0.92);
+  }
+}
