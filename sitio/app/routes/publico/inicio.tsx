@@ -1,12 +1,13 @@
 import { Form, Link } from "react-router";
 import { leerConfiguracion, leerServicios } from "../../../server/db/configuracion";
-import { destacadas, leerCatalogo, type Tarjeta } from "../../../server/db/propiedades";
+import { casasDePortada, leerCatalogo } from "../../../server/db/propiedades";
 import { ETIQUETA_TIPO_PLURAL, rutaDeListado } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
 import { Isotipo } from "../../components/publico/isotipo";
-import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio } from "../../components/publico/piezas";
+import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
+import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/inicio";
 
@@ -26,16 +27,17 @@ export async function loader({ context }: Route.LoaderArgs) {
 
   const [catalogo, casas, configuracion, listaServicios] = await Promise.all([
     leerCatalogo(db),
-    // 7 y no 6: la primera va a la vitrina de arriba y las otras seis a «Lo
-    // más reciente», para no enseñar la misma casa dos veces seguidas.
-    destacadas(db, config.cloudinary.cloudName, 7),
+    // Las de la vitrina de arriba (van pasando de una en una) y seis para «Lo
+    // más reciente»: ninguna casa sale dos veces en la portada.
+    casasDePortada(db, config.cloudinary.cloudName, { vitrina: CASAS_EN_VITRINA, recientes: 6 }),
     leerConfiguracion(db),
     leerServicios(db),
   ]);
 
   return {
     catalogo,
-    casas,
+    vitrina: casas.vitrina,
+    recientes: casas.recientes,
     portada: configuracion.portada,
     servicios: listaServicios.slice(0, 6).map((s) => ({ id: s.id, titulo: s.titulo })),
     whatsapp: enlaceWhatsApp(configuracion.whatsapp.numero, configuracion.whatsapp.plantillaGeneral),
@@ -56,9 +58,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function Inicio({ loaderData }: Route.ComponentProps) {
-  const { catalogo, casas, portada, servicios, whatsapp } = loaderData;
-  const principal = casas[0]?.foto ? casas[0] : null;
-  const recientes = (principal ? casas.slice(1) : casas).slice(0, 6);
+  const { catalogo, vitrina, recientes, portada, servicios, whatsapp } = loaderData;
   const desde = precioMXN(catalogo.rangos.venta.min);
   const ciudades = catalogo.ciudades.length;
 
@@ -135,7 +135,9 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           </dl>
         </div>
 
-        {principal ? <Vitrina casa={principal} /> : null}
+        {/* La llave: si cambian las casas (el loader se vuelve a correr), la
+            vitrina arranca de cero en vez de heredar a medias el ciclo viejo. */}
+        {vitrina.length ? <Vitrina key={vitrina.map((casa) => casa.clave).join(" ")} casas={vitrina} /> : null}
       </section>
 
       {/* ─── Accesos por tipo, con los conteos de verdad ─── */}
@@ -276,88 +278,6 @@ function Cifra({ valor, etiqueta, orden }: { valor: string; etiqueta: string; or
     >
       <dt className="mt-1 text-xs leading-snug text-texto-suave sm:text-sm">{etiqueta}</dt>
       <dd className="font-display text-[clamp(1.1rem,4.6vw,1.875rem)] leading-none font-bold text-tinta">{valor}</dd>
-    </div>
-  );
-}
-
-const OPERACION_VITRINA: Record<Tarjeta["operacion"], string> = {
-  venta: "En venta",
-  renta: "En renta",
-  venta_renta: "Venta o renta",
-};
-
-/**
- * La casa de la primera pantalla, contada como lo que es: una casa con precio,
- * nombre y colonia, no una foto suelta. El bloque vino de atrás da la
- * profundidad con un color de la marca y sin filtros: las sombras de
- * `feDropShadow` y el `backdrop-filter` ya costaron Lighthouse (PLAN §17).
- * Sigue en 4:3 porque es la variante `tarjeta` de Cloudinary; otra
- * proporción sería otro derivado por casa (§13.5).
- */
-function Vitrina({ casa }: { casa: Tarjeta }) {
-  const foto = casa.foto;
-  if (!foto) return null;
-  const precio = textoPrecio(casa);
-  const lugar = [casa.zona, casa.clave].filter(Boolean).join(" · ");
-
-  return (
-    <div className="relative mt-12 mr-3 mb-3 sm:mr-5 sm:mb-5 lg:mt-0">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-marca-oscuro motion-safe:animate-entrada-bloque motion-safe:[animation-delay:calc(var(--rb,0s)_+_380ms)] sm:translate-x-5 sm:translate-y-5"
-      />
-      <Link
-        to={`/propiedades/${casa.slug}`}
-        className="group relative block overflow-hidden rounded-3xl bg-marca-suave shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
-      >
-        {/* Desde 1920 px la vitrina mide 1000-1600 px: pide la foto de la
-            galería (1600, ya existe) y pasa a 16:10, porque un 4:3 a ese ancho
-            no cabría en la pantalla. Debajo, lo mismo de siempre. */}
-        <picture>
-          {casa.fotoGrande?.srcset ? (
-            <source media="(min-width: 120rem)" srcSet={casa.fotoGrande.srcset} sizes="60vw" />
-          ) : null}
-          <img
-            src={foto.src}
-            srcSet={foto.srcset ?? undefined}
-            sizes="(min-width: 1280px) 45rem, (min-width: 1024px) 28rem, 92vw"
-            alt={foto.alt}
-            width={960}
-            height={720}
-            fetchPriority="high"
-            decoding="async"
-            className="aspect-[4/3] w-full object-cover 3xl:aspect-[16/10] transition-transform duration-700 group-hover:scale-[1.03] motion-safe:animate-entrada-foto motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]"
-          />
-        </picture>
-        {/* Velo de tinta de abajo arriba: el texto blanco se lee sobre
-            cualquier foto sin tapar la casa. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-linear-to-t from-tinta/90 via-tinta/45 to-transparent"
-        />
-        <p className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-superficie px-3 py-1.5 text-xs font-bold tracking-wide text-tinta uppercase shadow-tarjeta motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_640ms)]">
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-marca" />
-          {OPERACION_VITRINA[casa.operacion]}
-        </p>
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_560ms)] sm:p-7">
-          <div className="min-w-0 text-white">
-            <p className="text-precio tabular-nums">
-              {precio.principal}
-              {precio.segundo ? (
-                <span className="ml-2 text-base font-semibold text-sobre-oscuro-suave">{precio.segundo}</span>
-              ) : null}
-            </p>
-            <p className="mt-1.5 truncate font-display text-xl font-semibold sm:text-2xl">{casa.titulo}</p>
-            {lugar ? <p className="mt-1 truncate text-sm text-sobre-oscuro">{lugar}</p> : null}
-          </div>
-          <span
-            aria-hidden="true"
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-superficie text-marca-oscuro transition-transform duration-300 group-hover:translate-x-1"
-          >
-            <IconoFlecha className="h-5 w-5" />
-          </span>
-        </div>
-      </Link>
     </div>
   );
 }

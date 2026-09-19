@@ -20,6 +20,7 @@ import {
   type Tipo,
 } from "../../shared/filtros";
 import { fotoVista, type FotoVista } from "../../shared/fotos";
+import { repartirPortada } from "../../shared/portada";
 import { slugificar } from "../../shared/texto";
 
 // ─── Lo que ve la interfaz ────────────────────────────────────────
@@ -41,8 +42,8 @@ export type Tarjeta = {
   resumen: string | null;
   foto: FotoVista | null;
   /**
-   * Solo la casa de la vitrina de la portada: la variante `galeria` (1600 px,
-   * la misma que ya pide la ficha, así que no es un derivado nuevo). Desde
+   * Solo las casas de la vitrina de la portada: la variante `galeria` (1600
+   * px, la misma que ya pide la ficha, así que no es un derivado nuevo). Desde
    * 1920 px la vitrina mide más de 1000 px y la de 960 se veía borrosa.
    */
   fotoGrande?: FotoVista | null;
@@ -337,30 +338,56 @@ export async function listar(
 }
 
 /**
- * Las de la portada: primero las marcadas a mano y, si no hay ninguna (hoy son
- * cero), las más recientes. Una sola consulta sirve para los dos casos.
+ * Cuántas se piden para repartir. Sobran a propósito: para llenar la vitrina
+ * con una casa por colonia hay que poder saltarse las repetidas. Pedir 40 y no
+ * 11 no lee más filas: según `EXPLAIN QUERY PLAN`, SQLite une TODAS las
+ * visibles con su zona y su foto y las ordena en un árbol temporal antes de
+ * cortar. Al navegador solo viajan las que se pintan.
  */
-export async function destacadas(db: D1Database, cloudName: string, limite = 6): Promise<Tarjeta[]> {
+const CANDIDATAS_PORTADA = 40;
+
+/**
+ * Las de la portada: las de la vitrina, que van pasando de una en una, y las de
+ * «Lo más reciente», sin repetir ninguna. Primero las marcadas a mano y, si no
+ * hay (hoy son cero), las más recientes; el reparto está en
+ * `shared/portada.ts`. Las de la vitrina llevan también la foto de la galería.
+ */
+export async function casasDePortada(
+  db: D1Database,
+  cloudName: string,
+  cuantas: { vitrina: number; recientes: number },
+): Promise<{ vitrina: Tarjeta[]; recientes: Tarjeta[] }> {
   const { results } = await db
     .prepare(
-      `SELECT ${CAMPOS_TARJETA} ${DESDE_TARJETA}
+      `SELECT ${CAMPOS_TARJETA}, p.destacada ${DESDE_TARJETA}
         WHERE ${VISIBLES}
         ORDER BY p.destacada DESC, COALESCE(p.publicada_en, p.creada_en) DESC, p.id DESC
         LIMIT ?`,
     )
-    .bind(limite)
-    .all<FilaTarjeta>();
-  return results.map((fila, i) => {
-    const tarjeta = aTarjeta(fila, cloudName);
-    if (i > 0) return tarjeta;
-    const fotoGrande = fotoVista(
-      { public_id: fila.foto_public_id, url_origen: fila.foto_url_origen, alt: fila.foto_alt },
-      "galeria",
-      cloudName,
-      tarjeta.foto?.alt ?? fila.titulo,
-    );
-    return { ...tarjeta, fotoGrande };
+    .bind(CANDIDATAS_PORTADA)
+    .all<FilaTarjeta & { destacada: number }>();
+
+  const candidatas = results.map((fila) => ({ fila, tarjeta: aTarjeta(fila, cloudName) }));
+  const reparto = repartirPortada(candidatas, {
+    enVitrina: cuantas.vitrina,
+    recientes: cuantas.recientes,
+    destacada: ({ fila }) => fila.destacada === 1,
+    zona: ({ tarjeta }) => tarjeta.zona,
+    conFoto: ({ tarjeta }) => tarjeta.foto !== null,
   });
+
+  return {
+    vitrina: reparto.vitrina.map(({ fila, tarjeta }) => ({
+      ...tarjeta,
+      fotoGrande: fotoVista(
+        { public_id: fila.foto_public_id, url_origen: fila.foto_url_origen, alt: fila.foto_alt },
+        "galeria",
+        cloudName,
+        tarjeta.foto?.alt ?? fila.titulo,
+      ),
+    })),
+    recientes: reparto.recientes.map(({ tarjeta }) => tarjeta),
+  };
 }
 
 // ─── Ficha ────────────────────────────────────────────────────────
