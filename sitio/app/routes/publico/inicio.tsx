@@ -5,7 +5,6 @@ import { ETIQUETA_TIPO_PLURAL, rutaDeListado } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
-import { Isotipo } from "../../components/publico/isotipo";
 import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
 import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
 import { contextoServidor } from "../../contexto";
@@ -74,15 +73,10 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           con todo lo demás, sin la columna del texto medio vacía. */}
       <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)] 3xl:grid-cols-[44rem_minmax(0,1fr)] 3xl:gap-20">
         <div className="max-w-xl 3xl:max-w-none">
-          {/* El isotipo ya no va suelto encima del titular (la cabecera trae el
-              logotipo completo): encabeza la frase que dice dónde y qué, la
-              misma del título de la página. */}
-          <p className="flex items-center gap-3 text-xs font-bold tracking-[0.14em] text-marca uppercase motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)] sm:text-sm sm:tracking-widest">
-            <Isotipo quieto className="h-7 w-auto shrink-0 sm:h-8" />
-            Casas en venta y renta en Morelia
-          </p>
-
-          <h1 className="mt-5 font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
+          {/* Nada encima del titular: el logotipo ya va siempre en la cabecera,
+              y «Casas en venta y renta en Morelia» se quitó a pedido del
+              usuario (18/09/2026): el negocio es para toda la República. */}
+          <h1 className="font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
             {portada.titular || "Comercialización, renta y financiamiento de inmuebles"}
           </h1>
 

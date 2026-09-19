@@ -1,6 +1,6 @@
-import "@fontsource-variable/fraunces/wght.css";
+import "@fontsource-variable/jost/wght.css";
 // Las dos fuentes, por su URL con hash, para precargarlas (ver más abajo).
-import fuenteFraunces from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
+import fuenteJost from "@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url";
 import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 
 import { useEffect, useRef, useState } from "react";
@@ -29,8 +29,9 @@ import type { Route } from "./+types/marco";
  * de catálogo con buscador encima que trae el sitio actual.
  * MUNDO: papel cálido (#f7f5f3) y tinta (#111) como CAMPOS enteros, no como
  * bordes; el rojo #A0051C y el vino #760415 mandan en la portada, los cierres
- * y el pie. Títulos en serif editorial (Fraunces, elegida por el usuario el
- * 17/09/2026), cifras y texto en Nunito con cifras de ancho fijo.
+ * y el pie. Títulos en Jost, sans geométrica ligera (la eligió el usuario el
+ * 18/09/2026 y sustituyó a la serif Fraunces), texto en Nunito con cifras de
+ * ancho fijo.
  * HISTORIA: quien llega entiende en un vistazo que son 188 casas reales de
  * Morelia, filtra a las suyas y escribe por WhatsApp sabiendo cuál pregunta.
  * PRIMERA PANTALLA: titular en serif a ancho completo sobre papel, buscador
@@ -139,8 +140,8 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
           el primer dibujado en 3.8 s. El navegador no descubre las fuentes
           hasta parsear el CSS, así que se piden desde el principio. React 19
           sube estos enlaces al <head> solo. Van aquí, en el marco público, y
-          no en `root.tsx`: el panel no tiene por qué bajar la serif. */}
-      <link rel="preload" as="font" type="font/woff2" href={fuenteFraunces} crossOrigin="anonymous" />
+          no en `root.tsx`: el panel no tiene por qué bajar la de títulos. */}
+      <link rel="preload" as="font" type="font/woff2" href={fuenteJost} crossOrigin="anonymous" />
       <link rel="preload" as="font" type="font/woff2" href={fuenteNunito} crossOrigin="anonymous" />
       {/* En la ficha, sin el WhatsApp general: ahí el que cuenta es el de la
           casa (tarjeta y barra de abajo), con su título y su clave. */}
