@@ -5,9 +5,10 @@
  * necesita vocabulario: «casa altozano», «depa en renta», «terreno barato»,
  * «kasa en benta 3 rrecamaras». Aquí se reconoce eso —con los errores de dedo
  * y de oído perdonados por `shared/parecido.ts`— en microsegundos y gratis.
- * Al modelo (`shared/intencion.ts`) solo le llega lo que esta capa no pudo
- * explicar: precios, lugares escritos dentro de una frase larga y rasgos como
- * «con alberca».
+ * Los precios se leen con aritmética (`shared/dinero.ts`). Al modelo
+ * (`shared/intencion.ts`) solo le llega lo que esta capa no pudo explicar:
+ * lugares escritos dentro de una frase larga, rasgos fuera de lista («vista al
+ * lago») y maneras de hablar del precio que aquí no están.
  *
  * Y sirve dos veces: lo que aquí se reconoce es también con lo que se le
  * EXIGE al modelo que justifique su respuesta. Una operación, un tipo o un
@@ -17,6 +18,7 @@
  * 9 de 15 frases).
  */
 
+import { leerDinero } from "./dinero";
 import type { Operacion, Orden, Tipo } from "./filtros";
 import { erroresEntre } from "./parecido";
 
@@ -131,9 +133,16 @@ const RELLENO = new Set(
     "a al algo algun alguna algunas algunos ando asi aqui busca buscando buscar busco como cual de del donde el ella en era es esa ese eso " +
     "esta este esto estoy favor fracc fraccionamiento gracias hay hola inmueble inmuebles interesa interesan la las le les lo los me mi mis muy " +
     "necesito o para pero por porfa porfavor propiedad propiedades que quiero quisiera se ser si sobre son su sus te tenga tengan tengo tiene tienen " +
-    "un una unas uno unos ver y ya zona colonia colonias col cerca cerquita rumbo lado con comercial lugar vivir familia avenida av calle"
+    "un una unas uno unos ver y ya zona colonia colonias col cerca cerquita rumbo lado con comercial lugar vivir familia avenida av calle " +
+    // No filtran nada, y despertar al modelo por ellas es un segundo de espera tirado.
+    "papas papa mama hijos hijo hija hijas esposa esposo novia novio invertir inversion inversionista construir bonita bonito hermosa hermoso linda lindo " +
+    "buena bueno buen buenas buenos excelente urgente informacion info informes precio precios costo cuanto cuesta cuestan disponible disponibles opciones " +
+    "opcion gustaria mostrar muestrame dame ensename todas todos todo bien ubicada ubicado ubicacion tardes dias noches saludos mas menos mes pesos " +
+    "estoy interesado interesada ocupo ocupamos anda andamos tienes venden vende oferta ofertas nosotros ustedes"
   ).split(" "),
 );
+
+export const esRelleno = (pieza: string): boolean => RELLENO.has(pieza);
 
 const EN_LETRA: Record<string, number> = {
   un: 1,
@@ -192,6 +201,13 @@ export type Lectura = {
   orden: OrdenPedido | null;
   recamaras: number | null;
   banos: number | null;
+  /** Pesos, leídos con aritmética y no por el modelo (`shared/dinero.ts`). */
+  precioMin: number | null;
+  precioMax: number | null;
+  /** El papel de cada monto lo dijo un comparador («menos de», «entre… y…»); si no, el tope es una suposición. */
+  precioSeguro: boolean;
+  /** Todos los montos escritos en la frase: lo único que se le acepta al modelo como precio. */
+  montos: number[];
   clave: string | null;
   /** Rasgos conocidos, como se buscan: «alberca», «roof garden». */
   rasgos: string[];
@@ -243,6 +259,13 @@ export function leerFrase(frase: string): Lectura {
       if (esCantidad(piezas[i + 1])) usada[i + 1] = true;
     });
   }
+
+  // El dinero: «menos de 2 millones 251 mil», «entre 3 y 4.5 mdp», «15 mil al
+  // mes». Lo ya explicado se tapa para que «aig 1500» no parezca un precio.
+  const dinero = leerDinero(piezas.map((pieza, i) => (usada[i] ? "·" : pieza)));
+  for (const i of dinero.usadas) usada[i] = true;
+  // «15 mil al mes» es una renta aunque nadie diga «renta».
+  if (dinero.alMes) operaciones.add("renta");
 
   // «3 recámaras», «tres cuartos», «2 baños y medio».
   piezas.forEach((pieza, i) => {
@@ -308,6 +331,10 @@ export function leerFrase(frase: string): Lectura {
     orden: elUnico(ordenes),
     recamaras,
     banos,
+    precioMin: dinero.precioMin,
+    precioMax: dinero.precioMax,
+    precioSeguro: dinero.seguro,
+    montos: dinero.montos,
     clave,
     rasgos: [...new Set(rasgos)],
     resto: piezas.filter((_, i) => !usada[i]),

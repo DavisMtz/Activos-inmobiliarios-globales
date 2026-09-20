@@ -10,6 +10,8 @@
  *   precio, lugar… Nunca claves, nunca títulos, nunca «te recomiendo».
  * - **Lo que es vocabulario no se le pregunta.** Operación, tipo y orden los
  *   lee `shared/frase.ts` sin gastar, y mandan sobre lo que diga el modelo.
+ * - **Los precios tampoco.** Salen de la frase por aritmética
+ *   (`shared/dinero.ts`): un modelo de lenguaje no sabe sumar.
  * - **El lugar viaja como TEXTO**, tal como lo escribió la persona («altosano»),
  *   y lo corrige el código contra las colonias que existen de verdad
  *   (`shared/lugares.ts`). Así el modelo no puede inventar una colonia y el
@@ -20,7 +22,7 @@
  */
 
 import type { Operacion, Orden, Tipo } from "./filtros";
-import { DE_BANOS, DE_RECAMARAS, esDe, leerFrase, piezasDe, type Lectura } from "./frase";
+import { DE_BANOS, DE_RECAMARAS, esDe, esRelleno, leerFrase, piezasDe, type Lectura } from "./frase";
 import { erroresEntre } from "./parecido";
 
 // ─── Lo que el modelo puede contestar ─────────────────────────────
@@ -73,11 +75,9 @@ export const ESQUEMA_DE_INTENCION = {
     lugar: { type: ["string", "null"] },
     recamaras: { type: ["integer", "null"] },
     banos: { type: ["integer", "null"] },
-    precio_min: { type: ["integer", "null"] },
-    precio_max: { type: ["integer", "null"] },
     palabras: { type: "array", items: { type: "string" } },
   },
-  required: ["lugar", "recamaras", "banos", "precio_min", "precio_max", "palabras"],
+  required: ["lugar", "recamaras", "banos", "palabras"],
 } as const;
 
 /**
@@ -89,18 +89,17 @@ export const ESQUEMA_DE_INTENCION = {
 export const INSTRUCCIONES = [
   "Eres el intérprete del buscador de una inmobiliaria de Morelia, México. De la frase de una persona sacas datos para filtrar propiedades.",
   "NO recomiendas ni inventas propiedades. Respondes SOLO un objeto JSON con estos campos; lo que la frase no diga va en null:",
-  "- lugar: la colonia, fraccionamiento, avenida o ciudad que menciona, tal como la escribió, sin «en», «por» ni «cerca de».",
+  "- lugar: la colonia, fraccionamiento o ciudad que menciona, tal como la escribió, sin «en», «por», «avenida» ni «cerca de».",
   "- recamaras y banos: el mínimo que pide, en entero. «cuartos» y «habitaciones» son recámaras.",
-  "- precio_min y precio_max: pesos en entero. «3 millones» = 3000000, «2.5 mdp» = 2500000, «2 millones y medio» = 2500000, «3 millones 200 mil» = 3200000, «800 mil» = 800000, «15 mil» = 15000. «menos de», «hasta», «máximo», «que no pase de» y una cifra suelta van en precio_max; «más de», «desde», «mínimo» van en precio_min; «entre A y B» o «de A a B» llenan los dos. Metros, m2, pisos y autos NO son precios.",
-  "- palabras: hasta 3 características que pide de la propiedad, CUALQUIERA que sea, para buscarlas en la descripción: alberca, jardín, estudio, elevador, cuarto de servicio, una planta, amueblado, roof garden, vista al lago, infonavit… En minúsculas. No pongas aquí el tipo de propiedad, la operación, el lugar ni las cifras. Si dice «sin» algo, no lo pongas. Si no pide ninguna: [].",
-  "No deduzcas lo que no se dijo: «para familia grande» NO es un número de recámaras.",
+  "- palabras: hasta 3 características que pide de la propiedad, CUALQUIERA que sea, para buscarlas en la descripción: alberca, jardín, estudio, elevador, cuarto de servicio, una planta, amueblado, roof garden, vista al lago, infonavit… En minúsculas. No pongas aquí el tipo de propiedad, la operación, el lugar, los precios ni otras cifras. Si dice «sin» algo, no lo pongas. Si no pide ninguna: [].",
+  "No deduzcas lo que no se dijo: «para familia grande» NO es un número de recámaras. Ignora precios, metros y cualquier otra cifra: de eso se encarga otro.",
   "Ejemplos:",
-  "Frase: depa de 2 recamaras en renta por altosano que no pase de 15 mil",
-  '{"lugar":"altosano","recamaras":2,"banos":null,"precio_min":null,"precio_max":15000,"palabras":[]}',
+  "Frase: depa de 2 recamaras en renta por las americas que no pase de 15 mil",
+  '{"lugar":"las americas","recamaras":2,"banos":null,"palabras":[]}',
   "Frase: busco casa con alberca y cuarto de servicio entre 3 y 4.5 millones",
-  '{"lugar":null,"recamaras":null,"banos":null,"precio_min":3000000,"precio_max":4500000,"palabras":["alberca","cuarto de servicio"]}',
+  '{"lugar":null,"recamaras":null,"banos":null,"palabras":["alberca","cuarto de servicio"]}',
   "Frase: terreno de 300 metros para invertir en patzcuaro",
-  '{"lugar":"patzcuaro","recamaras":null,"banos":null,"precio_min":null,"precio_max":null,"palabras":[]}',
+  '{"lugar":"patzcuaro","recamaras":null,"banos":null,"palabras":[]}',
 ].join("\n");
 
 /** Lo que se le manda como mensaje del usuario. */
@@ -121,13 +120,6 @@ const EN_LETRA: Record<number, string[]> = {
   10: ["diez"],
 };
 
-const PALABRAS_DE_CANTIDAD = new Set(
-  "un una uno dos tres cuatro cinco seis siete ocho nueve diez once doce quince veinte treinta cuarenta cincuenta cien ciento medio media mil millon millones mdp k".split(" "),
-);
-
-/** ¿La frase trae alguna cantidad, en cifras o en letra? Sin eso, todo precio es inventado. */
-export const traeCantidad = (piezas: string[]): boolean => piezas.some((p) => /^\d/.test(p) || PALABRAS_DE_CANTIDAD.has(p));
-
 /** ¿Está ESTE número en la frase? «3», «tres». Es lo que corta las recámaras inventadas. */
 const traeElNumero = (piezas: string[], n: number): boolean =>
   piezas.includes(String(n)) || (EN_LETRA[n] ?? []).some((palabra) => piezas.includes(palabra));
@@ -138,7 +130,9 @@ const traeElNumero = (piezas: string[], n: number): boolean =>
  * «jardín» de «jardines», «amueblado» de «amueblada» y «altozano» de «altosano».
  */
 function saleDeLaFrase(texto: string, piezas: string[]): boolean {
-  const palabras = piezasDe(texto);
+  // Las de relleno («avenida», «de», «la») no cuentan: no están entre las libres
+  // porque ya se explicaron solas.
+  const palabras = piezasDe(texto).filter((pieza) => !esRelleno(pieza));
   const fuertes = palabras.filter((p) => p.length >= 4);
   const revisar = fuertes.length ? fuertes : palabras;
   if (!revisar.length) return false;
@@ -175,7 +169,7 @@ const NO_SON_RASGOS = new Set(
   (
     "casa casas departamento departamentos depa terreno terrenos local oficina bodega edificio venta renta comprar rentar " +
     "barato barata economico economica grande amplia amplio nuevo nueva lujo inversion invertir recamara recamaras bano banos " +
-    "millones pesos propiedad propiedades inmueble familia vivir"
+    "millones pesos propiedad propiedades inmueble familia vivir auto autos coche coches carro carros persona personas"
   ).split(" "),
 );
 
@@ -194,7 +188,6 @@ const RASGOS_QUE_PARECEN_LUGAR = /\b(privada|coto|cerrada|condominio|esquina|pis
 export function validarIntencion(crudo: unknown, frase: string, lectura: Lectura = leerFrase(frase)): Intencion | null {
   const modelo: Bolsa = esBolsa(crudo) ? crudo : {};
   const piezas = piezasDe(frase);
-  const hayCantidad = traeCantidad(piezas);
 
   // Del modelo solo entran si la frase trae ESE número y además nombra las
   // recámaras (o los baños): el chico pone «banos: 3» al leer «3 recámaras».
@@ -209,8 +202,11 @@ export function validarIntencion(crudo: unknown, frase: string, lectura: Lectura
     if (banos !== null && !traeElNumero(piezas, banos)) banos = null;
   }
 
-  let precioMin = hayCantidad ? entero(modelo.precio_min, 1_000, 2_000_000_000) : null;
-  let precioMax = hayCantidad ? entero(modelo.precio_max, 1_000, 2_000_000_000) : null;
+  // **El precio es entero del código** (`shared/dinero.ts`), y al modelo ni se le
+  // pregunta. Dos mediciones del 20/09/2026: leyó «2 millones 251 mil» como
+  // 2,010,000 (no sabe sumar), y a «casa de 2 millones y medio» le puso
+  // `precio_min` aunque las instrucciones decían que una cifra suelta es un tope.
+  let { precioMin, precioMax } = lectura;
   if (precioMin !== null && precioMax !== null && precioMin > precioMax) [precioMin, precioMax] = [precioMax, precioMin];
 
   // El lugar y los rasgos solo pueden salir de lo que el vocabulario NO explicó:

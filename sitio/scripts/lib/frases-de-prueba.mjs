@@ -91,7 +91,7 @@ export const FRASES = [
   { frase: "bodega de 500 m2", esperado: { tipo: "bodega" } },
   {
     frase: "casa 2 pisos 3 recamaras 2 baños",
-    esperado: { tipo: "casa", recamaras: 3, banos: 2, palabras: [["2 pisos"], ["dos pisos"], []] },
+    esperado: { tipo: "casa", recamaras: 3, banos: 2, palabras: [["dos plantas"], ["2 pisos"], []] },
   },
   { frase: "departamento en el tercer piso con elevador", esperado: { tipo: "departamento", palabras: [["elevador"], ["elevador", "tercer piso"]] } },
   // Cantidades escritas como habla la gente.
@@ -129,6 +129,38 @@ export const FRASES = [
   { frase: "tienen casas en tres marias?", esperado: { tipo: "casa", lugar: "tres marias" } },
   { frase: "casa cerca del tec de morelia", esperado: { tipo: "casa", lugar: [ "tec de morelia", "tec", "morelia"] } },
   { frase: "en que colonias tienen casas", esperado: { tipo: "casa" } },
+  // ── Tercera tanda: el trabajo que SÍ es del modelo ──
+  // Rasgos que no están en la lista del vocabulario y lugares metidos en frases
+  // largas. (Operación, tipo, orden, recámaras, baños y precios ya no son suyos.)
+  {
+    frase: "busco casa con vista panoramica y cava de vinos en altozano",
+    esperado: { tipo: "casa", lugar: "altozano", palabras: [["vista panoramica", "cava"], ["vista panoramica", "cava de vinos"]] },
+  },
+  {
+    frase: "casa con cancha de padel y salon de fiestas en tres marias",
+    esperado: { tipo: "casa", lugar: "tres marias", palabras: ["cancha de padel", "salon de fiestas"] },
+  },
+  { frase: "terreno con caballerizas en tarimbaro", esperado: { tipo: "terreno", lugar: "tarimbaro", palabras: ["caballerizas"] } },
+  {
+    frase: "depa con doble altura y pisos de marmol en el centro",
+    esperado: { tipo: "departamento", lugar: "centro", palabras: [["doble altura", "pisos de marmol"], ["doble altura", "marmol"]] },
+  },
+  { frase: "casa frente al parque con palapa", esperado: { tipo: "casa", palabras: [["frente al parque", "palapa"], ["parque", "palapa"], ["palapa"]] } },
+  {
+    frase: "quiero una casa con biblioteca y cine en casa por altozano",
+    esperado: { tipo: "casa", lugar: "altozano", palabras: [["biblioteca", "cine"], ["biblioteca", "cine en casa"]] },
+  },
+  { frase: "oficina con sala de juntas y recepcion", esperado: { tipo: "oficina", palabras: ["sala de juntas", "recepcion"] } },
+  { frase: "bodega con anden de carga", esperado: { tipo: "bodega", palabras: [["anden de carga"], ["anden"]] } },
+  { frase: "casa sin vecinos arriba con huerto", esperado: { tipo: "casa", palabras: ["huerto"] } },
+  { frase: "departamento pet friendly con area de juegos", esperado: { tipo: "departamento", palabras: ["mascotas", "area de juegos"] } },
+  {
+    frase: "casa en fraccionamiento con casa club y canchas deportivas",
+    esperado: { tipo: "casa", palabras: [["casa club", "canchas deportivas"], ["casa club", "canchas"]] },
+  },
+  { frase: "casa de tres recamaras que tenga vestidor y tina en la principal", esperado: { tipo: "casa", recamaras: 3, palabras: [["vestidor", "tina"], ["vestidor", "tina en la principal"]] } },
+  { frase: "renta de casa amueblada con internet incluido en chapultepec", esperado: { tipo: "casa", operacion: "renta", lugar: "chapultepec", palabras: [["amueblada", "internet"], ["amueblada", "internet incluido"]] } },
+  { frase: "departamento en planta baja con bodega propia", esperado: { tipo: "departamento", palabras: [["planta baja", "bodega"], ["planta baja", "bodega propia"]] } },
   // Lo que NO es una búsqueda de casas: aquí lo correcto es no filtrar por nada.
   { frase: "hola buenas tardes", esperado: {} },
   { frase: "cuál es su horario de atención", esperado: {} },

@@ -50,17 +50,17 @@ Lo que mejor ha funcionado, por si ayuda:
 | Archivo | Qué guarda |
 |---|---|
 | `shared/parecido.ts` | Cómo suena una palabra (`s/z/c`, `b/v`, `h` muda…) y cuántos errores se le perdonan según su largo |
-| `shared/frase.ts` | **La capa que no gasta:** operación, tipo, orden, recámaras, baños, clave y los rasgos más pedidos, por vocabulario. Lo que sobra (`resto`) decide si se pregunta al modelo |
+| `shared/frase.ts` · `shared/dinero.ts` | **La capa que no gasta:** operación, tipo, orden, recámaras, baños, clave, los rasgos más pedidos y **los precios** (monto por aritmética, papel por comparador: al modelo ni se le preguntan, no sabe sumar). Lo que sobra (`resto`) decide si se pregunta al modelo |
 | `shared/lugares.ts` | Qué lugar del catálogo es («altosano» → «Altozano»). El lugar va a `q`, **no** a `zona`: la misma zona está repartida en muchas colonias |
 | `shared/rasgos.ts` | `?con=alberca`: se busca en título, resumen y descripción, en JavaScript, con sinónimos, plural y corrección |
 | `shared/intencion.ts` | Lo que se le pide al modelo (instrucciones y esquema) y `validarIntencion`, que no le cree nada que la frase no sostenga |
-| `server/busqueda/entender.ts` · `corpus.ts` | El orden de las tres capas y la redirección · el catálogo en memoria un minuto |
-| `server/ia/motor.ts` · `uso.ts` | **Única puerta a Workers AI:** modelos medidos, las dos familias, el reloj de 3 s · tope diario, memoria por huella y la cuenta del día |
+| `server/busqueda/entender.ts` · `corpus.ts` | El orden de las tres capas, la regla de que **la frase manda sobre el formulario** y la redirección · el catálogo en memoria un minuto |
+| `server/ia/motor.ts` · `uso.ts` | **Única puerta a Workers AI:** modelos medidos, las dos familias, el reloj de 3.5 s · tope diario, memoria por huella y la cuenta del día |
 | `app/components/publico/entendido.tsx` | «Así lo entendimos» y los rasgos que se quitan con un toque |
 | `app/routes/panel/configuracion.tsx` | El bloque «Buscador inteligente»: interruptor, modelo, tope y gasto de la semana (permiso `configuracion.buscador`: maestro y director) |
 | `migrations/0005_busqueda_ia.sql` | `ia_cache`, `ia_uso` y la fila `busqueda_ia`, que nace encendida |
 
-**Para cambiar el modelo de fábrica o las instrucciones:** `npm run medir:ia` primero (51 frases × los modelos candidatos; la tabla del 20/09 está en §19), y al cambiar las instrucciones subir `VERSION_DE_INSTRUCCIONES` en `entender.ts`, que invalida la memoria. Una frase nueva que el buscador no entienda se agrega a `scripts/lib/frases-de-prueba.mjs` **antes** de arreglarla.
+**El modelo de fábrica es el más chico del catálogo (Granite 4.0 Micro)** porque su trabajo se hizo chico: sacar el lugar y los rasgos. Si se le devuelve trabajo (precios, tipo), deja de ser el bueno. **Para cambiar el modelo de fábrica o las instrucciones:** `npm run medir:ia` primero (65 frases × los modelos candidatos; la tabla del 20/09 está en §19), y al cambiar las instrucciones subir `VERSION_DE_INSTRUCCIONES` en `entender.ts`, que invalida la memoria. Una frase nueva que el buscador no entienda se agrega a `scripts/lib/frases-de-prueba.mjs` **antes** de arreglarla.
 
 **Volver al catálogo sin perder el lugar** — `app/components/publico/volver.ts`. El migajón de la ficha era un enlace nuevo a `/propiedades`: perdía el scroll, las casas cargadas y los filtros. Ahora la tarjeta le cuelga a la ficha de dónde viene (`state`) y el migajón retrocede por el historial. De paso: mandar «Me interesa» borraba ese rastro (la acción reemplaza la entrada y la nueva nace sin `state`).
 
@@ -96,7 +96,7 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 
 | Comando | Qué cubre |
 |---|---|
-| `npm test` · `npx tsc -b` | 325 pruebas · tipos |
+| `npm test` · `npx tsc -b` | 341 pruebas · tipos |
 | `npm run verificar:f2 -- --base http://localhost:5180 --local` | El sitio público: 39 comprobaciones |
 | `npm run verificar:listado -- --base http://localhost:5180` | El listado y **volver de una ficha** (su apartado 3). Sin `--base` apunta al puerto 4180 |
 | `npm run verificar:vitrina -- --base http://localhost:5180` | La vitrina de la portada. Misma trampa del 4180 |
@@ -106,7 +106,7 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 | `npm run verificar:f4 -- --base http://localhost:5180 --local` | Prospectos y métricas |
 | `npm run verificar:entregas -- --base http://localhost:5180 --local` | Entregas. Con `--dejar` NO limpia (es para capturas): la corrida siguiente sin la bandera sí |
 | `npm run verificar:busqueda -- --base http://localhost:5180 --local [--ia]` | El buscador: lo que entiende sin modelo, la frase tecleada en la portada, el interruptor del panel y, con `--ia`, el modelo de verdad (gasta unas consultas). **En local el binding `AI` va a la nube:** también gasta |
-| `npm run medir:ia` | No verifica el sitio: compara modelos de Workers AI con 51 frases. Necesita la sesión de wrangler con ámbito `ai` |
+| `npm run medir:ia` | No verifica el sitio: compara modelos de Workers AI con 65 frases (`--sin-modelo` dice cuántas se resuelven sin preguntar). Necesita la sesión de wrangler con ámbito `ai` |
 
 Los que crean cuentas chocan con el freno de acceso (8 por minuto desde una misma IP) y reintentan solos a los 65 s: no es un fallo.
 

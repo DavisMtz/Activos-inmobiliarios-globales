@@ -197,7 +197,7 @@ export default function Configuracion({ loaderData, actionData }: Route.Componen
                 etiqueta="Modelo"
                 name="modelo"
                 defaultValue={busquedaIA.modelo}
-                ayuda="Los cuatro se midieron con 51 búsquedas reales antes de elegir."
+                ayuda="Los cinco se midieron con 65 búsquedas reales antes de elegir el de fábrica."
               >
                 {buscador.modelos.map((modelo) => (
                   <option key={modelo.id} value={modelo.id}>

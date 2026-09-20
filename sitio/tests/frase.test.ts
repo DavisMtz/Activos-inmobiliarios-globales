@@ -71,13 +71,39 @@ describe("leerFrase: lo que se entiende sin gastar", () => {
     expect(leerFrase("casa sin una planta").rasgos).toEqual([]);
   });
 
+  it("los precios se leen aquí, con aritmética, y no se le dejan al modelo", () => {
+    expect(leerFrase("casas de menos de 2 millones 251 mil")).toMatchObject({ tipo: "casa", precioMax: 2_251_000, precioSeguro: true, resto: [] });
+    expect(leerFrase("casa entre 3 y 4.5 millones con 4 recámaras y 3 baños")).toMatchObject({
+      precioMin: 3_000_000,
+      precioMax: 4_500_000,
+      recamaras: 4,
+      banos: 3,
+      resto: [],
+    });
+    expect(leerFrase("terreno de 200 metros en tarimbaro")).toMatchObject({ precioMin: null, precioMax: null, montos: [] });
+  });
+
+  it("«al mes» es una renta aunque nadie diga «renta»", () => {
+    expect(leerFrase("casa 15 mil al mes")).toMatchObject({ operacion: "renta", tipo: "casa", precioMax: 15_000, resto: [] });
+    // …pero si dice «venta», se contradice y no filtra por operación.
+    expect(leerFrase("casa en venta 15 mil al mes").operacion).toBeNull();
+  });
+
+  it("una clave con cuatro cifras no es un precio", () => {
+    expect(leerFrase("aig 1500")).toMatchObject({ clave: "AIG-1500", precioMax: null, montos: [], resto: [] });
+  });
+
   it("lo que no entiende queda en `resto`, en orden: es lo que decide si se pregunta al modelo", () => {
-    expect(leerFrase("casas de menos de 2 millones").resto).toEqual(["menos", "2", "millones"]);
     expect(leerFrase("casa en tres marias con cochera para 2 autos")).toMatchObject({
       rasgos: ["cochera"],
       resto: ["tres", "marias", "2", "autos"],
     });
-    expect(leerFrase("hola buenas tardes")).toMatchObject({ tipo: null, operacion: null, resto: ["buenas", "tardes"] });
+    expect(leerFrase("casa con vista al lago en patzcuaro").resto).toEqual(["vista", "lago", "patzcuaro"]);
+  });
+
+  it("las palabras que no filtran nada no despiertan al modelo", () => {
+    expect(leerFrase("hola buenas tardes busco una casa bonita para mis papás").resto).toEqual([]);
+    expect(leerFrase("quiero invertir en un terreno").resto).toEqual([]);
   });
 
   it("la clave se lleva sus cifras", () => {

@@ -57,6 +57,8 @@ const { values: opciones } = parseArgs({
     detalle: { type: "boolean", default: false },
     "sin-esquema": { type: "boolean", default: false },
     "sin-pensar": { type: "boolean", default: true },
+    // Sin llamar a nadie: cuánto entiende SOLO la capa de vocabulario, catálogo aparte.
+    "sin-modelo": { type: "boolean", default: false },
     salida: { type: "string" },
     tope: { type: "string", default: "20000" },
   },
@@ -143,6 +145,7 @@ function textoDe(resultado) {
 }
 
 async function preguntar(cuenta, modelo, frase, reintento = false) {
+  if (opciones["sin-modelo"]) return { ms: 0, texto: "", jsonValido: true, intencion: validarIntencion(null, frase), entrada: 0, salida: 0 };
   const inicio = performance.now();
   let estado = 0;
   let bruto = null;
@@ -221,11 +224,13 @@ const percentil = (valores, p) => {
 
 // ─── Correr ───────────────────────────────────────────────────────
 
-const modelos = (opciones.modelos ? opciones.modelos.split(",") : Object.keys(CANDIDATOS)).map((m) => m.trim()).filter(Boolean);
+const modelos = opciones["sin-modelo"]
+  ? ["(sin modelo: solo vocabulario)"]
+  : (opciones.modelos ? opciones.modelos.split(",") : Object.keys(CANDIDATOS)).map((m) => m.trim()).filter(Boolean);
 const vueltas = Math.max(1, Number(opciones.vueltas) || 1);
 
-let token = sesionVigente();
-const cuenta = await cuentaDe(token);
+let token = opciones["sin-modelo"] ? "" : sesionVigente();
+const cuenta = opciones["sin-modelo"] ? "" : await cuentaDe(token);
 
 console.log(`Midiendo ${modelos.length} modelo(s) con ${FRASES.length} frases × ${vueltas} vuelta(s)` + (opciones["sin-esquema"] ? ", SIN response_format" : "") + "\n");
 

@@ -14,17 +14,19 @@
  * no alcanzó:
  *
  * 1. **Vocabulario** (`shared/frase.ts`): operación, tipo, orden, recámaras,
- *    baños, clave y los rasgos más pedidos, con errores de dedo perdonados.
+ *    baños, clave, los rasgos más pedidos y los PRECIOS (por aritmética:
+ *    `shared/dinero.ts`), con errores de dedo perdonados.
  * 2. **El catálogo** (`corpus.ts`): qué lugar es, corrigiendo «altosano». Si con
  *    esto la frase quedó explicada entera, no se le pregunta a nadie.
- * 3. **El modelo** (`server/ia/motor.ts`), si está encendido: precios, lugares
- *    metidos en una frase larga y rasgos fuera de lista. Con memoria (una frase
- *    se pregunta una vez por semana), tope diario, freno por persona y 3
+ * 3. **El modelo** (`server/ia/motor.ts`), si está encendido y sobró algo: rasgos
+ *    fuera de lista («vista al lago»), lugares que el catálogo no reconoció y
+ *    el papel de un precio dicho de forma rara. Con memoria (una frase
+ *    se pregunta una vez por semana), tope diario, freno por persona y 3.5
  *    segundos de reloj. Si falla, queda lo de las capas 1 y 2.
  */
 
 import { isbot } from "isbot";
-import { ORDEN_PREDETERMINADO, aParametros, rasgosUnicos, type Filtros } from "../../shared/filtros";
+import { aParametros, rasgosUnicos, type Filtros } from "../../shared/filtros";
 import { leerFrase, piezasDe, type Lectura } from "../../shared/frase";
 import {
   ESQUEMA_DE_INTENCION,
@@ -45,7 +47,7 @@ import { leerCorpus, type Corpus } from "./corpus";
  * Se sube al cambiar `INSTRUCCIONES` o el esquema: lo guardado con las
  * anteriores deja de servir sin tener que borrar nada.
  */
-const VERSION_DE_INSTRUCCIONES = "2";
+const VERSION_DE_INSTRUCCIONES = "3";
 
 /** Palabras del resto que hablan de dinero o comparan: sin modelo no se entienden, y no son rasgos. */
 const DE_CANTIDAD = new Set(
@@ -73,7 +75,17 @@ const esPrecarga = (cabeceras: Headers): boolean =>
   /prefetch|prerender/i.test(`${cabeceras.get("sec-purpose") ?? ""} ${cabeceras.get("purpose") ?? ""}`);
 
 const leyoAlgo = (lectura: Lectura): boolean =>
-  Boolean(lectura.operacion || lectura.tipo || lectura.orden || lectura.recamaras || lectura.banos || lectura.clave || lectura.rasgos.length);
+  Boolean(
+    lectura.operacion ||
+      lectura.tipo ||
+      lectura.orden ||
+      lectura.recamaras ||
+      lectura.banos ||
+      lectura.precioMin ||
+      lectura.precioMax ||
+      lectura.clave ||
+      lectura.rasgos.length,
+  );
 
 /**
  * La misma búsqueda, con filtros explícitos: la ruta a la que hay que mandar a
@@ -138,21 +150,37 @@ export async function entenderBusqueda(servicios: Servicios, p: Peticion): Promi
     }
   }
 
+  // **La frase manda sobre lo que quedó en el formulario**, y lo que la frase no
+  // menciona se conserva. Tras entender una frase el formulario queda LLENO con
+  // lo entendido; si ahí mismo se teclea otra («depa hasta 5 millones» después
+  // de «casa de 3 recámaras hasta 3 millones»), esos valores viajan otra vez, y
+  // dándoles la razón la segunda búsqueda seguía siendo de casas hasta 3
+  // millones. Conservar lo no mencionado es lo que deja elegir «En renta» en la
+  // portada y escribir «casa en altozano». Lo heredado se VE en «Así lo
+  // entendimos», donde cada filtro se quita con un toque.
   const f = p.filtros;
+  // El precio es una sola afirmación: «más de 10 millones» sobre un «hasta 3
+  // millones» viejo no es un rango de 3 a 10.
+  const traePrecio = intencion ? intencion.precioMin !== null || intencion.precioMax !== null : false;
   const destino: Filtros = {
     ...f,
-    // Lo que la persona eligió a mano en el formulario manda sobre lo entendido.
-    operacion: f.operacion ?? intencion?.operacion ?? null,
-    tipo: f.tipo ?? intencion?.tipo ?? null,
-    recamaras: f.recamaras ?? intencion?.recamaras ?? null,
-    banos: f.banos ?? intencion?.banos ?? null,
-    precioMin: f.precioMin ?? intencion?.precioMin ?? null,
-    precioMax: f.precioMax ?? intencion?.precioMax ?? null,
-    // El formulario manda SIEMPRE su orden; el de fábrica cuenta como «no eligió».
-    orden: intencion?.orden && f.orden === ORDEN_PREDETERMINADO ? intencion.orden : f.orden,
+    operacion: intencion?.operacion ?? f.operacion,
+    tipo: intencion?.tipo ?? f.tipo,
+    recamaras: intencion?.recamaras ?? f.recamaras,
+    banos: intencion?.banos ?? f.banos,
+    precioMin: traePrecio ? (intencion?.precioMin ?? null) : f.precioMin,
+    precioMax: traePrecio ? (intencion?.precioMax ?? null) : f.precioMax,
+    orden: intencion?.orden ?? f.orden,
+    // Un lugar en la frase es el lugar: la colonia o la ciudad que hubiera
+    // elegidas en «Más filtros» se sueltan, o «en tres marías» sobre
+    // `zona=altozano` no encontraría nada.
+    zona: lugar ? null : f.zona,
+    ciudad: lugar ? null : f.ciudad,
     // La frase se consume: en el buscador queda solo lo que se busca como texto.
     q: intencion?.clave ?? lugar,
-    rasgos: rasgosUnicos([...f.rasgos, ...rasgos]),
+    // Los rasgos de la frase REEMPLAZAN a los que había: sumarlos convertía
+    // «casa con alberca» → «depa con terraza» en «con alberca Y terraza»: cero casas.
+    rasgos: rasgosUnicos(rasgos.length ? rasgos : f.rasgos),
     pagina: 1,
   };
   if (destino.precioMin !== null && destino.precioMax !== null && destino.precioMin > destino.precioMax) {
@@ -245,8 +273,6 @@ function soloLoConocido(json: Record<string, unknown>): Record<string, unknown> 
     lugar: texto(json.lugar),
     recamaras: numero(json.recamaras),
     banos: numero(json.banos),
-    precio_min: numero(json.precio_min),
-    precio_max: numero(json.precio_max),
     palabras: Array.isArray(json.palabras) ? json.palabras.slice(0, 5).map(texto).filter((t): t is string => t !== null) : [],
   };
 }

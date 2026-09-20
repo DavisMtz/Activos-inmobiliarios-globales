@@ -121,6 +121,20 @@ console.log("\n1. Lo que se entiende sin gastar (vocabulario y catálogo)");
   comprobar("«la casa más grande que tengan» → casas, de mayor a menor", mismos(r.a, { tipo: "casa", orden: "m2_desc" }), r.destino);
 }
 {
+  // Los MONTOS salen por aritmética y no del modelo, que leyó «2 millones 251
+  // mil» como 2,010,000 (20/09/2026): con agente de robot, sin gastar nada.
+  const tope = await buscar({ q: "casas de menos de 2 millones 251 mil" });
+  comprobar("«casas de menos de 2 millones 251 mil» → hasta $2,251,000, sin preguntarle a nadie", mismos(tope.a, { tipo: "casa", precio_max: "2251000" }), tope.destino);
+  const rango = await buscar({ q: "depa en renta de 12 mil a 22 mil al mes" });
+  comprobar("un rango de renta llena el mínimo y el máximo", mismos(rango.a, { operacion: "renta", tipo: "departamento", precio_min: "12000", precio_max: "22000" }), rango.destino);
+  const minimo = await buscar({ q: "casas de mas de 10 millones" });
+  comprobar("«más de 10 millones» es un mínimo", mismos(minimo.a, { tipo: "casa", precio_min: "10000000" }), minimo.destino);
+  const metros = await buscar({ q: "terreno de 200 metros en tarimbaro" });
+  comprobar("los metros no son un precio", mismos(metros.a, { tipo: "terreno", q: "Tarímbaro" }), metros.destino);
+  const viejoTope = await buscar({ q: "casas de mas de 10 millones", precio_max: "3000000" });
+  comprobar("un precio nuevo reemplaza al que había entero: no arma un rango de 3 a 10", mismos(viejoTope.a, { tipo: "casa", precio_min: "10000000" }), viejoTope.destino);
+}
+{
   const r = await buscar({ q: "aig 42" });
   comprobar("«aig 42» → la clave como es: AIG-0042", mismos(r.a, { q: "AIG-0042" }), r.destino);
 }
@@ -139,8 +153,18 @@ console.log("\n1. Lo que se entiende sin gastar (vocabulario y catálogo)");
   comprobar("un rasgo mal escrito se corrige: «alverca» da lo mismo que «alberca»", (await totalDe({ con: "alverca" })) === (await totalDe({ con: "alberca" })));
 }
 {
-  const r = await buscar({ q: "casa con alberca", tipo: "departamento" });
-  comprobar("lo elegido a mano en el formulario manda sobre la frase", r.a?.tipo === "departamento", r.destino);
+  // Tras entender una frase el formulario queda LLENO con lo entendido. Si ahí
+  // mismo se teclea otra, esos valores viajan de nuevo: la frase nueva manda.
+  const r = await buscar({ q: "depa con terraza", tipo: "casa", con: "alberca", recamaras: "3" });
+  comprobar(
+    "una SEGUNDA frase manda sobre lo que dejó la primera en el formulario (y no suma sus rasgos)",
+    mismos(r.a, { tipo: "departamento", con: "terraza", recamaras: "3" }),
+    r.destino,
+  );
+  const renta = await buscar({ q: "casa en altosano", operacion: "renta" });
+  comprobar("…y lo que la frase no menciona se conserva: «En renta» elegido a mano + «casa en altosano»", mismos(renta.a, { operacion: "renta", tipo: "casa", q: "Altozano" }), renta.destino);
+  const otraZona = await buscar({ q: "casa en tres marias", zona: "morelia-altozano" });
+  comprobar("un lugar en la frase suelta la colonia que hubiera elegida", mismos(otraZona.a, { tipo: "casa", q: "Tres Marías" }), otraZona.destino);
 }
 
 console.log("\n   Lo que NO se reinterpreta");
@@ -255,6 +279,43 @@ try {
   await evaluar(cdp, `[...document.querySelectorAll('#filtros a')].find((a) => a.textContent.includes("alberca"))?.click()`);
   const sinRasgo = await esperarA(cdp, `!location.search.includes("con=")`);
   comprobar("quitar el rasgo con su botón lo saca de la búsqueda y deja lo demás", sinRasgo && (await evaluar(cdp, `location.search.includes("tipo=casa")`)), await evaluar(cdp, "location.search"));
+  await evaluar(cdp, `[...document.querySelectorAll('aside a')].find((a) => a.textContent.includes("Casas"))?.click()`);
+  const sinTipo = await esperarA(cdp, `!location.search.includes("tipo=")`);
+  comprobar(
+    "cada filtro de «Así lo entendimos» se quita con un toque, y la nota sigue ahí con lo demás",
+    sinTipo && (await evaluar(cdp, `location.search.includes("frase=") && location.search.includes("operacion=venta") && document.body.textContent.includes("Así lo entendimos")`)),
+    await evaluar(cdp, "location.search"),
+  );
+
+  // Una SEGUNDA frase, tecleada en el listado sobre el formulario que dejó la
+  // primera. Dos trampas medidas el 20/09/2026: los selectores no controlados
+  // se quedaban en «Todos» tras navegar sin recargar, y sus valores viejos le
+  // ganaban a la frase nueva.
+  const CAMPO_DEL_LISTADO = `document.querySelector('#filtros input[name="q"]')`;
+  for (let intento = 0; intento < 3; intento++) {
+    await evaluar(cdp, `${CAMPO_DEL_LISTADO}.focus(); ${CAMPO_DEL_LISTADO}.select()`);
+    await cdp("Input.insertText", { text: "depa en renta en tres marias" });
+    if ((await evaluar(cdp, `${CAMPO_DEL_LISTADO}.value`)) === "depa en renta en tres marias") break;
+    await esperar(500);
+  }
+  await cdp("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13, text: "\r" });
+  await cdp("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+  await esperarA(cdp, `location.search.includes("tipo=departamento")`);
+  await esperar(800);
+  const segundaFrase = Object.fromEntries(new URLSearchParams(await evaluar(cdp, "location.search")));
+  comprobar(
+    "una segunda frase tecleada en el listado manda sobre la primera: departamentos, en renta, «Tres Marías»",
+    segundaFrase.tipo === "departamento" && segundaFrase.operacion === "renta" && segundaFrase.q === "Tres Marías",
+    JSON.stringify(segundaFrase),
+  );
+  comprobar(
+    "…y el formulario (uno solo) enseña lo que dice la dirección, no lo que tenía montado",
+    await evaluar(
+      cdp,
+      `document.querySelectorAll("#filtros").length === 1 && document.querySelector('#filtros select[name="tipo"]').value === "departamento" && document.querySelector('#filtros select[name="operacion"]').value === "renta" && ${CAMPO_DEL_LISTADO}.value === "Tres Marías"`,
+    ),
+    await evaluar(cdp, `JSON.stringify({ formularios: document.querySelectorAll("#filtros").length, tipo: document.querySelector('#filtros select[name="tipo"]').value, operacion: document.querySelector('#filtros select[name="operacion"]').value, q: ${CAMPO_DEL_LISTADO}.value })`),
+  );
 
   /** Pone la casilla como se pide y pulsa «Guardar el buscador», como lo haría una persona. */
   async function ponerInterruptor(encendido) {
@@ -281,8 +342,15 @@ try {
 
   const portadaApagada = await (await fetch(`${BASE}/`, { headers: { "user-agent": NAVEGADOR } })).text();
   comprobar("apagado, la portada pide la colonia, como siempre", portadaApagada.includes("colonia te interesa") && !portadaApagada.includes("estás buscando"));
-  const sinIA = await buscar({ q: "casa en altosano hasta 8 millones" }, { agente: NAVEGADOR });
-  comprobar("apagado, sigue entendiendo lo básico (casas, «Altozano») y NO pregunta al modelo", mismos(sinIA.a, { tipo: "casa", q: "Altozano" }), sinIA.destino);
+  const consultas = () => consultar("SELECT COALESCE(SUM(consultas),0) AS c FROM ia_uso;", opciones)[0].c;
+  const antesDeBuscar = consultas();
+  const sinIA = await buscar({ q: `casa en altosano con cine en casa hasta 8 millones ${100 + Math.floor(Math.random() * 800)} mil` }, { agente: NAVEGADOR });
+  await esperar(1200);
+  comprobar(
+    "apagado, sigue entendiendo lo básico —casas, «Altozano», el tope— y NO le pregunta nada al modelo",
+    sinIA.a?.tipo === "casa" && sinIA.a?.q === "Altozano" && /^8\d{3}000$/.test(sinIA.a?.precio_max ?? "") && consultas() === antesDeBuscar,
+    `${sinIA.destino} · consultas ${antesDeBuscar} → ${consultas()}`,
+  );
 
   await ponerInterruptor(true);
   await esperarA(cdp, `location.search.includes("guardado=busqueda_ia")`);
@@ -320,47 +388,38 @@ try {
 // ─── 3. Con el modelo ─────────────────────────────────────────────
 if (values.ia) {
   console.log("\n3. Con el modelo de Workers AI (gasta consultas de verdad)");
-  const usoAntes = consultar("SELECT COALESCE(SUM(consultas),0) AS c, COALESCE(SUM(de_cache),0) AS m FROM ia_uso;", opciones)[0];
-  // Una cifra al azar (5,600 posibles): así la frase no está en la memoria y el
-  // modelo tiene que contestar. Con solo siete frases distintas, a la cuarta
-  // corrida ya salían todas de la memoria y «subieron las consultas» fallaba.
+  const uso = () => consultar("SELECT COALESCE(SUM(consultas),0) AS c, COALESCE(SUM(de_cache),0) AS m FROM ia_uso;", opciones)[0];
+  const usoAntes = uso();
+  // Al modelo solo le llega lo que el vocabulario y el catálogo no explican: un
+  // rasgo fuera de lista. La cifra al azar (5,600 posibles) hace única la frase,
+  // para que no esté en la memoria y el modelo tenga que contestar.
   const millones = 2 + Math.floor(Math.random() * 7);
   const miles = 100 + Math.floor(Math.random() * 800);
   const tope = millones * 1_000_000 + miles * 1_000;
-  const frase = `casas en altosano de menos de ${millones} millones ${miles} mil con ${["estudio", "terraza", "jardin"][millones % 3]}`;
+  const frase = `casa en altosano con cava de vinos de menos de ${millones} millones ${miles} mil`;
 
   let primera = await buscar({ q: frase }, { agente: NAVEGADOR });
-  if (!primera.a?.precio_max) {
-    // Una cola ocasional de más de 3 s se corta y cae a lo básico: se intenta una vez más.
+  if (!/cava/.test(primera.a?.con ?? "")) {
+    // Una cola ocasional de más de 3.5 s se corta y cae a lo básico: se intenta una vez más.
     await esperar(1500);
     primera = await buscar({ q: frase }, { agente: NAVEGADOR });
   }
   comprobar(
-    `«${frase}» → hasta $${tope.toLocaleString("es-MX")}, en «Altozano»`,
-    primera.a?.precio_max === String(tope) && primera.a?.q === "Altozano" && primera.a?.tipo === "casa",
+    `«${frase}» → casas, «Altozano», hasta $${tope.toLocaleString("es-MX")} y el rasgo que puso el MODELO («cava…»)`,
+    primera.a?.precio_max === String(tope) && primera.a?.q === "Altozano" && primera.a?.tipo === "casa" && /cava/.test(primera.a?.con ?? ""),
     `${primera.destino} (${primera.ms} ms)`,
   );
-  comprobar("contesta dentro del reloj (3 s de modelo más la página)", primera.ms < 6000, `${primera.ms} ms`);
+  comprobar("contesta dentro del reloj (3.5 s de modelo más la página)", primera.ms < 6000, `${primera.ms} ms`);
 
   const segunda = await buscar({ q: frase.toUpperCase() }, { agente: NAVEGADOR });
   comprobar("la misma frase, otra vez (y en mayúsculas), sale de la memoria: mismo destino", segunda.a?.precio_max === primera.a?.precio_max && segunda.a?.con === primera.a?.con, segunda.destino);
   await esperar(1500);
-  const usoDespues = consultar("SELECT COALESCE(SUM(consultas),0) AS c, COALESCE(SUM(de_cache),0) AS m FROM ia_uso;", opciones)[0];
+  const usoDespues = uso();
   comprobar("la cuenta del día subió en consultas Y en «de memoria»", usoDespues.c > usoAntes.c && usoDespues.m > usoAntes.m, `${JSON.stringify(usoAntes)} → ${JSON.stringify(usoDespues)}`);
 
-  let rango = await buscar({ q: `depa en renta de ${millones + 5} mil a ${millones + 15} mil al mes` }, { agente: NAVEGADOR });
-  if (!rango.a?.precio_max) {
-    await esperar(1500);
-    rango = await buscar({ q: `depa en renta de ${millones + 5} mil a ${millones + 15} mil al mes` }, { agente: NAVEGADOR });
-  }
-  comprobar(
-    "un rango de renta llena precio mínimo y máximo",
-    rango.a?.operacion === "renta" && rango.a?.tipo === "departamento" && rango.a?.precio_min === String((millones + 5) * 1000) && rango.a?.precio_max === String((millones + 15) * 1000),
-    rango.destino,
-  );
-
-  const robot = await buscar({ q: `casas de menos de ${millones + 1} millones y medio` });
-  comprobar("a un robot no se le paga inferencia: se queda con lo básico", robot.a?.tipo === "casa" && !robot.a?.precio_max, robot.destino);
+  await buscar({ q: `casa con cava de vinos y cine en casa de menos de ${millones} millones ${miles + 1} mil` });
+  await esperar(1500);
+  comprobar("a un robot no se le paga inferencia: su frase nueva no gasta ni una consulta", uso().c === usoDespues.c, `${usoDespues.c} → ${uso().c}`);
 
   const guardadas = consultar("SELECT clave, valor FROM ia_cache ORDER BY expira DESC LIMIT 5;", opciones);
   comprobar(

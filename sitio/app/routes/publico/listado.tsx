@@ -126,15 +126,22 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
       </header>
 
       {/* `scroll-mt`: al volver desde el final de la lista («Volver a los
-          filtros»), que la cabecera fija no tape el buscador. */}
+          filtros»), que la cabecera fija no tape el buscador.
+          Las llaves de los campos: no son controlados (`defaultValue`), y un
+          campo ya montado NO cambia de valor cuando cambia su `defaultValue`.
+          Navegando sin recargar, tras entender «casa en venta en altozano» los
+          selectores seguían diciendo «Todos» (medido con Chrome). Cada campo
+          lleva de llave SU valor en la dirección: si cambia, se monta de nuevo
+          y enseña lo que de verdad se está filtrando. La llave va en cada
+          campo y no en el `<Form>`: con ella en el formulario, React montaba
+          el nuevo y dejaba el viejo en la página (dos `#filtros`, medido). */}
       <Form id="filtros" method="get" className="mt-7 scroll-mt-28">
         <div className="rounded-2xl border border-linea bg-superficie p-4 shadow-tarjeta sm:p-5">
           <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
-            {/* La llave: tras entender una frase, en el buscador queda solo lo
-                que se busca como texto (la colonia), y un campo no controlado
-                no cambia de valor por sí solo. */}
+            {/* Tras entender una frase, aquí queda solo lo que se busca como
+                texto (la colonia o la clave). */}
             <CampoTexto
-              key={filtros.q ?? ""}
+              key={`q:${filtros.q ?? ""}`}
               etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "Colonia, fraccionamiento o clave"}
               name="q"
               type="search"
@@ -148,13 +155,13 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
                 campos pasan a ser columnas de la reja de arriba, sin repetir
                 los controles (dos copias mandarían el filtro dos veces). */}
             <div className="grid grid-cols-2 gap-3 lg:contents">
-              <CampoSelect etiqueta="Operación" name="operacion" defaultValue={filtros.operacion ?? ""}>
+              <CampoSelect key={`operacion:${filtros.operacion ?? ""}`} etiqueta="Operación" name="operacion" defaultValue={filtros.operacion ?? ""}>
                 <option value="">Cualquiera</option>
                 <option value="venta">En venta ({catalogo.operaciones.venta})</option>
                 <option value="renta">En renta ({catalogo.operaciones.renta})</option>
               </CampoSelect>
 
-              <CampoSelect etiqueta="Tipo" name="tipo" defaultValue={filtros.tipo ?? ""}>
+              <CampoSelect key={`tipo:${filtros.tipo ?? ""}`} etiqueta="Tipo" name="tipo" defaultValue={filtros.tipo ?? ""}>
                 <option value="">Todos</option>
                 {catalogo.tipos.map((t) => (
                   <option key={t.tipo} value={t.tipo}>
@@ -186,7 +193,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
 
           {filtros.rasgos.length ? (
             <div className="mt-4 border-t border-linea pt-4">
-              <RasgosPedidos filtros={filtros} />
+              <RasgosPedidos filtros={filtros} frase={frase} />
             </div>
           ) : null}
         </div>
@@ -210,7 +217,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
             </summary>
 
             <div className="mt-3 grid w-full gap-3 rounded-2xl border border-linea bg-superficie p-4 sm:grid-cols-2 lg:grid-cols-3">
-              <CampoSelect etiqueta="Ciudad" name="ciudad" defaultValue={filtros.ciudad ?? ""}>
+              <CampoSelect key={`ciudad:${filtros.ciudad ?? ""}`} etiqueta="Ciudad" name="ciudad" defaultValue={filtros.ciudad ?? ""}>
                 <option value="">Todas</option>
                 {catalogo.ciudades.map((c) => (
                   <option key={c.slug} value={c.slug}>
@@ -219,7 +226,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
                 ))}
               </CampoSelect>
 
-              <CampoSelect etiqueta="Colonia" name="zona" defaultValue={filtros.zona ?? ""}>
+              <CampoSelect key={`zona:${filtros.zona ?? ""}`} etiqueta="Colonia" name="zona" defaultValue={filtros.zona ?? ""}>
                 <option value="">Todas</option>
                 {catalogo.zonas.map((z) => (
                   <option key={z.slug} value={z.slug}>
@@ -228,7 +235,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
                 ))}
               </CampoSelect>
 
-              <CampoSelect etiqueta="Recámaras (mínimo)" name="recamaras" defaultValue={filtros.recamaras ?? ""}>
+              <CampoSelect key={`recamaras:${filtros.recamaras ?? ""}`} etiqueta="Recámaras (mínimo)" name="recamaras" defaultValue={filtros.recamaras ?? ""}>
                 <option value="">Cualquiera</option>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>
@@ -238,6 +245,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
               </CampoSelect>
 
               <CampoTexto
+                key={`precio_min:${filtros.precioMin ?? ""}`}
                 etiqueta="Precio desde"
                 name="precio_min"
                 type="text"
@@ -247,6 +255,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
               />
 
               <CampoTexto
+                key={`precio_max:${filtros.precioMax ?? ""}`}
                 etiqueta="Precio hasta"
                 name="precio_max"
                 type="text"
@@ -255,7 +264,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
                 placeholder={rango.max ? precioMXN(rango.max)! : "Sin máximo"}
               />
 
-              <CampoSelect etiqueta="Baños (mínimo)" name="banos" defaultValue={filtros.banos ?? ""}>
+              <CampoSelect key={`banos:${filtros.banos ?? ""}`} etiqueta="Baños (mínimo)" name="banos" defaultValue={filtros.banos ?? ""}>
                 <option value="">Cualquiera</option>
                 {[1, 2, 3, 4].map((n) => (
                   <option key={n} value={n}>
@@ -269,6 +278,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
           <label className="ml-auto flex items-center gap-2 text-sm text-texto-suave">
             <span className="hidden sm:inline">Ordenar</span>
             <select
+              key={`orden:${filtros.orden}`}
               name="orden"
               aria-label="Ordenar resultados"
               defaultValue={filtros.orden}

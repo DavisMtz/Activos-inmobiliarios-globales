@@ -6,8 +6,6 @@ const modelo = (parcial: Record<string, unknown>) => ({
   lugar: null,
   recamaras: null,
   banos: null,
-  precio_min: null,
-  precio_max: null,
   palabras: [],
   ...parcial,
 });
@@ -15,7 +13,7 @@ const modelo = (parcial: Record<string, unknown>) => ({
 describe("validarIntencion", () => {
   it("junta lo que leyó el vocabulario con lo que contestó el modelo", () => {
     const i = validarIntencion(
-      modelo({ lugar: "altosano", recamaras: 2, precio_max: 15000 }),
+      modelo({ lugar: "altosano", recamaras: 2 }),
       "depa de 2 recamaras en renta por altosano que no pase de 15 mil",
     );
     expect(i).toEqual({
@@ -48,18 +46,27 @@ describe("validarIntencion", () => {
       const i = validarIntencion(modelo({ recamaras: 3, banos: 3 }), "casa de 3 recamaras en altozano");
       expect(i?.recamaras).toBe(3);
       expect(i?.banos).toBeNull();
-      // «de 1 a 2 millones» no son recámaras.
-      expect(validarIntencion(modelo({ recamaras: 1, banos: 1 }), "propiedades de 1 a 2 millones")).toBeNull();
+      // «de 1 a 2 millones» no son recámaras: es un precio, y lo lee la aritmética.
+      expect(validarIntencion(modelo({ recamaras: 1, banos: 1 }), "propiedades de 1 a 2 millones")).toMatchObject({
+        recamaras: null,
+        banos: null,
+        precioMin: 1_000_000,
+        precioMax: 2_000_000,
+      });
     });
 
-    it("precios: sin una sola cantidad en la frase, cualquier precio es inventado", () => {
+    it("los precios son del código y no del modelo, diga lo que diga", () => {
+      // No sabe sumar: leyó «2 millones 251 mil» como 2,010,000.
+      expect(validarIntencion(modelo({ precio_max: 2_010_000 }), "casas en altosano de menos de 2 millones 251 mil")?.precioMax).toBe(2_251_000);
+      // Ni sigue la regla del papel: a una cifra suelta le puso un mínimo.
+      expect(validarIntencion(modelo({ precio_min: 2_500_000 }), "casa de 2 millones y medio")).toMatchObject({ precioMin: null, precioMax: 2_500_000 });
+      // Y sin una sola cantidad en la frase, cualquier precio es inventado.
       expect(validarIntencion(modelo({ precio_max: 3_000_000 }), "casa bonita en altozano")?.precioMax ?? null).toBeNull();
-      expect(validarIntencion(modelo({ precio_max: 3_000_000 }), "casa hasta tres millones")?.precioMax).toBe(3_000_000);
+      expect(validarIntencion(modelo({}), "casa entre 3 y 4.5 millones")).toMatchObject({ precioMin: 3_000_000, precioMax: 4_500_000 });
     });
 
-    it("endereza un rango al revés y acepta cifras escritas como texto", () => {
-      const i = validarIntencion(modelo({ precio_min: "4,500,000", precio_max: "$3000000" }), "casa entre 3 y 4.5 millones");
-      expect([i?.precioMin, i?.precioMax]).toEqual([3_000_000, 4_500_000]);
+    it("el lugar se sostiene con sus palabras de verdad: «avenida camelinas» es «camelinas»", () => {
+      expect(validarIntencion(modelo({ lugar: "avenida camelinas" }), "local comercial sobre avenida camelinas")?.lugar).toBe("avenida camelinas");
     });
 
     it("el lugar no puede salir de una palabra que ya se leyó como vocabulario", () => {

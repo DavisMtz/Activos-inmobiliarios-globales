@@ -15,7 +15,11 @@
  *
  * Los modelos se MIDIERON antes de elegir (`npm run medir:ia`, PLAN §19): la
  * lista de abajo no es un catálogo, es la tabla de resultados del 20/09/2026
- * con 51 frases reales × 2 vueltas.
+ * con 65 frases reales × 2 vueltas. El chico ganó cuando su trabajo se hizo
+ * chico: con operación, tipo, orden y PRECIOS leídos por código
+ * (`shared/frase.ts`, `shared/dinero.ts`), al modelo le queda sacar el lugar y
+ * los rasgos de una frase, y para eso el de 1 Neuron acierta lo mismo que el
+ * de 20.
  */
 
 /**
@@ -56,31 +60,38 @@ export function neuronsEstimados(modelo: string, tokensEntrada: number, tokensSa
 
 export const MODELOS: readonly ModeloMedido[] = [
   {
-    id: "@cf/zai-org/glm-4.7-flash",
-    nombre: "GLM 4.7 Flash",
-    familia: "openai",
-    nota: "El de fábrica. Entendió 100 de 102 frases, contesta en 1 segundo y gasta unos 5 Neurons por búsqueda.",
-    precio: [0.0605, 0.4],
+    id: "@cf/ibm-granite/granite-4.0-h-micro",
+    nombre: "Granite 4.0 Micro",
+    familia: "clasica",
+    nota: "El de fábrica. Entendió 128 de 130 frases, igual que el más grande, gastando 1 Neuron por búsqueda y sin ninguna espera larga (1.3 segundos).",
+    precio: [0.017, 0.112],
   },
   {
     id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     nombre: "Llama 3.3 70B",
     familia: "clasica",
-    nota: "El más preciso: 102 de 102, en 1.3 segundos. Gasta cinco veces más (unos 27 Neurons por búsqueda).",
+    nota: "Igual de preciso (128 de 130) y un poco más rápido (1.1 segundos), pero gasta 18 veces más: unos 20 Neurons por búsqueda.",
     precio: [0.293, 2.253],
   },
   {
     id: "@cf/google/gemma-4-26b-a4b-it",
     nombre: "Gemma 4 26B",
     familia: "openai",
-    nota: "Alternativa: 97 de 102, en 1.2 segundos y unos 7 Neurons por búsqueda.",
+    nota: "124 de 130, en 1.2 segundos y unos 5 Neurons por búsqueda. Se le escapan rasgos poco comunes.",
     precio: [0.1, 0.3],
+  },
+  {
+    id: "@cf/zai-org/glm-4.7-flash",
+    nombre: "GLM 4.7 Flash",
+    familia: "openai",
+    nota: "123 de 130 y rápido casi siempre (0.9 segundos), pero 1 de cada 25 consultas se quedó esperando más de 10 segundos.",
+    precio: [0.0605, 0.4],
   },
   {
     id: "@cf/meta/llama-3.2-3b-instruct",
     nombre: "Llama 3.2 3B",
     familia: "clasica",
-    nota: "El más rápido (0.3 segundos), pero se equivoca más: 86 de 102. Confunde rasgos con colonias.",
+    nota: "El más rápido (0.4 segundos), pero se equivoca más: 117 de 130. Toma por colonia palabras que no lo son.",
     precio: [0.0509, 0.335],
   },
 ];
@@ -89,8 +100,11 @@ export const MODELO_DE_FABRICA = MODELOS[0]!.id;
 
 export const modeloValido = (id: unknown): id is string => typeof id === "string" && MODELOS.some((m) => m.id === id);
 
-/** Medido: p90 de 1.6 s y colas ocasionales de 10 a 17 s, que aquí se cortan. */
-export const ESPERA_MAXIMA_MS = 3_000;
+/**
+ * Medido con el de fábrica: p50 de 1.3 s, p90 de 1.65 s y un máximo de 3.0 s en
+ * 130 consultas. Otros modelos tienen colas de 10 a 20 s, que aquí se cortan.
+ */
+export const ESPERA_MAXIMA_MS = 3_500;
 
 /** Lo mínimo que tiene que quedar del reloj para que valga un segundo intento. */
 const MINIMO_PARA_REINTENTAR = 900;
