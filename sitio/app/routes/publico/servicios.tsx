@@ -71,6 +71,8 @@ export default function Servicios({ loaderData }: Route.ComponentProps) {
   // regla que ya le puso pausa a la vitrina). Por eso los gestos no arrancan
   // desde el CSS: los enciende esto, que es lo mismo que pinta el botón.
   useEffect(() => {
+    // Sin servicios no hay dibujos: un botón de pausa sobre nada sería ruido.
+    if (!servicios.length) return;
     const consulta = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const decidir = () => {
       if (!consulta.matches) return setVida("sin");
@@ -85,7 +87,7 @@ export default function Servicios({ loaderData }: Route.ComponentProps) {
     decidir();
     consulta.addEventListener("change", decidir);
     return () => consulta.removeEventListener("change", decidir);
-  }, []);
+  }, [servicios.length]);
 
   const alternar = () => {
     const siguiente: Vida = vida === "corriendo" ? "pausada" : "corriendo";
@@ -117,7 +119,10 @@ export default function Servicios({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="mx-auto max-w-sitio px-5 lg:px-10 py-10 sm:py-14">
-      <header className="flex items-end justify-between gap-6">
+      {/* `flex-wrap`: con la frase de «Antes de los servicios» escrita (Panel ›
+          Contenido), en el celular el botón le dejaba una columna de ~226 px y
+          el párrafo salía de doce palabras por renglón. Así baja a su línea. */}
+      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
         <div className="max-w-2xl">
           <h1 className="font-display text-titulo text-tinta">Servicios</h1>
           {intro ? <p className="mt-3 text-guia text-texto-suave">{intro}</p> : null}
