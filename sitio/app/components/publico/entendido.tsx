@@ -17,6 +17,10 @@ import { IconoCerrar, IconoDestello } from "./iconos";
  * con un toque lo que no era y, si nada era, tiene a mano la búsqueda del texto
  * tal como lo escribió.
  *
+ * Desde el 20/09/2026 va ARRIBA del buscador, no debajo: es lo primero que hay
+ * que leer, y que lo entendió una máquina lo dice sola la orilla del panel
+ * (`marco-estelar.tsx`).
+ *
  * No enseña nada «de la IA»: enseña los FILTROS que quedaron en la URL, que son
  * lo que de verdad decidió qué casas salen (con el modelo, sin él o con la
  * memoria). Por eso no puede desfasarse de los resultados. Y por eso mismo
@@ -84,12 +88,14 @@ export function AsiLoEntendimos({
 
   return (
     <aside aria-label="Cómo entendimos tu búsqueda" className="mt-6 border-l-2 border-marca pl-4">
-      <p className="flex items-center gap-2 text-sm font-bold tracking-widest text-texto-suave uppercase">
-        <IconoDestello className="h-4 w-4 text-marca" />
-        Así lo entendimos
-      </p>
-      <p className="mt-1.5 text-tinta">
-        Buscaste <q className="font-bold">{frase}</q>
+      {/* El rótulo y la frase en un solo renglón: esto va ARRIBA del buscador,
+          y cada renglón de aquí aleja la primera casa. */}
+      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-tinta">
+        <span className="flex items-center gap-2 text-sm font-bold tracking-widest text-texto-suave uppercase">
+          <IconoDestello className="h-4 w-4 text-marca" />
+          Así lo entendimos
+        </span>
+        <q className="font-bold">{frase}</q>
       </p>
       <ul className="mt-2.5 flex flex-wrap gap-2">
         {etiquetas.map((etiqueta) => (

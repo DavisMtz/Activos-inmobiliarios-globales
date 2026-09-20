@@ -1,4 +1,4 @@
-import { Form, Link } from "react-router";
+import { Form, Link, useNavigation } from "react-router";
 import { leerConfiguracion, leerPreguntas, leerServicios } from "../../../server/db/configuracion";
 import { leerEntregasPublicas } from "../../../server/db/entregas";
 import { casasDePortada, leerCatalogo } from "../../../server/db/propiedades";
@@ -7,6 +7,7 @@ import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
 import { Antetitulo, Preguntas, Testimonios } from "../../components/publico/contenido-portada";
+import { MarcoEstelar } from "../../components/publico/marco-estelar";
 import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
 import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
 import { contextoServidor } from "../../contexto";
@@ -78,6 +79,12 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
   const { catalogo, vitrina, recientes, portada, servicios, entregas, preguntas, whatsapp, entiendeFrases } = loaderData;
   const desde = precioMXN(catalogo.rangos.venta.min);
   const ciudades = catalogo.ciudades.length;
+  // Entender una frase tarda un segundo: mientras dura, la orilla del buscador
+  // lo dice sola (`marco-estelar.tsx`). Aqui no se queda encendida, porque la
+  // respuesta se ve ya en la pagina siguiente.
+  const navegacion = useNavigation();
+  const entendiendo =
+    entiendeFrases && navegacion.state === "loading" && navegacion.location?.pathname === "/propiedades";
 
   return (
     <div>
@@ -110,42 +117,44 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
 
           {/* El buscador es la acción principal: va en su propio panel para
               que se lea como una herramienta y no como texto suelto. */}
-          <Form
-            method="get"
-            action="/propiedades"
-            className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)] sm:p-5"
+          <MarcoEstelar
+            activo={Boolean(entendiendo)}
+            marco="mt-8 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]"
+            className="rounded-2xl border border-linea bg-superficie p-4 sm:p-5"
           >
-            <CampoTexto
-              etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "¿Qué colonia te interesa?"}
-              name="q"
-              type="search"
-              placeholder={entiendeFrases ? "Casa de 3 recámaras en Altozano…" : "Altozano, Tres Marías, El Prado…"}
-              autoComplete="off"
-              maxLength={160}
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <CampoSelect etiqueta="Operación" name="operacion" defaultValue="">
-                <option value="">Cualquiera</option>
-                <option value="venta">En venta ({catalogo.operaciones.venta})</option>
-                <option value="renta">En renta ({catalogo.operaciones.renta})</option>
-              </CampoSelect>
-              <CampoSelect etiqueta="Tipo" name="tipo" defaultValue="">
-                <option value="">Todos</option>
-                {catalogo.tipos.map((t) => (
-                  <option key={t.tipo} value={t.tipo}>
-                    {ETIQUETA_TIPO_PLURAL[t.tipo]} ({t.n})
-                  </option>
-                ))}
-              </CampoSelect>
-            </div>
-            <button
-              type="submit"
-              className="mt-1 flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
-            >
-              <IconoBuscar />
-              Ver las {catalogo.total} propiedades
-            </button>
-          </Form>
+            <Form method="get" action="/propiedades" className="flex flex-col gap-3">
+              <CampoTexto
+                etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "¿Qué colonia te interesa?"}
+                name="q"
+                type="search"
+                placeholder={entiendeFrases ? "Casa de 3 recámaras en Altozano…" : "Altozano, Tres Marías, El Prado…"}
+                autoComplete="off"
+                maxLength={160}
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <CampoSelect etiqueta="Operación" name="operacion" defaultValue="">
+                  <option value="">Cualquiera</option>
+                  <option value="venta">En venta ({catalogo.operaciones.venta})</option>
+                  <option value="renta">En renta ({catalogo.operaciones.renta})</option>
+                </CampoSelect>
+                <CampoSelect etiqueta="Tipo" name="tipo" defaultValue="">
+                  <option value="">Todos</option>
+                  {catalogo.tipos.map((t) => (
+                    <option key={t.tipo} value={t.tipo}>
+                      {ETIQUETA_TIPO_PLURAL[t.tipo]} ({t.n})
+                    </option>
+                  ))}
+                </CampoSelect>
+              </div>
+              <button
+                type="submit"
+                className="mt-1 flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
+              >
+                <IconoBuscar />
+                Ver las {catalogo.total} propiedades
+              </button>
+            </Form>
+          </MarcoEstelar>
 
           {/* Tres cifras que salen de la base, no de un texto de venta: si el
               catálogo cambia, cambian solas. */}

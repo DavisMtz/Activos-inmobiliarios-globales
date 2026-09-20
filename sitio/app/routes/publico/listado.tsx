@@ -12,6 +12,7 @@ import {
 } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
 import { AsiLoEntendimos, RasgosPedidos } from "../../components/publico/entendido";
+import { MarcoEstelar } from "../../components/publico/marco-estelar";
 import { CampoSelect, CampoTexto } from "../../components/publico/piezas";
 import { IconoBuscar } from "../../components/publico/iconos";
 import { ListaInfinita } from "../../components/publico/lista-infinita";
@@ -94,6 +95,11 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
   const { search } = useLocation();
   const puestos = cuantosFiltros(filtros);
   const rango = filtros.operacion === "renta" ? catalogo.rangos.renta : catalogo.rangos.venta;
+  // Que el buscador entendió la frase ya no se dice con una nota debajo: lo
+  // dice la ORILLA del panel, que se enciende mientras entiende y se queda
+  // encendida mientras lo entendido siga puesto (`marco-estelar.tsx`). Lo que
+  // se lee son los filtros, y esos van arriba.
+  const entendiendo = entiendeFrases && (Boolean(frase) || buscando);
 
   return (
     <div className="mx-auto max-w-sitio px-5 lg:px-10 py-8 sm:py-12">
@@ -135,8 +141,14 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
           y enseña lo que de verdad se está filtrando. La llave va en cada
           campo y no en el `<Form>`: con ella en el formulario, React montaba
           el nuevo y dejaba el viejo en la página (dos `#filtros`, medido). */}
-      <Form id="filtros" method="get" className="mt-7 scroll-mt-28">
-        <div className="rounded-2xl border border-linea bg-superficie p-4 shadow-tarjeta sm:p-5">
+      {/* Los filtros que quedaron puestos, ARRIBA del buscador: son lo que de
+          verdad decidió qué casas salen y se leen antes de tocar nada. Antes
+          iban debajo del panel, donde además de avisar «esto lo entendimos»
+          empujaban la primera casa media pantalla. */}
+      {frase ? <AsiLoEntendimos frase={frase} filtros={filtros} zonas={catalogo.zonas} /> : null}
+
+      <Form id="filtros" method="get" className={`${frase ? "mt-4" : "mt-7"} scroll-mt-28`}>
+        <MarcoEstelar activo={entendiendo} marco="shadow-tarjeta" className="rounded-2xl border border-linea bg-superficie p-4 sm:p-5">
           <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
             {/* Tras entender una frase, aquí queda solo lo que se busca como
                 texto (la colonia o la clave). */}
@@ -196,7 +208,7 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
               <RasgosPedidos filtros={filtros} frase={frase} />
             </div>
           ) : null}
-        </div>
+        </MarcoEstelar>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           {/* Plegado y angosto: es un control, no una tarjeta vacía. Tras
@@ -295,8 +307,6 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
           </label>
         </div>
       </Form>
-
-      {frase ? <AsiLoEntendimos frase={frase} filtros={filtros} zonas={catalogo.zonas} /> : null}
 
       <p className="mt-6 text-tinta">
         <strong className="text-lg font-extrabold tabular-nums">{pagina.total}</strong>{" "}

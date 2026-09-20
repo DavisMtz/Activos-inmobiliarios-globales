@@ -774,3 +774,80 @@
     transform: scaleX(0.92);
   }
 }
+
+/* ─── Marco estelar del buscador (`components/publico/marco-estelar.tsx`) ───
+   Dos manchas redondas más anchas que el panel se deslizan por la orilla, una
+   por arriba y otra por abajo; el panel va encima y es opaco, así que solo se
+   ve lo que asoma por el halo de 3 px. Es la señal de que el buscador está
+   entendiendo la frase, y sustituye a la nota de texto que iba debajo.
+
+   El halo quieto (`--color-marca-suave`) se dibuja SIEMPRE que está encendido:
+   con «menos movimiento» las manchas no existen y la señal tiene que seguir
+   viéndose. El radio se escribe aquí porque el panel usa `rounded-2xl` (1rem) y
+   el marco tiene que ir 3 px más abierto para que las dos curvas coincidan. */
+.marco-estelar {
+  --marco-radio: 1rem;
+  --marco-grosor: 3px;
+  position: relative;
+  border-radius: var(--marco-radio);
+}
+.marco-estelar[data-activo] {
+  padding: var(--marco-grosor);
+  overflow: hidden;
+  border-radius: calc(var(--marco-radio) + var(--marco-grosor));
+  background-color: var(--color-marca-suave);
+}
+.marco-estelar-panel {
+  position: relative;
+  z-index: 1;
+}
+
+.marco-estelar .destello {
+  /* Con «menos movimiento» ni se dibuja: su animación acaba en opacidad 0, así
+     que congelarla lo dejaría invisible de todas formas. */
+  display: none;
+  position: absolute;
+  z-index: 0;
+  width: 300%;
+  height: 50%;
+  border-radius: 50%;
+  opacity: 0.9;
+  pointer-events: none;
+  background: radial-gradient(circle, var(--color-marca), transparent 12%);
+}
+.marco-estelar .destello-arriba {
+  top: -0.75rem;
+  left: -250%;
+  animation: destello-arriba linear infinite alternate;
+}
+.marco-estelar .destello-abajo {
+  right: -250%;
+  bottom: -0.75rem;
+  animation: destello-abajo linear infinite alternate;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .marco-estelar .destello {
+    display: block;
+  }
+}
+
+@keyframes destello-arriba {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100%, 0);
+    opacity: 0;
+  }
+}
+@keyframes destello-abajo {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100%, 0);
+    opacity: 0;
+  }
+}
