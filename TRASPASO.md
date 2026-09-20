@@ -47,15 +47,22 @@ Lo que mejor ha funcionado, por si ayuda:
 
 **La portada abre con un escenario, y el buscador dice solo que entendió (20/09/2026, tarde)** — dos piezas de
 React Bits copiadas A MANO (variante JS + CSS, **sin dependencias**; el `npx shadcn add` del registro no aplica
-aquí: no hay `components.json`). En producción desde el 20/09/2026, Worker **`20cd3c29`** (para revertir,
-`bd0fe253`; antes, `18878e94` y `0791a369`).
+aquí: no hay `components.json`). En producción desde el 20/09/2026, Worker **`ecb59d6c`** (para revertir,
+`20cd3c29`; antes, `bd0fe253`, `18878e94` y `0791a369`).
 
-**El escenario se retocó tras enseñarle una pantalla:** «el color negro no queda». El campo pasó de tinta a
-**vino** con degradado radial (aquí el vino se usa como CAMPO grande, no como borde), el velo de la foto se
-entonó a vino y la seña de «baja» toma `--color-sobre-vino-suave`, porque el rojo de la marca sobre vino no
-contrasta. El titular estrena **Cormorant Garamond** a `clamp(2.9rem, 1.9rem + 4.6vw, 6rem)`, importada SOLO
-en `inicio.tsx` —la única página que la usa— y precargada desde ahí: las demás no bajan sus 37 KB. **A 8rem
-tapaba la foto entera**; con un titular sobre una foto, el tamaño se decide en una captura.
+**El color y la tipografía del escenario costaron TRES vueltas, y la que sirvió fue enseñarle opciones.**
+Tinta → «el color negro no queda»; vino → «ni la fuente ni el color de fondo». A la tercera se le enseñaron
+**cuatro propuestas capturadas sobre la página real** y eligió en un mensaje. Las capturas se hicieron
+**inyectando CSS con CDP** sobre la página ya compilada y bajando las fuentes candidatas de Google Fonts: sin
+instalar ni recompilar nada, y solo la elegida se instaló de verdad. **Con este usuario, para color y
+tipografía: enseñar cuatro, no proponer una.**
+
+Lo que quedó: campo **crema** (el papel de la casa), el velo de la foto **aclara en vez de oscurecer** porque
+el titular es de tinta, y **Playfair Display** importada SOLO en `inicio.tsx` —la única página que la usa— y
+precargada desde ahí: las demás no bajan sus 38 KB. **La cuesta de la escala la fija el teléfono:** a 390 px
+«Comercialización,» es la palabra más ancha y con 48 px dejaba 4 px de aire a cada lado; con
+`clamp(2.4rem, 1.46rem + 5.05vw, 6rem)` quedan 20 px y el escritorio se queda en 96 px. El tamaño de un
+titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a ojo.
 
 | Archivo | Qué guarda |
 |---|---|
