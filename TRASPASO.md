@@ -11,7 +11,7 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
 | **Worker** | `activos-inmobiliarios`, versión activa **`0ed0ddcf`** (20/09/2026) |
 | **Reversión** | la anterior es `14e28560`: `npx wrangler rollback 14e28560-2b14-4aed-a4b5-f7b140b514dc` |
-| **Código** | rama `main`. **OJO (20/09/2026): `main` va 2 commits por delante de `origin/main` y de producción** (`a5ae535` y `dc5d642`, el buscador que entiende frases): ni empujados ni desplegados todavía. Ver §1.1. La rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
+| **Código** | rama `main`, empujada. **OJO (20/09/2026): `main` va por delante de PRODUCCIÓN** (`a5ae535`, `dc5d642` y los de registro que les siguen: el buscador que entiende frases), sin desplegar todavía. Ver §1.1. La rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005` se aplicó el 20/09/2026, ANTES del despliegue que la usa: es aditiva y la versión activa la ignora) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
 
