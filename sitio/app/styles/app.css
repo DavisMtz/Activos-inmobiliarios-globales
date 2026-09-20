@@ -17,6 +17,13 @@
      la fuente no mueva tanto el texto. */
   --font-display: "Jost Variable", "Futura", "Century Gothic", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
 
+  /* Solo para el titular del escenario de la portada (20/09/2026, a pedido
+     suyo: «otra fuente más grande»). Serif de alto contraste, que a tamaño
+     grande y sobre el campo vino es lo que se lee como «de lujo»; el resto
+     del sitio sigue en Jost. Se carga SOLO en la portada (`inicio.tsx`),
+     no en el marco, para que las demás páginas no bajen sus 37 KB. */
+  --font-titular: "Cormorant Garamond Variable", ui-serif, Georgia, "Times New Roman", serif;
+
   /* ─── Marca del sitio actual (D13): el rojo se conserva ───────────
      Cuatro papeles de color, no un acento suelto: papel, tinta, vino y rojo.
      El vino y la tinta se usan como CAMPOS grandes (portada, cierres, pie),
@@ -56,6 +63,16 @@
   --text-display--line-height: 1.02;
   --text-display--letter-spacing: -0.02em;
   --text-display--font-weight: 300;
+
+  /* El titular del escenario: manda él solo en toda la primera pantalla,
+     así que va casi al doble que el titular de una página. La serif tiene la
+     equis más chica que Jost, así que pide más cuerpo para pesar lo mismo.
+     Medido: a 8rem el titular tapaba la foto entera y las palabras rozaban
+     las dos orillas; a 6rem manda él y la casa se sigue viendo. */
+  --text-portada: clamp(2.9rem, 1.9rem + 4.6vw, 6rem);
+  --text-portada--line-height: 1;
+  --text-portada--letter-spacing: -0.015em;
+  --text-portada--font-weight: 300;
 
   --text-titulo: clamp(2rem, 1.45rem + 2.4vw, 3.25rem);
   --text-titulo--line-height: 1.08;
@@ -866,7 +883,12 @@
 .escenario {
   position: relative;
   width: 100%;
-  background-color: var(--color-tinta);
+  /* Vino y no tinta (20/09/2026: «el color negro no queda»). En este sitio el
+     vino se usa como CAMPO grande, no como borde: es lo que lo separa de una
+     página blanca con rojo. Con degradado radial para que el campo tenga
+     fondo y no se lea como un rectángulo plano. */
+  background-color: #6b0413;
+  background-image: radial-gradient(115% 85% at 50% 32%, #8e0719 0%, #6b0413 46%, #45020c 100%);
   /* Sube por debajo de la cabecera (`pt-3` + `h-16` = 4.75rem), que es
      flotante y se pega arriba: así la foto llega al borde de la pantalla y la
      píldora del menú queda encima de ella, no sobre una franja de papel. Sin
@@ -926,7 +948,7 @@
      hace legible un titular blanco sobre una fachada blanca. Al abrirse baja
      al 45 % de esto y la casa se ve limpia. */
   opacity: 1;
-  background: linear-gradient(to top, rgba(17, 17, 17, 0.78), rgba(17, 17, 17, 0.5) 48%, rgba(17, 17, 17, 0.62));
+  background: linear-gradient(to top, rgba(40, 2, 8, 0.78), rgba(40, 2, 8, 0.5) 48%, rgba(40, 2, 8, 0.62));
 }
 
 /* El titular va sobre TODO el escenario, no sobre la foto: al principio la
@@ -959,7 +981,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-sobre-oscuro-suave);
+  color: var(--color-sobre-vino-suave);
   pointer-events: none;
   will-change: opacity, transform;
 }
