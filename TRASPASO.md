@@ -47,8 +47,15 @@ Lo que mejor ha funcionado, por si ayuda:
 
 **La portada abre con un escenario, y el buscador dice solo que entendió (20/09/2026, tarde)** — dos piezas de
 React Bits copiadas A MANO (variante JS + CSS, **sin dependencias**; el `npx shadcn add` del registro no aplica
-aquí: no hay `components.json`). En producción desde el 20/09/2026, Worker **`bd0fe253`** (para revertir,
-`18878e94`, y antes de él `0791a369`).
+aquí: no hay `components.json`). En producción desde el 20/09/2026, Worker **`20cd3c29`** (para revertir,
+`bd0fe253`; antes, `18878e94` y `0791a369`).
+
+**El escenario se retocó tras enseñarle una pantalla:** «el color negro no queda». El campo pasó de tinta a
+**vino** con degradado radial (aquí el vino se usa como CAMPO grande, no como borde), el velo de la foto se
+entonó a vino y la seña de «baja» toma `--color-sobre-vino-suave`, porque el rojo de la marca sobre vino no
+contrasta. El titular estrena **Cormorant Garamond** a `clamp(2.9rem, 1.9rem + 4.6vw, 6rem)`, importada SOLO
+en `inicio.tsx` —la única página que la usa— y precargada desde ahí: las demás no bajan sus 37 KB. **A 8rem
+tapaba la foto entera**; con un titular sobre una foto, el tamaño se decide en una captura.
 
 | Archivo | Qué guarda |
 |---|---|
