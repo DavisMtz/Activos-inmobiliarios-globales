@@ -174,8 +174,11 @@ export function EscenarioPortada({
       <div ref={riel} className="escenario-riel">
         <div ref={escena} className="escenario-escena">
           <div ref={marco} className="escenario-marco">
-            {/* Es el LCP de la portada: baja de inmediato y con prioridad. El
-                tamaño se declara para que no salte el diseño al llegar. */}
+            {/* Es el LCP de la portada: baja de inmediato y con prioridad. No
+                lleva `width`/`height`: va posicionada a las cuatro orillas de
+                su marco con `object-fit: cover`, así que no reserva sitio ni
+                puede mover nada al llegar, y la variante `galeria` limita el
+                ancho a 1600 pero cada foto trae el alto que trae. */}
             <img
               ref={imagen}
               className="escenario-foto"
@@ -183,8 +186,6 @@ export function EscenarioPortada({
               srcSet={foto.srcset ?? undefined}
               sizes="100vw"
               alt={foto.alt}
-              width={1600}
-              height={1067}
               loading="eager"
               fetchPriority="high"
               decoding="async"
