@@ -36,9 +36,9 @@
     "fotos:migrar": "node scripts/migrar-fotos-a-cloudinary.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/cormorant-garamond": "^5.3.0",
     "@fontsource-variable/jost": "^5.3.0",
     "@fontsource-variable/nunito": "5.3.0",
+    "@fontsource-variable/playfair-display": "^5.3.0",
     "gsap": "^3.15.0",
     "hono": "4.13.8",
     "isbot": "5.2.2",

@@ -1,7 +1,7 @@
 // La serif del titular del escenario se importa AQUI y no en el marco: la
-// portada es la unica pagina que la usa, y asi las demas no bajan sus 37 KB.
-import "@fontsource-variable/cormorant-garamond/wght.css";
-import fuenteTitular from "@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2?url";
+// portada es la unica pagina que la usa, y asi las demas no bajan sus 38 KB.
+import "@fontsource-variable/playfair-display/wght.css";
+import fuenteTitular from "@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2?url";
 
 import { Form, Link, useNavigation } from "react-router";
 import { leerConfiguracion, leerPreguntas, leerServicios } from "../../../server/db/configuracion";
@@ -107,20 +107,20 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           contrasta (§19), así que el filete va en el claro del isotipo. */}
       {escenario ? (
         <EscenarioPortada foto={escenario} pista="Baja para verla entera">
-          {/* Sobre el campo vino, el claro que el tema reserva para él: el rojo
-              de la marca sobre vino no contrasta (§19). */}
+          {/* Sobre campo claro vuelven los colores de siempre del sitio: el
+              rojo de la marca en el filete y el gris del texto en el lema. */}
           <link rel="preload" as="font" type="font/woff2" href={fuenteTitular} crossOrigin="anonymous" />
           {portada.saludo ? (
-            <p className="flex items-center gap-3 font-display text-xs font-medium tracking-[0.28em] text-sobre-vino-suave uppercase sm:text-sm motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
-              <span aria-hidden="true" className="h-px w-8 shrink-0 bg-sobre-vino-suave" />
+            <p className="flex items-center gap-3 font-display text-xs font-medium tracking-[0.28em] text-marca uppercase sm:text-sm motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
+              <span aria-hidden="true" className="h-px w-8 shrink-0 bg-marca" />
               {portada.saludo}
             </p>
           ) : null}
-          <h1 className="mt-6 max-w-[16ch] font-titular text-portada text-sobre-oscuro motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
+          <h1 className="mt-6 max-w-[16ch] font-titular text-portada text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
             {titular}
           </h1>
           {portada.lema ? (
-            <p className="mt-5 max-w-[46ch] text-guia text-sobre-vino-suave motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]">
+            <p className="mt-5 max-w-[46ch] text-guia text-texto-suave motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]">
               {portada.lema}
             </p>
           ) : null}
