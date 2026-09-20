@@ -37,16 +37,22 @@ const { values } = parseArgs({ options: { base: { type: "string", default: "http
 const BASE = values.base.replace(/\/+$/, "");
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
-const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-el-prado-4"];
+const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-el-prado-4", "/servicios"];
 /**
  * `/entregas` solo existe con alguna publicada (si no, 404): se revisa cuando
  * responde. Para cubrirla, correr antes `verificar:entregas --local --dejar`.
  */
 const RUTAS_OPCIONALES = ["/entregas"];
 
-/** Lo que anima `app/components/publico/movimiento.ts`. */
+/**
+ * Lo que anima `app/components/publico/movimiento.ts`, más el MARCO de cada
+ * dibujo de Servicios. De los dibujos aquí entra solo el `<svg>`: sus piezas
+ * tienen gestos que pasan por opacidad 0 (la moneda que vuelve a caer), así que
+ * leerlas a media vuelta daría falsos «invisibles» al azar. Se revisan aparte,
+ * ya en pausa, en `revisarDibujos`.
+ */
 const SELECTOR_ANIMADO =
-  ".aig-estela, .aig-pierna, .aig-franja, .aig-canto, .aig-ventana, [data-animar], [data-animar-lista] > li";
+  ".aig-estela, .aig-pierna, .aig-franja, .aig-canto, .aig-ventana, [data-animar], [data-animar-lista] > li, .dibujo-servicio";
 
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -196,6 +202,91 @@ async function revisarVitrina(cdp, reducido) {
   return fallas;
 }
 
+/**
+ * Los dibujos de Servicios (`components/publico/dibujos-servicio.tsx`): se
+ * dibujan al entrar y luego cada uno repite un gesto. Lo que hay que saber de
+ * ellos no es si se mueven bonito, sino lo de siempre: que EN REPOSO estén
+ * enteros, y que lo que se mueve solo se pueda parar (WCAG 2.2.2).
+ *
+ * `gestos`: animaciones `vida-*` corriendo. `rotos`: piezas que en su estado
+ * de reposo no se ven enteras (transparentes, con guion, encogidas o fuera de
+ * su sitio). `entrada`: animaciones `dibujo-*` que siguen vivas.
+ */
+const SONDA_DIBUJOS = `(() => {
+  const dibujos = [...document.querySelectorAll('.dibujo-servicio')];
+  const deDibujo = (a) => a.effect?.target?.closest?.('.dibujo-servicio');
+  const todas = document.getAnimations().filter(deDibujo);
+  const nombre = (a) => a.animationName ?? '';
+  const rotos = [];
+  for (const dibujo of dibujos) {
+    for (const pieza of dibujo.querySelectorAll('*')) {
+      const e = getComputedStyle(pieza);
+      const caja = pieza.getBoundingClientRect();
+      const movida = e.transform !== 'none' && e.transform !== 'matrix(1, 0, 0, 1, 0, 0)';
+      if (Number(e.opacity) < 0.99 || e.strokeDasharray !== 'none' || movida || (caja.width < 0.5 && caja.height < 0.5)) {
+        rotos.push(dibujo.dataset.dibujo + ' › ' + pieza.tagName + '.' + (pieza.getAttribute('class') ?? '') + ' (opacidad ' + e.opacity + ', guion ' + e.strokeDasharray + ', ' + e.transform + ')');
+      }
+    }
+  }
+  const boton = document.querySelector('[data-vida-control]');
+  return JSON.stringify({
+    dibujos: dibujos.length,
+    gestos: todas.filter((a) => nombre(a).startsWith('vida-') && a.playState === 'running').length,
+    entrada: todas.filter((a) => nombre(a).startsWith('dibujo-')).length,
+    rotos,
+    vida: document.querySelector('[data-vida]')?.dataset.vida ?? null,
+    boton: boton ? { texto: boton.textContent.trim(), nombre: boton.getAttribute('aria-label'), visible: getComputedStyle(boton).visibility === 'visible' } : null,
+  });
+})()`;
+
+/** Devuelve las fallas (textos) de los dibujos en esta pasada. */
+async function revisarDibujos(cdp, reducido) {
+  const leer = async () => JSON.parse((await cdp("Runtime.evaluate", { expression: SONDA_DIBUJOS, returnByValue: true })).result?.result?.value ?? "{}");
+  const pulsar = () => cdp("Runtime.evaluate", { expression: "document.querySelector('[data-vida-control]')?.click()" });
+  const fallas = [];
+
+  // Arriba del todo: fuera de la vista los gestos esperan (`data-fuera`), y
+  // «corriendo» se cuenta sobre los que sí se ven.
+  await cdp("Runtime.evaluate", { expression: "window.scrollTo(0, 0)" });
+  await esperar(600);
+  let d = await leer();
+  if (!d.dibujos) return ["no se encontró ningún dibujo"];
+  if (d.entrada) fallas.push(`${d.entrada} animaciones de entrada seguían vivas a los 6 s (deben soltarse al terminar)`);
+
+  if (reducido) {
+    if (d.gestos) fallas.push(`con «menos movimiento» hay ${d.gestos} gestos corriendo`);
+    if (d.vida) fallas.push(`con «menos movimiento» la vida no debe encenderse (data-vida="${d.vida}")`);
+    if (d.boton?.visible) fallas.push("con «menos movimiento» no debe haber botón de pausa: nada se mueve solo");
+    if (d.rotos.length) fallas.push(`${d.rotos.length} piezas no están enteras: ${d.rotos.slice(0, 3).join("; ")}`);
+    return fallas;
+  }
+
+  if (!d.gestos) fallas.push("no hay ningún gesto corriendo");
+  if (!d.boton?.visible || d.boton.texto !== "Pausar") fallas.push(`falta el botón de pausa (WCAG 2.2.2): ${JSON.stringify(d.boton)}`);
+  else if (!d.boton.nombre?.startsWith(d.boton.texto)) fallas.push(`el nombre del botón no empieza por lo que se lee (WCAG 2.5.3): «${d.boton.nombre}»`);
+
+  // En pausa, y SOLO entonces, se puede leer pieza por pieza: nada a medio gesto.
+  await pulsar();
+  await esperar(400);
+  d = await leer();
+  if (d.gestos) fallas.push(`en pausa siguen ${d.gestos} gestos corriendo`);
+  if (d.boton?.texto !== "Reanudar") fallas.push(`en pausa el botón debe decir «Reanudar» y dice «${d.boton?.texto}»`);
+  if (d.rotos.length) fallas.push(`en pausa, ${d.rotos.length} piezas no están enteras: ${d.rotos.slice(0, 3).join("; ")}`);
+
+  // Quien los pausó los encuentra quietos al volver.
+  await cdp("Page.reload");
+  await esperar(4500);
+  d = await leer();
+  if (d.gestos || d.boton?.texto !== "Reanudar") fallas.push(`la pausa no se recordó al recargar (${d.gestos} gestos, botón «${d.boton?.texto}»)`);
+  if (d.rotos.length) fallas.push(`al volver en pausa, ${d.rotos.length} piezas no están enteras: ${d.rotos.slice(0, 3).join("; ")}`);
+
+  await pulsar();
+  await esperar(3200);
+  d = await leer();
+  if (!d.gestos) fallas.push("«Reanudar» no reanudó ningún gesto");
+  return fallas;
+}
+
 async function revisar(cdp, ruta, reducido) {
   await cdp("Page.enable");
   // Abrir la ficha en producción contaría como visita real en las métricas.
@@ -252,6 +343,19 @@ for (const reducido of [false, true]) {
         console.log(
           `  ${deLaVitrina.length ? "✖" : "✔"} ${"/ (vitrina)".padEnd(34)} ${
             deLaVitrina.length ? deLaVitrina.join("; ") : reducido ? "quieta y entera, sin pausa" : "cambia sola y queda entera en reposo"
+          }`,
+        );
+      }
+      if (ruta === "/servicios") {
+        const deLosDibujos = await revisarDibujos(cdp, reducido);
+        if (deLosDibujos.length) fallas++;
+        console.log(
+          `  ${deLosDibujos.length ? "✖" : "✔"} ${"/servicios (dibujos)".padEnd(34)} ${
+            deLosDibujos.length
+              ? deLosDibujos.join("; ")
+              : reducido
+                ? "quietos y enteros, sin botón de pausa"
+                : "con gestos; en pausa quedan enteros, y la pausa se recuerda"
           }`,
         );
       }

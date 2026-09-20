@@ -405,6 +405,74 @@ try {
   // Cloudinary borra en segundo plano (waitUntil): un momento antes de seguir.
   await esperar(2500);
 
+  // ─── El dibujo de un servicio se escoge en Contenido ──────────
+  // Con un servicio OCULTO (nunca sale en el sitio, ni en producción): aquí se
+  // prueba el camino del panel a la base, que es el que tenía el hueco. La
+  // ficha no mandaba `icono` y `guardarElemento` lo escribía siempre, así que
+  // cada «Guardar» lo dejaba en blanco. Qué dibujo le toca a cada título es de
+  // `tests/servicios.test.ts`.
+  console.log("\nEl dibujo de un servicio (Panel › Contenido)");
+  const TITULO_SERVICIO = "Servicio de recorrido F3";
+  const servicioDePrueba = () =>
+    consultar(`SELECT id, titulo, icono, visible FROM servicios WHERE titulo LIKE ${sql(`${TITULO_SERVICIO}%`)};`, opciones)[0];
+  /** Llena y manda una ficha de servicio: la de «Agregar» (`id` nulo) o la de uno que ya existe. */
+  const mandarFicha = (id, campos) =>
+    evaluar(
+      cdp,
+      `(() => {
+        const fichas = [...document.querySelectorAll('form')].filter((f) => f.querySelector('input[name="tipo"][value="servicio"]') && f.querySelector('select[name="icono"]'));
+        const ficha = fichas.find((f) => ${id === null ? `!f.querySelector('input[name="id"]')` : `f.querySelector('input[name="id"]')?.value === '${id}'`});
+        if (!ficha) return 'no se encontró la ficha';
+        ficha.closest('details').open = true;
+        const campos = ${JSON.stringify(campos)};
+        for (const [nombre, valor] of Object.entries(campos)) {
+          const campo = ficha.elements[nombre];
+          if (!campo) return 'falta el campo ' + nombre;
+          if (campo.type === 'checkbox') campo.checked = Boolean(valor);
+          else campo.value = valor;
+        }
+        const escogido = ficha.elements.icono.value;
+        // El botón de verdad, no \`requestSubmit\`: lo que la gente pulsa.
+        [...ficha.querySelectorAll('button[type="submit"]')].find((b) => !b.name).click();
+        return 'ok:' + escogido;
+      })()`,
+    );
+
+  await cdp("Page.navigate", { url: `${BASE}/panel/contenido` });
+  await esperar(3000);
+  const alAgregar = await mandarFicha(null, { titulo: TITULO_SERVICIO, descripcion: "Prueba del recorrido. Oculto: no sale en el sitio.", icono: "promocion", visible: false });
+  await esperarA(cdp, "location.search.includes('guardado=servicio')");
+  await esperar(800);
+  let servicio = servicioDePrueba();
+  comprobar(
+    "al agregar un servicio, el dibujo escogido llega a la base",
+    alAgregar === "ok:promocion" && servicio?.icono === "promocion" && Number(servicio?.visible) === 0,
+    `${alAgregar} · ${JSON.stringify(servicio)}`,
+  );
+
+  if (servicio) {
+    // Cambiar SOLO el título: el dibujo tiene que sobrevivir al guardado.
+    await cdp("Page.navigate", { url: `${BASE}/panel/contenido` });
+    await esperar(2500);
+    const alEditar = await mandarFicha(servicio.id, { titulo: `${TITULO_SERVICIO} (editado)` });
+    await esperarA(cdp, "location.search.includes('guardado=servicio')");
+    await esperar(800);
+    servicio = servicioDePrueba();
+    comprobar(
+      "guardar otra cosa ya no borra el dibujo (la ficha lo trae puesto y lo vuelve a mandar)",
+      alEditar === "ok:promocion" && servicio?.icono === "promocion" && servicio?.titulo.endsWith("(editado)"),
+      `${alEditar} · ${JSON.stringify(servicio)}`,
+    );
+
+    await cdp("Page.navigate", { url: `${BASE}/panel/contenido` });
+    await esperar(2500);
+    const alSoltar = await mandarFicha(servicio.id, { icono: "" });
+    await esperarA(cdp, "location.search.includes('guardado=servicio')");
+    await esperar(800);
+    servicio = servicioDePrueba();
+    comprobar("«Automático» lo deja vacío: vuelve a decidir el título", alSoltar === "ok:" && servicio?.icono === "", `${alSoltar} · ${JSON.stringify(servicio)}`);
+  }
+
   // ─── 8. El sitio público no baja nada del panel ───────────────
   console.log("\n8. Navegar el sitio público no descarga nada del panel");
   const assets = join(RAIZ, "build", "client", "assets");
@@ -424,7 +492,11 @@ try {
     comprobar(`se identifican los trozos del panel por su contenido (${trozosDelPanel.length})`, trozosDelPanel.length > 0);
 
     const [unaCasa] = consultar("SELECT slug FROM propiedades WHERE estado = 'publicada' ORDER BY id LIMIT 1;", opciones);
-    const rutasPublicas = ["/", "/propiedades", `/propiedades/${unaCasa.slug}`];
+    // `/servicios` entra porque comparte un módulo con el panel: el catálogo de
+    // dibujos (`shared/servicios.ts`) lo leen la página pública y Panel ›
+    // Contenido. Es solo datos, pero es justo el tipo de puente por el que un
+    // día podría colarse un trozo del panel.
+    const rutasPublicas = ["/", "/propiedades", `/propiedades/${unaCasa.slug}`, "/servicios"];
     const pedidos = [];
     navegador.alEvento((mensaje) => {
       if (mensaje.method === "Network.requestWillBeSent") pedidos.push(mensaje.params.request.url);
@@ -463,6 +535,9 @@ try {
       opciones,
     );
   }
+  // El servicio de prueba nace oculto, pero igual no se queda: aparecería en
+  // Panel › Contenido como un renglón que nadie escribió.
+  ejecutarSql("DELETE FROM servicios WHERE titulo LIKE 'Servicio de recorrido F3%';", opciones);
   ejecutarSql(
     `DELETE FROM eventos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%');
      DELETE FROM prospectos WHERE propiedad_id IN (SELECT id FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%');
@@ -474,7 +549,12 @@ try {
   borrarUsuarioDePrueba(prueba.id, CORREO, opciones);
   navegador?.cerrar();
   const quedan = consultar("SELECT COUNT(*) AS n FROM propiedades WHERE titulo LIKE 'Casa de recorrido F3%';", opciones)[0]?.n;
-  comprobar("no queda rastro del recorrido", Number(quedan) === 0 && !buscarUsuario(CORREO, opciones), `casas ${quedan}`);
+  const serviciosDePrueba = consultar("SELECT COUNT(*) AS n FROM servicios WHERE titulo LIKE 'Servicio de recorrido F3%';", opciones)[0]?.n;
+  comprobar(
+    "no queda rastro del recorrido",
+    Number(quedan) === 0 && Number(serviciosDePrueba) === 0 && !buscarUsuario(CORREO, opciones),
+    `casas ${quedan}, servicios ${serviciosDePrueba}`,
+  );
 }
 
 const fallidas = resultados.filter((r) => !r.ok);

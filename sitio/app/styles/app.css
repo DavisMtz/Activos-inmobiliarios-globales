@@ -362,6 +362,322 @@
   }
 }
 
+/* ─── Dibujos de la página de Servicios (`dibujos-servicio.tsx`) ─────────
+   Dos movimientos distintos, y conviene no confundirlos:
+
+   **1. La entrada**, una vez. Cada dibujo se arma en cuatro tiempos, que son
+   las capas del gesto: el suelo inclinado se tiende (ambiente), la tinta se
+   dibuja —estructura y luego detalle— mientras el papel la va rellenando (lo
+   principal), y la pieza roja se posa al final (el remate). Sin rebote.
+   **El trazo NO lleva la curva de asentamiento del sitio:** con ella el 90 %
+   de la línea salía en el primer tercio y se veía «disparada», no dibujada.
+   Una línea que se dibuja es un proceso, no algo que llega: arranca suave.
+
+   **2. La vida**, que se repite. Cada pieza roja tiene SU gesto: el letrero se
+   mece, el llavero oscila, cae una moneda, el sello estampa, los puntos
+   escriben, el megáfono emite. **Van por turnos**: 1.5 s de gesto y 3 s de
+   reposo, en una vuelta de 4.5 s con tres turnos (`--turno`). Con los seis a
+   la vista se mueven dos a la vez —el tercio justo: más, y nadie sabe dónde
+   mirar— y el gesto barre las columnas de izquierda a derecha. En el celular,
+   donde se ve uno, ese uno cobra vida cada 4.5 s. La primera prueba fue una
+   vuelta de 9 s con seis turnos: en el celular el dibujo pasaba 7.5 s quieto y
+   parecía una imagen fija, que es justo lo que se pidió que no fuera.
+
+   **La vida se puede pausar, y por eso solo arranca cuando la página la
+   enciende** (`data-vida="corriendo"`, en `servicios.tsx`). Lo que se mueve
+   solo más de 5 s tiene que poder detenerse (WCAG 2.2.2, la misma regla que le
+   puso botón de pausa a la vitrina): si corriera desde el CSS, sin JavaScript
+   habría movimiento sin fin y ningún botón para pararlo. Así, sin JavaScript
+   queda la entrada, que dura dos segundos y se acaba. Al pausar no se congela
+   a medio gesto —podría dejar la moneda invisible o el sello en el aire—: la
+   animación se quita y la pieza vuelve a su estado natural.
+
+   La ENTRADA es solo CSS y sin JavaScript: va sobre el pliegue, donde GSAP
+   llega tarde.
+   - **La entrada es `backwards` y no `both`:** pone el estado inicial mientras
+     espera y corre, y al terminar SUELTA el elemento. El estado natural es el
+     dibujo entero, así que si algo no corre (sin CSS, «menos movimiento», una
+     pestaña que nunca se vio) el dibujo simplemente está.
+   - **El guion (`stroke-dasharray`) vive DENTRO del `@keyframes`**, nunca en
+     la clase: en reposo el trazo es una línea maciza de verdad, no un guion
+     que mide justo el largo del trazo y depende del redondeo para cerrar.
+   - **Todo gesto empieza y acaba en el estado natural**, y descansa en él dos
+     tercios de la vuelta: en cualquier instante en que se pare, el dibujo está
+     entero o a punto de estarlo.
+   - `--i` es la posición del servicio en la lista (80 ms entre entradas: 400
+     ms para los seis, el escalonado entero no pasa de medio segundo) y
+     `--turno` es `--i` módulo 3.
+   - `--rb` es lo que tarda en subir la cortinilla de bienvenida cuando esta es
+     la primera página que se abre: sin él, se dibujarían detrás del telón.
+   - `[data-fuera]` lo pone la página (`servicios.tsx`) en los dibujos que no
+     están a la vista: un gesto que nadie ve solo gasta batería. */
+@layer components {
+  .dibujo-suelo,
+  .dibujo-acento,
+  .dibujo-vivo,
+  .dibujo-vivo > *,
+  .dibujo-ondas > g > * {
+    transform-box: fill-box;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .dibujo-servicio {
+      --dibujo-inicio: calc(var(--rb, 0s) + var(--i, 0) * 80ms);
+      /* La vida arranca cuando ya se posó la última pieza roja. */
+      --dibujo-vida: calc(2.6s + var(--turno, 0) * 1.5s);
+      --dibujo-pluma: cubic-bezier(0.45, 0, 0.15, 1);
+    }
+
+    /* ── 1. La entrada ── */
+    .dibujo-suelo {
+      transform-origin: 0% 100%;
+      animation: dibujo-suelo 0.7s var(--ease-entrada) var(--dibujo-inicio) backwards;
+    }
+    /* El papel de los objetos aparece mientras la tinta los va cerrando: si
+       estuviera desde el principio, se verían siluetas blancas sin contorno. */
+    .dibujo-rellenos {
+      animation: dibujo-relleno 0.8s ease-out calc(var(--dibujo-inicio) + 500ms) backwards;
+    }
+
+    .dibujo-trazos > * {
+      animation: dibujo-trazo 1.1s var(--dibujo-pluma) calc(var(--dibujo-inicio) + 120ms) backwards;
+    }
+    /* Dentro del dibujo, la tinta entra en cascada corta: primero lo grande. */
+    .dibujo-trazos > :nth-child(2) { animation-delay: calc(var(--dibujo-inicio) + 170ms); }
+    .dibujo-trazos > :nth-child(3) { animation-delay: calc(var(--dibujo-inicio) + 220ms); }
+    .dibujo-trazos > :nth-child(4) { animation-delay: calc(var(--dibujo-inicio) + 270ms); }
+    .dibujo-trazos > :nth-child(5) { animation-delay: calc(var(--dibujo-inicio) + 320ms); }
+    .dibujo-trazos > :nth-child(n + 6) { animation-delay: calc(var(--dibujo-inicio) + 370ms); }
+    /* El detalle fino llega cuando la estructura ya se entiende. */
+    .dibujo-finos > :nth-child(n) {
+      animation-duration: 0.8s;
+      animation-delay: calc(var(--dibujo-inicio) + 750ms);
+    }
+
+    .dibujo-acento {
+      transform-origin: 50% 50%;
+      animation: dibujo-acento 0.55s var(--ease-entrada) calc(var(--dibujo-inicio) + 1150ms) backwards;
+    }
+    /* La voz del megáfono no se posa: sale, como las estelas del isotipo. */
+    .dibujo-acento:has(> .dibujo-ondas) {
+      animation: none;
+    }
+    .dibujo-ondas > g {
+      transform-box: fill-box;
+      transform-origin: 0% 50%;
+      animation: dibujo-onda 0.5s var(--ease-entrada) calc(var(--dibujo-inicio) + 1150ms) backwards;
+    }
+    .dibujo-ondas > g:nth-child(2) { animation-delay: calc(var(--dibujo-inicio) + 1230ms); }
+    .dibujo-ondas > g:nth-child(3) { animation-delay: calc(var(--dibujo-inicio) + 1310ms); }
+
+    /* ── 2. La vida ── */
+    /* El letrero cuelga del brazo; el llavero, del ojo de la llave. */
+    [data-vida="corriendo"] [data-dibujo="venta"] .dibujo-vivo {
+      transform-origin: 50% 0%;
+      animation: vida-pendulo 4.5s ease-in-out var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="renta"] .dibujo-vivo {
+      transform-origin: 33% -7%;
+      animation: vida-pendulo 4.5s ease-in-out var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="financiamiento"] .dibujo-vivo {
+      animation: vida-moneda 4.5s linear var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="tramites"] .dibujo-vivo {
+      transform-origin: 50% 50%;
+      animation: vida-sello 4.5s linear var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="tramites"] .dibujo-anillo {
+      transform-origin: 50% 50%;
+      animation: vida-anillo 4.5s linear var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="asesoria"] .dibujo-punto {
+      animation: vida-punto 4.5s ease-in-out var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="asesoria"] .dibujo-punto:nth-of-type(2) { animation-delay: calc(var(--dibujo-vida) + 140ms); }
+    [data-vida="corriendo"] [data-dibujo="asesoria"] .dibujo-punto:nth-of-type(3) { animation-delay: calc(var(--dibujo-vida) + 280ms); }
+    [data-vida="corriendo"] [data-dibujo="promocion"] .dibujo-ondas > g > * {
+      transform-origin: 0% 50%;
+      animation: vida-onda 4.5s linear var(--dibujo-vida) infinite;
+    }
+    [data-vida="corriendo"] [data-dibujo="promocion"] .dibujo-ondas > g:nth-child(2) > * { animation-delay: calc(var(--dibujo-vida) + 130ms); }
+    [data-vida="corriendo"] [data-dibujo="promocion"] .dibujo-ondas > g:nth-child(3) > * { animation-delay: calc(var(--dibujo-vida) + 260ms); }
+    [data-vida="corriendo"] [data-dibujo="casa"] .dibujo-vivo {
+      animation: vida-ventana 4.5s ease-in-out var(--dibujo-vida) infinite;
+    }
+
+    /* Fuera de la vista, el gesto espera. Solo la vida: la entrada corre
+       siempre, que es la que garantiza el dibujo entero. */
+    .dibujo-servicio[data-fuera] .dibujo-vivo,
+    .dibujo-servicio[data-fuera] .dibujo-vivo * {
+      animation-play-state: paused;
+    }
+  }
+}
+
+@keyframes dibujo-suelo {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes dibujo-relleno {
+  from {
+    opacity: 0;
+  }
+}
+/* La opacidad es por la PUNTA REDONDA: un trazo de largo cero igual pinta su
+   remate, así que mientras cada línea esperaba su turno había un puntito suelto
+   donde iba a empezar (decenas, en el primer fotograma). Invisible mientras
+   espera y visible en cuanto arranca: el punto aparece ya como punta de pluma. */
+@keyframes dibujo-trazo {
+  from {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  to {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+@keyframes dibujo-acento {
+  from {
+    opacity: 0;
+    transform: translateY(-7%) scale(0.92);
+  }
+}
+@keyframes dibujo-onda {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Los gestos ocupan el primer tercio de la vuelta (1.5 s de 4.5 s). */
+
+/* Un péndulo que se va quedando quieto: cada vaivén, más corto. */
+@keyframes vida-pendulo {
+  0%,
+  33.3%,
+  100% {
+    transform: rotate(0deg);
+  }
+  5.6% {
+    transform: rotate(-5.5deg);
+  }
+  12.8% {
+    transform: rotate(3.8deg);
+  }
+  20% {
+    transform: rotate(-2.1deg);
+  }
+  26.8% {
+    transform: rotate(0.9deg);
+  }
+}
+/* La moneda se va y vuelve a caer sobre su pila. */
+@keyframes vida-moneda {
+  0%,
+  19%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  4% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  4.2% {
+    opacity: 0;
+    transform: translateY(-150%);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.3, 1);
+  }
+  8% {
+    opacity: 1;
+  }
+}
+/* El sello se alza, ladeado, y baja de un golpe. */
+@keyframes vida-sello {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  11% {
+    transform: translateY(-20%) rotate(-10deg) scale(1.06);
+    animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  }
+  18%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+/* Y al golpe, la tinta se corre: un anillo que se abre y se pierde. */
+@keyframes vida-anillo {
+  0%,
+  18% {
+    opacity: 1;
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  30% {
+    opacity: 0;
+    transform: scale(1.34);
+  }
+  30.2% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  44%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* «Escribiendo…»: cada punto da dos saltitos, uno tras otro. */
+@keyframes vida-punto {
+  0%,
+  11.2%,
+  16%,
+  27.2%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  5.6%,
+  21.6% {
+    opacity: 0.55;
+    transform: translateY(-55%);
+  }
+}
+/* La voz: cada estela se recoge y vuelve a salir. */
+@keyframes vida-onda {
+  0%,
+  18%,
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  3.2% {
+    opacity: 0.2;
+    transform: scaleX(0.3);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+/* La ventana se enciende, que es lo que hace la del isotipo. */
+@keyframes vida-ventana {
+  0%,
+  28%,
+  100% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.4;
+  }
+}
+
 /* ─── Transición entre páginas del sitio público ───────────────────
    View Transitions nativas: React Router las pide solo en los enlaces del
    sitio público que llevan `viewTransition`, así que el panel nunca entra

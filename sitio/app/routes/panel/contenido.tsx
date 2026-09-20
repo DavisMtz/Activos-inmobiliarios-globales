@@ -13,8 +13,9 @@ import {
   type TipoDeContenido,
 } from "../../../server/db/panel/contenido";
 import { guardarConfiguracion } from "../../../server/db/panel/configuracion";
+import { DIBUJOS_DE_SERVICIO, dibujoDeServicio, esClaveDeDibujo, etiquetaDeDibujo } from "../../../shared/servicios";
 import { IconoAtras, IconoAdelante, IconoMas } from "../../components/panel/iconos";
-import { Aviso, Bloque, Boton, Campo, CampoTexto, Etiqueta, Vacio } from "../../components/panel/piezas";
+import { Aviso, Bloque, Boton, Campo, CampoSelect, CampoTexto, Etiqueta, Vacio } from "../../components/panel/piezas";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/contenido";
 
@@ -108,7 +109,13 @@ export async function action({ request, context }: Route.ActionArgs) {
     return redirect("/panel/contenido");
   }
 
-  const datos = Object.fromEntries(formulario.entries()) as Record<string, unknown>;
+  // Una casilla sin marcar NO viaja en el formulario, y `guardarElemento` lee
+  // la ausencia de `visible` como «no me dijeron nada: se ve» (que es lo que
+  // quiere la API). Desde esta pantalla la casilla siempre está, así que su
+  // ausencia significa «desmarcada»: sin esto, ocultar un servicio o una
+  // pregunta desde el panel no hacía nada (medido el 19/09/2026: se desmarcó
+  // y la base guardó `visible = 1`).
+  const datos: Record<string, unknown> = { ...Object.fromEntries(formulario.entries()), visible: formulario.has("visible") };
   const r = await guardarElemento(servicios.db, usuario, tipo, id > 0 ? id : null, datos);
   return r.ok ? redirect(`/panel/contenido?guardado=${tipo}`) : data({ error: r.mensaje }, { status: r.estado });
 }
@@ -350,6 +357,45 @@ function BotonMover({
   );
 }
 
+/**
+ * El dibujo que acompaña a un servicio en el sitio (`shared/servicios.ts`).
+ *
+ * Aquí va solo la LISTA de nombres, sin enseñar los dibujos: el panel no
+ * comparte ni un módulo de interfaz con el sitio público, y los trazos viven
+ * allá. Se ven al recargar la página de Servicios.
+ *
+ * **Este campo además tapa un hueco:** `guardarElemento` siempre escribió la
+ * columna `icono`, pero la ficha nunca la mandaba, así que cada «Guardar» la
+ * dejaba en blanco. Mientras nadie la leía no importaba; ahora borraría el
+ * dibujo escogido. Con el campo en el formulario, lo escogido viaja siempre.
+ */
+function CampoDeDibujo({ elemento }: { elemento: Elemento | null }) {
+  const guardado = elemento ? String(elemento.icono ?? "").trim() : "";
+  // Lo que ya hubiera en la columna y no sea de la lista se trata como vacío.
+  const escogido = esClaveDeDibujo(guardado) ? guardado : "";
+  const sugerido = elemento ? dibujoDeServicio({ titulo: String(elemento.titulo ?? ""), icono: null }) : null;
+
+  return (
+    <CampoSelect
+      etiqueta="Dibujo"
+      name="icono"
+      defaultValue={escogido}
+      ayuda={
+        sugerido
+          ? `En «Automático» se elige por el título. Con este título sale: ${etiquetaDeDibujo(sugerido)}.`
+          : "En «Automático» se elige por el título: «Avalúos» sale con la escritura, «Rentas» con la llave."
+      }
+    >
+      <option value="">Automático, según el título</option>
+      {DIBUJOS_DE_SERVICIO.map((dibujo) => (
+        <option key={dibujo.clave} value={dibujo.clave}>
+          {dibujo.etiqueta}
+        </option>
+      ))}
+    </CampoSelect>
+  );
+}
+
 function FichaDeContenido({ tipo, elemento }: { tipo: TipoDeContenido; elemento: Elemento | null }) {
   const forma = DE_CADA_TIPO[tipo];
   return (
@@ -371,6 +417,8 @@ function FichaDeContenido({ tipo, elemento }: { tipo: TipoDeContenido; elemento:
         filas={3}
         required
       />
+
+      {tipo === "servicio" ? <CampoDeDibujo elemento={elemento} /> : null}
 
       <label className="flex items-center gap-3 text-sm font-semibold text-tinta">
         <input
