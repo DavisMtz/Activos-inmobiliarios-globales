@@ -9,25 +9,13 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`0ed0ddcf`** (20/09/2026) |
-| **Reversión** | la anterior es `14e28560`: `npx wrangler rollback 14e28560-2b14-4aed-a4b5-f7b140b514dc` |
-| **Código** | rama `main`, empujada. **OJO (20/09/2026): `main` va por delante de PRODUCCIÓN** (`a5ae535`, `dc5d642` y los de registro que les siguen: el buscador que entiende frases), sin desplegar todavía. Ver §1.1. La rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
-| **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005` se aplicó el 20/09/2026, ANTES del despliegue que la usa: es aditiva y la versión activa la ignora) |
+| **Worker** | `activos-inmobiliarios`, versión activa **`0791a369`** (20/09/2026, el buscador que entiende frases) |
+| **Reversión** | la anterior es `0ed0ddcf`: `npx wrangler rollback 0ed0ddcf-cf6f-4b99-a3a7-c7f877de4c67`. La migración `0005` no estorba a esa versión: no hace falta deshacerla |
+| **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
+| **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
 
 La app vive en `sitio/`. Todo comando de abajo se corre desde ahí.
-
-### 1.1 Lo que quedó a medias el 20/09/2026: desplegar el buscador
-
-El buscador que entiende frases (§5) está **terminado, medido en local y confirmado en git, pero SIN desplegar**: el usuario lo autorizó («Despliegas al terminar»), la migración `0005` se aplicó en remoto, y el `npm run deploy` lo frenó el clasificador de permisos de la sesión. Producción sigue en `0ed0ddcf`, funcionando igual que antes. Para cerrarlo, con la palabra del usuario:
-
-1. `git worktree list`, `git branch -a`, `npx wrangler deployments list`: la activa tiene que seguir siendo `0ed0ddcf`. Si no, parar (§3).
-2. `npm run deploy` (la migración ya está). Anotar la versión nueva.
-3. `npm run verificar:busqueda -- --base https://activos-inmobiliarios.logidma.workers.dev --remote --ia` (56 comprobaciones; deja el interruptor apagado unos segundos y lo restaura), `npm run verificar:f2 -- --base … --remote` (39) y `npm run verificar:f3-navegador -- --base … --remote` (el criterio 8 solo se mide ahí).
-4. Cerrar mirando la base: 188 casas, 6 servicios, las 2 cuentas `@ejemplo.invalid` de siempre y ninguna más, `ia_uso` con la fila del día, y `npm run fotos:migrar -- --remote --verificar` en ceros.
-5. `PLAN.md` §19: la fila del buscador pasa a «EN PRODUCCIÓN» con la versión y los números remotos; aquí, versión activa nueva y «Reversión» = `0ed0ddcf`. `git push`.
-
-Si se decide NO desplegarlo: no hay nada que deshacer en la base (dos tablas vacías y una fila de configuración que el código viejo no lee).
 
 ## 2. Por dónde empezar
 
@@ -93,7 +81,7 @@ Lo que mejor ha funcionado, por si ayuda:
 
 ## 6. Pendientes, por orden
 
-0. **Desplegar el buscador que entiende frases** (§1.1): está todo listo menos eso. Después, probarlo en el Safari del iPad, que es donde el usuario mira el sitio; y en F6, que la etiqueta `canonical` no lleve `frase` ni `literal`.
+0. **Del buscador que entiende frases** (en producción desde el 20/09/2026, §5): probarlo en el Safari del iPad, que es donde el usuario mira el sitio; mirar en Panel › Configuración cuánto se usa de verdad (si casi nadie llega al modelo, el tope de 300 sobra; si el modelo falla seguido, cambiarlo ahí mismo); y en F6, que la etiqueta `canonical` no lleve `frase` ni `literal`. Tres decisiones que tomó el agente y el usuario puede cambiar: nace encendido, lo apagan maestro y director, y el buscador de casas del PANEL no usa el modelo.
 
 1. **Dos cuentas de prueba activas en producción:** `entregas-contenido@ejemplo.invalid` y `entregas-asesor@ejemplo.invalid`, del 19/09/2026 21:31 UTC, que dejó una corrida de `verificar:entregas`. No son un hueco (contraseña aleatoria por corrida, no está en el repo, y el acceso frena a 8 por minuto), pero rompen el «cero cuentas de prueba». Se limpian con `npm run verificar:entregas -- --base https://activos-inmobiliarios.logidma.workers.dev --remote` **sin** `--dejar`, y después se mira la base. Se le ofreció al usuario y no contestó: **pregunta antes**, es producción.
 2. **Probar en el Safari del iPad.** Es donde el usuario mira el sitio, y todo lo medido fue en Chrome. En los dibujos, lo que más puede diferir: `transform-box: fill-box` en los gestos, `pathLength` en la entrada y `:has()` en el megáfono.
