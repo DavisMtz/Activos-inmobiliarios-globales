@@ -22,6 +22,10 @@ analisis/crudo/html/
 analisis/crudo/lh/
 analisis/crudo/fichas/
 
+# Copias de trabajo de otras sesiones (`git worktree`). Sin esto, un
+# `git add .` las mete al repositorio como un enlace roto.
+.claude/worktrees/
+
 # Sistema
 .DS_Store
 Thumbs.db

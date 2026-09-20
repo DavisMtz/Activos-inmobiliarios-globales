@@ -26,6 +26,8 @@
     "verificar:f4": "node scripts/verificar-f4.mjs",
     "verificar:entregas": "node scripts/verificar-entregas.mjs",
     "capturar": "node scripts/capturar.mjs",
+    "filmar": "node scripts/filmar.mjs",
+    "hoja:dibujos": "node scripts/hoja-dibujos.mjs",
     "fichas:descargar": "node scripts/descargar-fichas.mjs",
     "sembrar": "node scripts/sembrar-desde-wordpress.mjs",
     "comparar": "node scripts/comparar-con-sitio-actual.mjs",

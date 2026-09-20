@@ -4,6 +4,7 @@ Propuesta funcional del sitio nuevo de la inmobiliaria del papá de David (Morel
 
 ## Antes de tocar nada
 
+0. **Si vienes a continuar el trabajo, `TRASPASO.md` primero:** qué hay en producción, qué quedó pendiente, cómo se verifica y las reglas que aquí ya costaron algo. Es corto; lo que sigue es la referencia completa.
 1. **`PLAN.md`** es la guía de construcción: decisiones, esquema de D1, autenticación, roles, rutas, fases con «listo cuando» y trampas del entorno. **Léelo completo.**
 2. `analisis/ANALISIS.md` explica el sitio actual y el porqué de cada decisión. Si contradice a `PLAN.md`, **manda `PLAN.md`**.
 3. `PARA-MI-PAPA.md` y `PEDIR-A-CONSULTORES.md` son documentos para personas; no son especificación.
@@ -19,4 +20,5 @@ Propuesta funcional del sitio nuevo de la inmobiliaria del papá de David (Morel
 - **No** tocar DNS, dominio ni correo del sitio real y **no** instalar hooks de auto-push sin que el usuario lo pida.
 - **Repositorio:** `github.com/DavisMtz/Activos-inmobiliarios-globales`, rama `main`, **PÚBLICO**. Se sube a mano, con `git push`, al cerrar cada paso verificado. Por ser público: ni claves, ni `.dev.vars`, ni contraseñas temporales, ni datos de prospectos reales en ningún archivo versionado.
 - Textos de la interfaz en español de México, con acentos correctos. Nombres de código en español, como en los demás proyectos del usuario.
-- **Al cerrar una fase:** verificar contra la app corriendo y anotar los resultados reales en `PLAN.md` §19.
+- **Desplegar (y el `git push`, si no se pidió) necesita la palabra explícita del usuario en la conversación**, y vale para esa tarea, no para la siguiente. Antes de cualquier deploy: `git worktree list`, `git branch -a` y `npx wrangler deployments list` (PLAN §17: otra sesión puede estar desplegando desde un worktree).
+- **Al cerrar una fase:** verificar contra la app corriendo y anotar los resultados reales en `PLAN.md` §19. **Al cerrar una sesión, actualizar `TRASPASO.md`.**
