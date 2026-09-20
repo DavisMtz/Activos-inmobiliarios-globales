@@ -53,6 +53,9 @@ export async function loader({ context }: Route.LoaderArgs) {
     preguntas,
     whatsapp: enlaceWhatsApp(configuracion.whatsapp.numero, configuracion.whatsapp.plantillaGeneral),
     nombreNegocio: config.nombreNegocio,
+    // Con el buscador que entiende frases encendido (PLAN §10.5), el campo lo
+    // dice: «casa de 3 recámaras en Altozano…». Apagado, pide lo de siempre.
+    entiendeFrases: configuracion.busquedaIA.activa && Boolean(servicios.ia),
   };
 }
 
@@ -72,7 +75,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function Inicio({ loaderData }: Route.ComponentProps) {
-  const { catalogo, vitrina, recientes, portada, servicios, entregas, preguntas, whatsapp } = loaderData;
+  const { catalogo, vitrina, recientes, portada, servicios, entregas, preguntas, whatsapp, entiendeFrases } = loaderData;
   const desde = precioMXN(catalogo.rangos.venta.min);
   const ciudades = catalogo.ciudades.length;
 
@@ -113,11 +116,12 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             className="mt-8 flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)] sm:p-5"
           >
             <CampoTexto
-              etiqueta="¿Qué colonia te interesa?"
+              etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "¿Qué colonia te interesa?"}
               name="q"
               type="search"
-              placeholder="Altozano, Tres Marías, El Prado…"
+              placeholder={entiendeFrases ? "Casa de 3 recámaras en Altozano…" : "Altozano, Tres Marías, El Prado…"}
               autoComplete="off"
+              maxLength={160}
             />
             <div className="grid grid-cols-2 gap-3">
               <CampoSelect etiqueta="Operación" name="operacion" defaultValue="">

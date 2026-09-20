@@ -12,13 +12,15 @@
  */
 
 import { puede, type Actor, type Permiso } from "../../../shared/permisos";
+import { MODELO_DE_FABRICA, modeloValido } from "../../ia/motor";
+import { TOPE_DIARIO_DE_FABRICA, TOPE_DIARIO_MAXIMO } from "../configuracion";
 import { correoValido } from "../../../shared/validacion";
 import { numeroLimpio } from "../../../shared/whatsapp";
 import { sentenciaBitacora } from "../../bitacora";
 import { ahora } from "../../fechas";
 import { exito, fallo, type Resultado } from "../../resultado";
 
-export const CLAVES_EDITABLES = ["contacto", "whatsapp", "redes", "portada", "nosotros", "aviso_privacidad"] as const;
+export const CLAVES_EDITABLES = ["contacto", "whatsapp", "redes", "portada", "nosotros", "aviso_privacidad", "busqueda_ia"] as const;
 export type ClaveEditable = (typeof CLAVES_EDITABLES)[number];
 
 export const esClaveEditable = (valor: unknown): valor is ClaveEditable =>
@@ -32,6 +34,7 @@ export const PERMISO_DE_CLAVE: Record<ClaveEditable, Permiso> = {
   portada: "contenido.editar",
   nosotros: "contenido.editar",
   aviso_privacidad: "configuracion.aviso",
+  busqueda_ia: "configuracion.buscador",
 };
 
 export const TITULO_DE_CLAVE: Record<ClaveEditable, string> = {
@@ -41,6 +44,7 @@ export const TITULO_DE_CLAVE: Record<ClaveEditable, string> = {
   portada: "Textos de la portada",
   nosotros: "Nosotros",
   aviso_privacidad: "Aviso de privacidad",
+  busqueda_ia: "Buscador inteligente",
 };
 
 type Revision =
@@ -152,6 +156,20 @@ export function revisarConfiguracion(clave: ClaveEditable, crudo: Record<string,
       };
     }
 
+    case "busqueda_ia": {
+      // Encendido solo con un «sí» claro. Desde el formulario llega «on»; desde
+      // la API, `true`. Cualquier otra cosa —o nada— es apagado.
+      const activa = crudo.activa === true || crudo.activa === "on" || crudo.activa === "1" || crudo.activa === "true";
+      const modelo = typeof crudo.modelo === "string" ? crudo.modelo.trim() : "";
+      if (modelo && !modeloValido(modelo)) return mal("modelo", "Ese modelo no está en la lista de los que se midieron.");
+      const tope = texto(crudo, "tope_diario", 6) || String(crudo.tope_diario ?? "");
+      const topeDiario = tope === "" ? TOPE_DIARIO_DE_FABRICA : Number(tope);
+      if (!Number.isInteger(topeDiario) || topeDiario < 0 || topeDiario > TOPE_DIARIO_MAXIMO) {
+        return mal("tope_diario", `El tope diario es un número entre 0 y ${TOPE_DIARIO_MAXIMO}.`);
+      }
+      return { ok: true, valor: { activa, modelo: modelo || MODELO_DE_FABRICA, tope_diario: topeDiario } };
+    }
+
     case "aviso_privacidad":
       return {
         ok: true,
@@ -186,13 +204,27 @@ export async function guardarConfiguracion(
     return fallo(403, "sin_permiso", "No tienes permiso para cambiar esta parte del sitio.");
   }
 
-  const revision = revisarConfiguracion(clave, crudo);
-  if (!revision.ok) return fallo(400, "datos_invalidos", revision.mensaje);
-
   const previo = await db
     .prepare("SELECT valor FROM configuracion WHERE clave = ?")
     .bind(clave)
     .first<{ valor: string }>();
+
+  // El interruptor del buscador es un ajuste, no un texto: un `PATCH` que solo
+  // trae el tope NO puede apagarlo de paso (PLAN §17, «un PATCH que no trae un
+  // campo lo BORRA»). Lo que no venga se queda como estaba. El formulario manda
+  // siempre los tres campos (la casilla, explícita: ver la acción de la pantalla).
+  let datos = crudo;
+  if (clave === "busqueda_ia" && previo) {
+    try {
+      datos = { ...(JSON.parse(previo.valor) as Record<string, unknown>), ...crudo };
+    } catch {
+      datos = crudo;
+    }
+  }
+
+  const revision = revisarConfiguracion(clave, datos);
+  if (!revision.ok) return fallo(400, "datos_invalidos", revision.mensaje);
+
   const campos = camposCambiados(previo?.valor, revision.valor);
   if (!campos.length) return exito({ campos: [] });
 

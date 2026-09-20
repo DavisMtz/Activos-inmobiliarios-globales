@@ -20,7 +20,7 @@ describe("leerFiltros", () => {
 
   it("lee todos los filtros de la URL", () => {
     const f = leer(
-      "operacion=venta&tipo=casa&ciudad=morelia&zona=morelia-altozano&q=tres%20marias&precio_min=1000000&precio_max=5000000&recamaras=3&banos=2&orden=precio_asc&pagina=4",
+      "operacion=venta&tipo=casa&ciudad=morelia&zona=morelia-altozano&q=tres%20marias&precio_min=1000000&precio_max=5000000&recamaras=3&banos=2&con=Alberca,una+planta&orden=precio_asc&pagina=4",
     );
     expect(f).toEqual({
       operacion: "venta",
@@ -32,10 +32,12 @@ describe("leerFiltros", () => {
       precioMax: 5_000_000,
       recamaras: 3,
       banos: 2,
+      rasgos: ["alberca", "una planta"],
       orden: "precio_asc",
       pagina: 4,
     });
-    expect(cuantosFiltros(f)).toBe(9);
+    // Cada rasgo cuenta como un filtro: son los que la persona ve y puede quitar.
+    expect(cuantosFiltros(f)).toBe(11);
   });
 
   it("descarta valores que no existen en vez de romper", () => {

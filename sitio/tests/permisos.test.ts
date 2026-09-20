@@ -35,6 +35,7 @@ const TABLA_DEL_PLAN: Record<Permiso, [Celda, Celda, Celda, Celda]> = {
   "contenido.editar": ["✅", "✅", "❌", "✅"],
   "configuracion.contacto": ["✅", "✅", "❌", "❌"],
   "configuracion.aviso": ["✅", "✅", "❌", "❌"],
+  "configuracion.buscador": ["✅", "✅", "❌", "❌"],
   "prospectos.ver": ["✅", "✅", "suyas", "❌"],
   "prospectos.gestionar": ["✅", "✅", "suyas", "❌"],
   "prospectos.asignar": ["✅", "✅", "❌", "❌"],

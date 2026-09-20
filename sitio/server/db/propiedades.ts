@@ -21,7 +21,9 @@ import {
 } from "../../shared/filtros";
 import { fotoVista, type FotoVista } from "../../shared/fotos";
 import { repartirPortada } from "../../shared/portada";
+import { casasConRasgos } from "../../shared/rasgos";
 import { slugificar } from "../../shared/texto";
+import { leerCorpus } from "../busqueda/corpus";
 
 // ─── Lo que ve la interfaz ────────────────────────────────────────
 
@@ -187,9 +189,20 @@ const ORDEN_SQL: Record<Orden, (columna: string) => string> = {
   m2_desc: () => "p.m2_construccion DESC, p.m2_terreno DESC, p.id DESC",
 };
 
-function condicionesDe(filtros: Filtros, catalogo: Catalogo): { sql: string; valores: unknown[] } {
+/**
+ * `conRasgos`: los id de las casas que traen los rasgos pedidos (`?con=`), ya
+ * resueltos contra el texto de las fichas; null si no se pidió ninguno.
+ */
+function condicionesDe(filtros: Filtros, catalogo: Catalogo, conRasgos: number[] | null): { sql: string; valores: unknown[] } {
   const partes = [VISIBLES];
   const valores: unknown[] = [];
+
+  if (conRasgos) {
+    // Van escritos y no como parámetros: D1 admite 100 por consulta y aquí
+    // pueden ser 188. Son enteros que salieron de esta misma base.
+    const ids = conRasgos.filter((id) => Number.isInteger(id));
+    partes.push(ids.length ? `p.id IN (${ids.join(",")})` : "1 = 0");
+  }
 
   if (filtros.operacion) partes.push(OPERACION_INCLUYE[filtros.operacion]);
 
@@ -315,7 +328,12 @@ export async function listar(
   catalogo: Catalogo,
   cloudName: string,
 ): Promise<Pagina> {
-  const { sql, valores } = condicionesDe(filtros, catalogo);
+  // Los rasgos («con alberca») se buscan en el texto de las fichas, fuera de
+  // SQL (`shared/rasgos.ts`); a la consulta llegan como una lista de casas.
+  const conRasgos = filtros.rasgos.length
+    ? await leerCorpus(db).then((corpus) => casasConRasgos(corpus.casas, filtros.rasgos, corpus.vocabulario))
+    : null;
+  const { sql, valores } = condicionesDe(filtros, catalogo, conRasgos);
   const orden = ORDEN_SQL[filtros.orden](columnaPrecio(filtros.operacion));
   const desde = (filtros.pagina - 1) * POR_PAGINA;
 

@@ -96,6 +96,14 @@ export const IconoCerrar = ({ className }: Props) => (
   </Marco>
 );
 
+/** Un destello de cuatro puntas y otro chico: «esto lo entendió el buscador». */
+export const IconoDestello = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M10 3.75c.55 3.6 2.65 5.7 6.25 6.25-3.6.55-5.7 2.65-6.25 6.25C9.45 12.65 7.35 10.55 3.75 10c3.6-.55 5.7-2.65 6.25-6.25Z" />
+    <path d="M18 14.75c.25 1.65 1.1 2.5 2.75 2.75-1.65.25-2.5 1.1-2.75 2.75-.25-1.65-1.1-2.5-2.75-2.75 1.65-.25 2.5-1.1 2.75-2.75Z" />
+  </Marco>
+);
+
 export const IconoFlecha = ({ className }: Props) => (
   <Marco className={className}>
     <path d="M4.5 12h15m0 0-5.5-5.5M19.5 12 14 17.5" />

@@ -50,6 +50,11 @@ export type Filtros = {
   /** Mínimos, no exactos: «3 recámaras» incluye las de 4. */
   recamaras: number | null;
   banos: number | null;
+  /**
+   * Rasgos que se buscan en el texto de la ficha (`?con=alberca,una+planta`):
+   * la casa tiene que traerlos todos. Ver `shared/rasgos.ts`.
+   */
+  rasgos: string[];
   orden: Orden;
   pagina: number;
 };
@@ -64,6 +69,7 @@ export const FILTROS_VACIOS: Filtros = {
   precioMax: null,
   recamaras: null,
   banos: null,
+  rasgos: [],
   orden: ORDEN_PREDETERMINADO,
   pagina: 1,
 };
@@ -131,6 +137,41 @@ function entero(valor: string | null, { maximo = Number.MAX_SAFE_INTEGER } = {})
   return n > maximo ? maximo : n;
 }
 
+// ─── Rasgos (`?con=alberca,una+planta`) ───────────────────────────
+// Aquí solo se LEEN de la URL. Buscarlos en las fichas es cosa del servidor
+// (`shared/rasgos.ts`): este archivo viaja al navegador y no debe cargar con
+// ese vocabulario.
+
+export const MAXIMO_DE_RASGOS = 3;
+export const LARGO_MAXIMO_DE_RASGO = 30;
+
+/** Un rasgo tal como llega de la URL o del modelo → limpio, o null si no sirve para buscar. */
+export function limpiarRasgo(crudo: string): string | null {
+  const texto = crudo.replace(/\s+/g, " ").trim().toLowerCase().slice(0, LARGO_MAXIMO_DE_RASGO).trim();
+  return /\p{L}{3}/u.test(texto) ? texto : null;
+}
+
+/** Para no repetir «Alberca» y «alberca»: sin acentos ni signos. */
+export const llaveDeRasgo = (rasgo: string): string =>
+  (rasgo.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().match(/[a-z0-9]+/g) ?? []).join(" ");
+
+/** De lo que venga (la URL, el modelo) a la lista: limpios, sin repetidos y hasta tres. */
+export function rasgosUnicos(crudos: readonly string[]): string[] {
+  const vistos = new Set<string>();
+  const rasgos: string[] = [];
+  for (const crudo of crudos) {
+    const rasgo = limpiarRasgo(crudo);
+    const llave = rasgo ? llaveDeRasgo(rasgo) : "";
+    if (!rasgo || !llave || vistos.has(llave)) continue;
+    vistos.add(llave);
+    rasgos.push(rasgo);
+    if (rasgos.length >= MAXIMO_DE_RASGOS) break;
+  }
+  return rasgos;
+}
+
+const leerRasgos = (valor: string | null): string[] => (valor ? rasgosUnicos(valor.split(",")) : []);
+
 const slug = (valor: string | null): string | null => {
   if (!valor) return null;
   const limpio = valor.trim().toLowerCase();
@@ -160,6 +201,7 @@ export function leerFiltros(parametros: URLSearchParams): Filtros {
     precioMax,
     recamaras: entero(parametros.get("recamaras"), { maximo: 20 }),
     banos: entero(parametros.get("banos"), { maximo: 20 }),
+    rasgos: leerRasgos(parametros.get("con")),
     orden: unoDe(parametros.get("orden"), ORDENES) ?? ORDEN_PREDETERMINADO,
     pagina: Math.max(1, entero(parametros.get("pagina"), { maximo: 10_000 }) ?? 1),
   };
@@ -185,6 +227,7 @@ export function aParametros(filtros: Partial<Filtros>): URLSearchParams {
   poner("precio_max", filtros.precioMax);
   poner("recamaras", filtros.recamaras);
   poner("banos", filtros.banos);
+  if (filtros.rasgos?.length) poner("con", filtros.rasgos.join(","));
   if (filtros.orden && filtros.orden !== ORDEN_PREDETERMINADO) poner("orden", filtros.orden);
   if (filtros.pagina && filtros.pagina > 1) poner("pagina", filtros.pagina);
   return p;
@@ -208,6 +251,7 @@ export function cuantosFiltros(filtros: Filtros): number {
     filtros.precioMax,
     filtros.recamaras,
     filtros.banos,
+    ...filtros.rasgos,
   ].filter((v) => v !== null).length;
 }
 

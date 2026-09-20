@@ -25,6 +25,8 @@
     "verificar:f3-navegador": "node scripts/verificar-f3-navegador.mjs",
     "verificar:f4": "node scripts/verificar-f4.mjs",
     "verificar:entregas": "node scripts/verificar-entregas.mjs",
+    "verificar:busqueda": "node scripts/verificar-busqueda.mjs",
+    "medir:ia": "node scripts/medir-ia.mjs",
     "capturar": "node scripts/capturar.mjs",
     "filmar": "node scripts/filmar.mjs",
     "hoja:dibujos": "node scripts/hoja-dibujos.mjs",

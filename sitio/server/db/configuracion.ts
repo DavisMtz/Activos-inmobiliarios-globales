@@ -8,6 +8,8 @@
  * «undefined» ni se cae porque alguien guardó algo raro desde el panel.
  */
 
+import { MODELO_DE_FABRICA, modeloValido } from "../ia/motor";
+
 export type Contacto = {
   telefono: string;
   correo: string;
@@ -50,6 +52,19 @@ export type AvisoPrivacidad = {
   texto: string;
 };
 
+/**
+ * El buscador que entiende frases (PLAN §10.5). Sin fila, con el JSON dañado o
+ * con cualquier cosa que no sea un `true` escrito a propósito, está APAGADO:
+ * equivocarse hacia «no gastar» es lo barato.
+ */
+export type BusquedaIA = {
+  activa: boolean;
+  /** Uno de `MODELOS` (`server/ia/motor.ts`); vacío o desconocido = el de fábrica. */
+  modelo: string;
+  /** Consultas al modelo por día; al llegar, el buscador sigue sin él hasta mañana. */
+  topeDiario: number;
+};
+
 export type Servicio = { id: number; titulo: string; descripcion: string; icono: string | null };
 
 export type Pregunta = { id: number; pregunta: string; respuesta: string };
@@ -72,6 +87,9 @@ const PORTADA_VACIA: Portada = {
   introServicios: "",
   imagenPropiedadClave: null,
 };
+export const TOPE_DIARIO_DE_FABRICA = 300;
+export const TOPE_DIARIO_MAXIMO = 5_000;
+const BUSQUEDA_IA_APAGADA: BusquedaIA = { activa: false, modelo: MODELO_DE_FABRICA, topeDiario: TOPE_DIARIO_DE_FABRICA };
 const NOSOTROS_VACIO: Nosotros = { historia: "", mision: "", vision: "", valores: [] };
 const AVISO_VACIO: AvisoPrivacidad = { estado: "", advertencia: "", actualizado: "", texto: "" };
 
@@ -132,6 +150,15 @@ const ARMADORES = {
     actualizado: cadena(b, "actualizado"),
     texto: cadena(b, "texto"),
   }),
+  busqueda_ia: (b: Bolsa): BusquedaIA => {
+    const tope = Number(b.tope_diario);
+    return {
+      activa: b.activa === true,
+      modelo: modeloValido(b.modelo) ? b.modelo : MODELO_DE_FABRICA,
+      // Un 0 escrito a propósito vale («hoy no se gasta»); lo ilegible, el de fábrica.
+      topeDiario: Number.isInteger(tope) && tope >= 0 && tope <= TOPE_DIARIO_MAXIMO ? tope : TOPE_DIARIO_DE_FABRICA,
+    };
+  },
 } as const;
 
 export type ClaveConfig = keyof typeof ARMADORES;
@@ -143,6 +170,7 @@ export type Configuracion = {
   portada: Portada;
   nosotros: Nosotros;
   avisoPrivacidad: AvisoPrivacidad;
+  busquedaIA: BusquedaIA;
 };
 
 const VACIA: Configuracion = {
@@ -152,6 +180,7 @@ const VACIA: Configuracion = {
   portada: PORTADA_VACIA,
   nosotros: NOSOTROS_VACIO,
   avisoPrivacidad: AVISO_VACIO,
+  busquedaIA: BUSQUEDA_IA_APAGADA,
 };
 
 function armar(filas: { clave: string; valor: string }[]): Configuracion {
@@ -163,12 +192,13 @@ function armar(filas: { clave: string; valor: string }[]): Configuracion {
     portada: ARMADORES.portada(bolsaDe(crudas.get("portada"))),
     nosotros: ARMADORES.nosotros(bolsaDe(crudas.get("nosotros"))),
     avisoPrivacidad: ARMADORES.aviso_privacidad(bolsaDe(crudas.get("aviso_privacidad"))),
+    busquedaIA: ARMADORES.busqueda_ia(bolsaDe(crudas.get("busqueda_ia"))),
   };
 }
 
 // ─── Consultas ────────────────────────────────────────────────────
 
-/** Las 6 claves de una vez: son 6 filas, no vale la pena pedirlas por separado. */
+/** Todas las claves de una vez: son 7 filas, no vale la pena pedirlas por separado. */
 export async function leerConfiguracion(db: D1Database): Promise<Configuracion> {
   const { results } = await db.prepare("SELECT clave, valor FROM configuracion").all<{ clave: string; valor: string }>();
   return results.length ? armar(results) : VACIA;
@@ -181,6 +211,12 @@ export async function leerConfigDelSitio(db: D1Database): Promise<ConfigDelSitio
     .all<{ clave: string; valor: string }>();
   const completa = armar(results);
   return { contacto: completa.contacto, whatsapp: completa.whatsapp, redes: completa.redes };
+}
+
+/** Solo el interruptor del buscador: es lo único que el listado necesita de aquí. */
+export async function leerBusquedaIA(db: D1Database): Promise<BusquedaIA> {
+  const fila = await db.prepare("SELECT valor FROM configuracion WHERE clave = 'busqueda_ia'").first<{ valor: string }>();
+  return ARMADORES.busqueda_ia(bolsaDe(fila?.valor));
 }
 
 export async function leerServicios(db: D1Database): Promise<Servicio[]> {

@@ -1,4 +1,6 @@
-import { Form, Link, useLocation, useSubmit } from "react-router";
+import { Form, Link, redirect, useLocation, useNavigation, useSubmit } from "react-router";
+import { entenderBusqueda } from "../../../server/busqueda/entender";
+import { leerBusquedaIA } from "../../../server/db/configuracion";
 import { leerCatalogo, listar } from "../../../server/db/propiedades";
 import {
   ETIQUETA_ORDEN,
@@ -9,6 +11,7 @@ import {
   rutaDeListado,
 } from "../../../shared/filtros";
 import { precioMXN } from "../../../shared/formato";
+import { AsiLoEntendimos, RasgosPedidos } from "../../components/publico/entendido";
 import { CampoSelect, CampoTexto } from "../../components/publico/piezas";
 import { IconoBuscar } from "../../components/publico/iconos";
 import { ListaInfinita } from "../../components/publico/lista-infinita";
@@ -31,11 +34,35 @@ import type { Route } from "./+types/listado";
  */
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-  const { servicios } = context.get(contextoServidor);
-  const filtros = leerFiltros(new URL(request.url).searchParams);
-  const catalogo = await leerCatalogo(servicios.db);
+  const { servicios, peticion, esperar } = context.get(contextoServidor);
+  const url = new URL(request.url);
+  const filtros = leerFiltros(url.searchParams);
+
+  // Una frase («casa de 3 recámaras en altosano hasta 4 millones») se convierte
+  // en filtros de siempre y se REDIRIGE a ellos (PLAN §10.5): lo entendido queda
+  // en la URL y, de ahí en adelante —página 2, scroll, compartir—, nada depende
+  // de la IA. Sin frase, esto no cuesta ni una consulta.
+  const pedido = { url, filtros, cabeceras: request.headers, ip: peticion.ip, esperar };
+  const entendida = await entenderBusqueda(servicios, pedido);
+  if (entendida) throw redirect(entendida);
+
+  const [catalogo, busquedaIA] = await Promise.all([leerCatalogo(servicios.db), leerBusquedaIA(servicios.db)]);
   const pagina = await listar(servicios.db, filtros, catalogo, servicios.config.cloudinary.cloudName);
-  return { filtros, catalogo, pagina };
+
+  // Una sola palabra que no encontró nada: puede estar mal escrita («altosano»).
+  if (pagina.total === 0 && filtros.q) {
+    const corregida = await entenderBusqueda(servicios, { ...pedido, sinResultados: true });
+    if (corregida) throw redirect(corregida);
+  }
+
+  return {
+    filtros,
+    catalogo,
+    pagina,
+    // La frase que se entendió, solo para enseñarla: no decide qué casas salen.
+    frase: (url.searchParams.get("frase") ?? "").replace(/\s+/g, " ").trim().slice(0, 160),
+    entiendeFrases: busquedaIA.activa && Boolean(servicios.ia),
+  };
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
@@ -56,8 +83,11 @@ const CHIP =
   "flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca";
 
 export default function Listado({ loaderData }: Route.ComponentProps) {
-  const { filtros, catalogo, pagina } = loaderData;
+  const { filtros, catalogo, pagina, frase, entiendeFrases } = loaderData;
   const enviar = useSubmit();
+  // Entender una frase nueva puede tardar un segundo: que el botón lo diga.
+  const navegacion = useNavigation();
+  const buscando = navegacion.state === "loading" && navegacion.location.pathname === "/propiedades";
   // Otra búsqueda u otro orden = otra lista, desde cero. Por la búsqueda y no
   // por la llave de la entrada del historial: un salto a un ancla (`#…`) crea
   // entrada nueva y reiniciaría la lista sin que nada cambiara.
@@ -100,13 +130,18 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
       <Form id="filtros" method="get" className="mt-7 scroll-mt-28">
         <div className="rounded-2xl border border-linea bg-superficie p-4 shadow-tarjeta sm:p-5">
           <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_auto]">
+            {/* La llave: tras entender una frase, en el buscador queda solo lo
+                que se busca como texto (la colonia), y un campo no controlado
+                no cambia de valor por sí solo. */}
             <CampoTexto
-              etiqueta="Colonia, fraccionamiento o clave"
+              key={filtros.q ?? ""}
+              etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "Colonia, fraccionamiento o clave"}
               name="q"
               type="search"
               defaultValue={filtros.q ?? ""}
-              placeholder="Altozano, Tres Marías, AIG-0042…"
+              placeholder={entiendeFrases ? "Casa de 3 recámaras en Altozano…" : "Altozano, Tres Marías, AIG-0042…"}
               autoComplete="off"
+              maxLength={160}
             />
 
             {/* `lg:contents` deshace esta caja en pantallas anchas: los dos
@@ -132,18 +167,36 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
             <div className="flex items-end">
               <button
                 type="submit"
+                aria-busy={buscando || undefined}
                 className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-marca px-6 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro lg:w-auto"
               >
                 <IconoBuscar />
-                Buscar
+                {buscando ? "Buscando…" : "Buscar"}
               </button>
             </div>
           </div>
+
+          {/* En el celular el ejemplo del campo ya lo enseña, y ahí cada
+              renglón de más aleja la primera casa. */}
+          {entiendeFrases && !frase && !filtros.rasgos.length ? (
+            <p className="mt-3 hidden text-sm text-texto-suave sm:block">
+              Escríbelo con tus palabras: «depa en renta hasta 15 mil», «casa con alberca en Tres Marías», «terreno barato».
+            </p>
+          ) : null}
+
+          {filtros.rasgos.length ? (
+            <div className="mt-4 border-t border-linea pt-4">
+              <RasgosPedidos filtros={filtros} />
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-          {/* Plegado y angosto: es un control, no una tarjeta vacía. */}
-          <details className="group" open={puestos > 2}>
+          {/* Plegado y angosto: es un control, no una tarjeta vacía. Tras
+              entender una frase se queda plegado aunque haya muchos filtros:
+              ya los dice «Así lo entendimos», y abierto empujaba las casas
+              dos pantallas abajo en el celular. */}
+          <details className="group" open={puestos > 2 && !frase}>
             <summary className="inline-flex h-11 cursor-pointer list-none items-center gap-2 rounded-xl border border-linea bg-superficie px-4 text-sm font-bold text-tinta transition-colors hover:border-marca [&::-webkit-details-marker]:hidden">
               Más filtros
               {puestos > 0 ? (
@@ -232,6 +285,8 @@ export default function Listado({ loaderData }: Route.ComponentProps) {
           </label>
         </div>
       </Form>
+
+      {frase ? <AsiLoEntendimos frase={frase} filtros={filtros} zonas={catalogo.zonas} /> : null}
 
       <p className="mt-6 text-tinta">
         <strong className="text-lg font-extrabold tabular-nums">{pagina.total}</strong>{" "}

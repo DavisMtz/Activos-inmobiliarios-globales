@@ -5,6 +5,8 @@
  * otra, es cambiar configuración y no código.
  */
 
+import type { MotorIA } from "./ia/motor";
+
 export type Config = {
   /** Sin barra final. Alimenta canonical, og:url, sitemap y WhatsApp. */
   sitioUrl: string;
@@ -28,7 +30,9 @@ export type Config = {
 export type Servicios = {
   config: Config;
   db: D1Database;
-  limites: { acceso: RateLimit; formularios: RateLimit };
+  /** Workers AI. Sin binding (pruebas, un despliegue viejo) no hay IA y el sitio busca como siempre. */
+  ia: MotorIA | undefined;
+  limites: { acceso: RateLimit; formularios: RateLimit; ia: RateLimit | undefined };
 };
 
 const texto = (v: unknown): string => (typeof v === "string" ? v.trim() : "");
@@ -78,6 +82,9 @@ export function crearServicios(env: Env): Servicios {
   return {
     config: leerConfig(env),
     db: env.DB,
-    limites: { acceso: env.LIMITE_ACCESO, formularios: env.LIMITE_FORMULARIOS },
+    // El tipo generado lista los modelos uno por uno; aquí el modelo es un ajuste
+    // del panel, así que se usa el tipo propio, más ancho (`server/ia/motor.ts`).
+    ia: env.AI as unknown as MotorIA | undefined,
+    limites: { acceso: env.LIMITE_ACCESO, formularios: env.LIMITE_FORMULARIOS, ia: env.LIMITE_IA },
   };
 }

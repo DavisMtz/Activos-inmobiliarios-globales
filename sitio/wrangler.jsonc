@@ -45,11 +45,19 @@
     }
   ],
 
+  // Workers AI: el intérprete del buscador (PLAN §10.5). Declarar el binding no
+  // cuesta; lo que se cobra —en Neurons— es cada inferencia, y esas pasan todas
+  // por `server/ia/motor.ts`, con interruptor y tope diario en el panel.
+  "ai": { "binding": "AI" },
+
   // Freno de fuerza bruta: es la compensación por no poder subir PBKDF2 de
   // 100 000 iteraciones en Workers (PLAN §8.1).
   // Los namespace_id son de la CUENTA, no del Worker: Cuponera ya usa 1001/1002.
   "ratelimits": [
     { "name": "LIMITE_ACCESO", "namespace_id": "2001", "simple": { "limit": 8, "period": 60 } },
-    { "name": "LIMITE_FORMULARIOS", "namespace_id": "2002", "simple": { "limit": 5, "period": 60 } }
+    { "name": "LIMITE_FORMULARIOS", "namespace_id": "2002", "simple": { "limit": 5, "period": 60 } },
+    // Consultas al modelo por persona: quien teclea frases distintas sin parar
+    // no le gasta el día al resto. Lo ya interpretado (caché) no cuenta.
+    { "name": "LIMITE_IA", "namespace_id": "2003", "simple": { "limit": 10, "period": 60 } }
   ]
 }

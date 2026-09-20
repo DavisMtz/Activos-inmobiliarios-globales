@@ -39,6 +39,7 @@ export type Permiso =
   | "contenido.editar"
   | "configuracion.contacto"
   | "configuracion.aviso"
+  | "configuracion.buscador"
   | "prospectos.ver"
   | "prospectos.gestionar"
   | "prospectos.asignar"
@@ -71,6 +72,8 @@ export const MATRIZ: Record<Permiso, Record<Rol, Alcance>> = {
   "contenido.editar": fila("todo", "todo", "no", "todo"),
   "configuracion.contacto": fila("todo", "todo", "no", "no"),
   "configuracion.aviso": fila("todo", "todo", "no", "no"),
+  // Encender o apagar el buscador con IA, su modelo y su tope diario (PLAN §10.5).
+  "configuracion.buscador": fila("todo", "todo", "no", "no"),
   "prospectos.ver": fila("todo", "todo", "propias", "no"),
   "prospectos.gestionar": fila("todo", "todo", "propias", "no"),
   "prospectos.asignar": fila("todo", "todo", "no", "no"),
