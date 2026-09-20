@@ -45,6 +45,37 @@ Lo que mejor ha funcionado, por si ayuda:
 
 ## 5. Lo último que se hizo (19-20/09/2026)
 
+**La portada abre con un escenario, y el buscador dice solo que entendió (20/09/2026, tarde)** — dos piezas de
+React Bits copiadas A MANO (variante JS + CSS, **sin dependencias**; el `npx shadcn add` del registro no aplica
+aquí: no hay `components.json`). En producción desde el 20/09/2026, Worker **`bd0fe253`** (para revertir,
+`18878e94`, y antes de él `0791a369`).
+
+| Archivo | Qué guarda |
+|---|---|
+| `app/components/publico/marco-estelar.tsx` | El `StarBorder`: el destello que recorre la orilla del buscador mientras entiende, y mientras lo entendido siga puesto. Envuelve un panel (no es un botón negro), el destello es `--color-marca` sobre un halo de **2 px**, y la sombra va al marco de afuera porque el `overflow: hidden` la recortaba |
+| `app/components/publico/escenario-portada.tsx` | El `ScrollExpand`: la foto de la casa principal encuadrada en un campo de tinta, el titular centrado encima, y la foto abriéndose al bajar. La foto es `vitrina[0].fotoGrande` —la **casa elegida en Panel › Contenido** o la más reciente— en la variante `galeria` que ya existía: **no se tocó ni el panel ni la base** |
+| `app/styles/app.css` (`.marco-estelar`, `.escenario`) | Todo el movimiento, en CSS. Con «menos movimiento» el destello no se dibuja y queda el halo quieto |
+| `app/components/publico/entendido.tsx` | «Así lo entendimos» subió ARRIBA del formulario y su rótulo va en un solo renglón |
+
+**Lo que hubo que medir, y no repetir:**
+
+- **El `ScrollExpand` original no existe sin JavaScript:** el alto de la escena y del riel se los pone el guión.
+  Aquí los trae el CSS y el guión solo los afina.
+- **Su velo va al revés aquí:** entero al principio y al 45 % al abrirse. Con el velo del original (de 0 a 0.45)
+  el titular blanco no se leía sobre la fachada blanca de la casa de portada.
+- **La escena empezaba debajo de la cabecera** y su pie —la seña de «baja»— caía fuera de la primera pantalla.
+  Sube 4.75rem (`pt-3` + `h-16`) y la píldora del menú flota sobre la foto.
+- **El encuadre del 42 % en un teléfono de 390 px es una estampilla de 164 px:** se mide por ancho.
+- **Dos guiones se arreglaron, no el diseño.** `verificar:f2` tomaba por desbordada la foto que su escena
+  RECORTA (ahora exime también `overflow-x: hidden`); `verificar:vitrina` y `verificar:movimiento` veían la
+  vitrina quieta porque **se detiene fuera de la pantalla a propósito** y ahora nace dos pantallas abajo: la
+  llevan a la vista antes de mirarla.
+- **Aquí no hay configuración de Prettier:** un `npx prettier --write` reformatea a 80 columnas y deja un diff
+  enorme de ruido. No se corre sobre archivos del proyecto.
+- **Un emoji escrito como pareja de subrogados en un guión de Python dejó `PLAN.md` en CERO bytes** a media
+  escritura, y el vacío entró a un commit. En estos guiones, texto plano.
+
+
 **El buscador que entiende frases (20/09/2026)** — `PLAN.md` §10.5 lo explica entero; aquí, dónde vive cada cosa. La portada y el listado aceptan «casa de 3 recamaras en altosano hasta 4 millones con alberca» y el loader de `/propiedades` **redirige** a los filtros de siempre (`?tipo=casa&q=Altozano&precio_max=4000000&recamaras=3&con=alberca&frase=…`): nada se aplica «por debajo», así que la página 2, el scroll, la API y un enlace compartido no dependen de la IA.
 
 | Archivo | Qué guarda |
@@ -81,16 +112,20 @@ Lo que mejor ha funcionado, por si ayuda:
 
 ## 6. Pendientes, por orden
 
-0. **Del buscador que entiende frases** (en producción desde el 20/09/2026, §5): probarlo en el Safari del iPad, que es donde el usuario mira el sitio; mirar en Panel › Configuración cuánto se usa de verdad (si casi nadie llega al modelo, el tope de 300 sobra; si el modelo falla seguido, cambiarlo ahí mismo); y en F6, que la etiqueta `canonical` no lleve `frase` ni `literal`. Tres decisiones que tomó el agente y el usuario puede cambiar: nace encendido, lo apagan maestro y director, y el buscador de casas del PANEL no usa el modelo.
+0. **Del escenario de la portada** (en producción, §5): **medir Lighthouse móvil otra vez**. El LCP de la
+   portada ya no es el titular sino la foto de 1600 px, y F2 venía con 82 contra la meta de 90. Y verlo en el
+   Safari del iPad: usa `100svh` y `clip-path` animado.
 
-1. **Dos cuentas de prueba activas en producción:** `entregas-contenido@ejemplo.invalid` y `entregas-asesor@ejemplo.invalid`, del 19/09/2026 21:31 UTC, que dejó una corrida de `verificar:entregas`. No son un hueco (contraseña aleatoria por corrida, no está en el repo, y el acceso frena a 8 por minuto), pero rompen el «cero cuentas de prueba». Se limpian con `npm run verificar:entregas -- --base https://activos-inmobiliarios.logidma.workers.dev --remote` **sin** `--dejar`, y después se mira la base. Se le ofreció al usuario y no contestó: **pregunta antes**, es producción.
-2. **Probar en el Safari del iPad.** Es donde el usuario mira el sitio, y todo lo medido fue en Chrome. En los dibujos, lo que más puede diferir: `transform-box: fill-box` en los gestos, `pathLength` en la entrada y `:has()` en el megáfono.
-3. **Decisiones que el usuario tiene abiertas:** llevar los dibujos, en chico, a la franja oscura de servicios de la portada (se le ofreció; ojo: sobre tinta el rojo `#A0051C` no contrasta, haría falta el claro del isotipo, `#F5515F`); y el guion de la demo (`verificacion/guion-demo.md`) todavía no menciona Servicios.
-4. **F2, criterio 5:** Lighthouse móvil 82/74/78 contra 90. El techo medido es el FCP con ~1 MB bajo 4G, no el servidor. **Lighthouse en local no sirve para comparar** versiones aquí: solo producción contra producción, el mismo día. El CSS de los dibujos sumó +1.06 KB gzip a todas las páginas.
-5. **Del dueño o de su abogado, no de un agente:** el aviso de privacidad tiene que mencionar las fotos y comentarios de las Entregas. Aquí no se redacta texto legal.
-6. **Menores, anotados en §19:** el lema sigue escrito en el código; `/entregas` no está en el `sitemap` (en F6, solo si hay alguna publicada).
-7. **F5, lo que queda:** crear los usuarios reales **solo cuando el usuario lo pida**, y revisar con el equipo la lista de avisos de la migración.
-8. **F6 espera a los consultores** (`PEDIR-A-CONSULTORES.md`) y nada de F6 se hace sin que el usuario lo pida. **El dominio vence el 06/12/2026.**
+1. **Del buscador que entiende frases** (en producción desde el 20/09/2026, §5): probarlo en el Safari del iPad, que es donde el usuario mira el sitio; mirar en Panel › Configuración cuánto se usa de verdad (si casi nadie llega al modelo, el tope de 300 sobra; si el modelo falla seguido, cambiarlo ahí mismo); y en F6, que la etiqueta `canonical` no lleve `frase` ni `literal`. Tres decisiones que tomó el agente y el usuario puede cambiar: nace encendido, lo apagan maestro y director, y el buscador de casas del PANEL no usa el modelo.
+
+2. **Dos cuentas de prueba activas en producción:** `entregas-contenido@ejemplo.invalid` y `entregas-asesor@ejemplo.invalid`, del 19/09/2026 21:31 UTC, que dejó una corrida de `verificar:entregas`. No son un hueco (contraseña aleatoria por corrida, no está en el repo, y el acceso frena a 8 por minuto), pero rompen el «cero cuentas de prueba». Se limpian con `npm run verificar:entregas -- --base https://activos-inmobiliarios.logidma.workers.dev --remote` **sin** `--dejar`, y después se mira la base. Se le ofreció al usuario y no contestó: **pregunta antes**, es producción.
+3. **Probar en el Safari del iPad.** Es donde el usuario mira el sitio, y todo lo medido fue en Chrome. En los dibujos, lo que más puede diferir: `transform-box: fill-box` en los gestos, `pathLength` en la entrada y `:has()` en el megáfono.
+4. **Decisiones que el usuario tiene abiertas:** llevar los dibujos, en chico, a la franja oscura de servicios de la portada (se le ofreció; ojo: sobre tinta el rojo `#A0051C` no contrasta, haría falta el claro del isotipo, `#F5515F`); y el guion de la demo (`verificacion/guion-demo.md`) todavía no menciona Servicios.
+5. **F2, criterio 5:** Lighthouse móvil 82/74/78 contra 90. El techo medido es el FCP con ~1 MB bajo 4G, no el servidor. **Lighthouse en local no sirve para comparar** versiones aquí: solo producción contra producción, el mismo día. El CSS de los dibujos sumó +1.06 KB gzip a todas las páginas.
+6. **Del dueño o de su abogado, no de un agente:** el aviso de privacidad tiene que mencionar las fotos y comentarios de las Entregas. Aquí no se redacta texto legal.
+7. **Menores, anotados en §19:** el lema sigue escrito en el código; `/entregas` no está en el `sitemap` (en F6, solo si hay alguna publicada).
+8. **F5, lo que queda:** crear los usuarios reales **solo cuando el usuario lo pida**, y revisar con el equipo la lista de avisos de la migración.
+9. **F6 espera a los consultores** (`PEDIR-A-CONSULTORES.md`) y nada de F6 se hace sin que el usuario lo pida. **El dominio vence el 06/12/2026.**
 
 ## 7. Verificar
 
