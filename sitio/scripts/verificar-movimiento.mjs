@@ -181,6 +181,14 @@ async function revisarVitrina(cdp, reducido) {
       fallas.push(`${momento}: la casa a la vista no está entera (opacidad ${v.opacidad}, recorte ${v.recorte}, ${v.movidos} renglones movidos)`);
     }
   };
+  // La vitrina se DETIENE fuera de la pantalla, a proposito (bateria y WCAG).
+  // Desde el 20/09/2026 la portada abre con el escenario y la vitrina nace
+  // casi dos pantallas abajo: sin traerla a la vista, el guion la mira quieta
+  // y cree que esta rota.
+  await cdp("Runtime.evaluate", {
+    expression: `document.querySelector('[data-diapositiva]')?.scrollIntoView({ block: 'center' })`,
+  });
+  await esperar(1200);
   const antes = await vitrinaEnReposo(cdp);
   if (!antes.hay) return ["no se encontró la vitrina"];
   entera(antes, "al revisar");

@@ -274,16 +274,21 @@ try {
     const sonda = `(() => {
       const raiz = document.documentElement;
       const ancho = raiz.clientWidth;
-      // Se saltan dos familias de falsos positivos: lo que cuelga de un
-      // position fixed (un cajon cerrado vive fuera de la pantalla) y lo que
+      // Se saltan tres familias de falsos positivos: lo que cuelga de un
+      // position fixed (un cajon cerrado vive fuera de la pantalla), lo que
       // cuelga de un contenedor con desplazamiento propio (la tira de
-      // miniaturas SE TIENE que salir: para eso es una tira).
+      // miniaturas SE TIENE que salir: para eso es una tira) y lo que cuelga
+      // de un contenedor que lo RECORTA (overflow hidden): recortado no se ve
+      // ni empuja la pagina, y el desplazamiento horizontal de verdad ya lo
+      // caza la comprobacion de scrollWidth de arriba. Lo destapo la foto del
+      // escenario de la portada, que vive ampliada un 30 % dentro de su escena
+      // (20/09/2026).
       // Sin comillas invertidas: esto vive dentro de un literal de plantilla.
       const exento = (el) => {
         for (let n = el; n; n = n.parentElement) {
           const e = getComputedStyle(n);
           if (e.position === 'fixed') return true;
-          if (n !== el && (e.overflowX === 'auto' || e.overflowX === 'scroll')) return true;
+          if (n !== el && (e.overflowX === 'auto' || e.overflowX === 'scroll' || e.overflowX === 'hidden')) return true;
         }
         return false;
       };

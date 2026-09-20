@@ -128,6 +128,17 @@ async function avanza(ev, ms = 1500) {
 let fallas = 0;
 const navegador = await abrirChrome();
 const { cdp, ev, errores } = navegador;
+
+/**
+ * La vitrina se DETIENE fuera de la pantalla, a proposito (WCAG y bateria).
+ * Desde el 20/09/2026 la portada abre con el escenario, asi que la vitrina
+ * nace casi dos pantallas abajo: sin esto el guion la mira quieta y cree que
+ * esta rota. Se llama despues de cada carga de la portada.
+ */
+const alaVista = async (ev) => {
+  await ev("document.querySelector('[aria-live]')?.scrollIntoView({ block: 'center' })");
+  await esperar(1200);
+};
 try {
   // ─── 1. Sin JavaScript: la primera casa, como siempre ───────────
   console.log("\n1. Sin JavaScript (1366×768)");
@@ -146,6 +157,7 @@ try {
   await cdp("Page.navigate", { url: "about:blank" });
   await cdp("Page.navigate", { url: `${BASE}/` });
   await esperar(3500);
+  await alaVista(ev);
   e = await leer(ev);
   comprobar("salen los controles, con el botón de pausa", e.controles === "visible" && e.pausa?.startsWith("Pausar"), JSON.stringify(e));
   comprobar("solo hay dos casas montadas: la actual y la siguiente", e.montadas === 2, `${e.montadas} montadas`);

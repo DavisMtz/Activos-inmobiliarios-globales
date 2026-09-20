@@ -778,16 +778,17 @@
 /* ─── Marco estelar del buscador (`components/publico/marco-estelar.tsx`) ───
    Dos manchas redondas más anchas que el panel se deslizan por la orilla, una
    por arriba y otra por abajo; el panel va encima y es opaco, así que solo se
-   ve lo que asoma por el halo de 3 px. Es la señal de que el buscador está
+   ve lo que asoma por el halo de 2 px. Es la señal de que el buscador está
    entendiendo la frase, y sustituye a la nota de texto que iba debajo.
 
    El halo quieto (`--color-marca-suave`) se dibuja SIEMPRE que está encendido:
    con «menos movimiento» las manchas no existen y la señal tiene que seguir
    viéndose. El radio se escribe aquí porque el panel usa `rounded-2xl` (1rem) y
-   el marco tiene que ir 3 px más abierto para que las dos curvas coincidan. */
+   el marco tiene que ir el grosor más abierto para que las dos curvas coincidan. */
 .marco-estelar {
   --marco-radio: 1rem;
-  --marco-grosor: 3px;
+  /* 2 px y no 3: a pedido del usuario (20/09/2026), el halo se ve mejor fino. */
+  --marco-grosor: 2px;
   position: relative;
   border-radius: var(--marco-radio);
 }
@@ -850,4 +851,115 @@
     transform: translate(-100%, 0);
     opacity: 0;
   }
+}
+
+/* ─── Escenario de la portada (`components/publico/escenario-portada.tsx`) ───
+   La foto de la casa empieza encuadrada en el centro de un campo de tinta y se
+   abre hasta llenar la pantalla al bajar. El guion afina las medidas, pero los
+   altos y el encuadre de partida van AQUÍ: sin JavaScript el original se queda
+   en cero y la portada no tendría titular.
+
+   El campo es tinta y no papel porque el titular va en blanco sobre él: con el
+   papel claro de siempre, el texto que asoma fuera de la foto no se leería. El
+   riel mide 1.9 pantallas (una de recorrido, 0.1 de sostén) y la escena se le
+   pega arriba: eso es lo que hace que la foto se abra sin que la página salte. */
+.escenario {
+  position: relative;
+  width: 100%;
+  background-color: var(--color-tinta);
+  /* Sube por debajo de la cabecera (`pt-3` + `h-16` = 4.75rem), que es
+     flotante y se pega arriba: así la foto llega al borde de la pantalla y la
+     píldora del menú queda encima de ella, no sobre una franja de papel. Sin
+     esto la escena empezaba 76 px más abajo y su pie —la seña de «baja»— se
+     salía de la primera pantalla (medido). */
+  margin-top: -4.75rem;
+}
+.escenario-riel {
+  position: relative;
+  width: 100%;
+  height: calc(100svh * 1.9);
+}
+.escenario-escena {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* El encuadre de partida, el mismo que calcula el guion: `inset` de
+   (100 − ancho) / 2 a los lados y (100 − alto) / 2 arriba y abajo. */
+.escenario-marco {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(22% 7% 22% 7% round 22px);
+  will-change: clip-path;
+}
+@media (min-width: 40rem) {
+  .escenario-marco {
+    clip-path: inset(21% 18% 21% 18% round 24px);
+  }
+}
+@media (min-width: 64rem) {
+  .escenario-marco {
+    clip-path: inset(21% 29% 21% 29% round 24px);
+  }
+}
+
+.escenario-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.3);
+  transform-origin: center;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.escenario-velo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Entero de salida: en el centro oscurece la foto un 50 %, que es lo que
+     hace legible un titular blanco sobre una fachada blanca. Al abrirse baja
+     al 45 % de esto y la casa se ve limpia. */
+  opacity: 1;
+  background: linear-gradient(to top, rgba(17, 17, 17, 0.78), rgba(17, 17, 17, 0.5) 48%, rgba(17, 17, 17, 0.62));
+}
+
+/* El titular va sobre TODO el escenario, no sobre la foto: al principio la
+   foto ocupa el centro y el texto la desborda a propósito. */
+.escenario-titulo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.25rem;
+  text-align: center;
+  color: var(--color-sobre-oscuro);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.escenario-titulo a,
+.escenario-titulo button {
+  pointer-events: auto;
+}
+.escenario-sena {
+  position: absolute;
+  right: 0;
+  bottom: 1.5rem;
+  left: 0;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-sobre-oscuro-suave);
+  pointer-events: none;
+  will-change: opacity, transform;
 }

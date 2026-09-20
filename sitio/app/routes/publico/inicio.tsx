@@ -7,6 +7,7 @@ import { precioMXN } from "../../../shared/formato";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
 import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/publico/iconos";
 import { Antetitulo, Preguntas, Testimonios } from "../../components/publico/contenido-portada";
+import { EscenarioPortada } from "../../components/publico/escenario-portada";
 import { MarcoEstelar } from "../../components/publico/marco-estelar";
 import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
 import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
@@ -83,12 +84,42 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
   // lo dice sola (`marco-estelar.tsx`). Aqui no se queda encendida, porque la
   // respuesta se ve ya en la pagina siguiente.
   const navegacion = useNavigation();
+  // La foto del escenario es la de la casa elegida en Panel › Contenido
+  // («Casa de la foto principal») y, si no hay ninguna elegida, la de la más
+  // reciente: es la misma que encabeza la vitrina. Sin catalogo con fotos no
+  // hay escenario, y entonces el titular vuelve a su sitio de siempre.
+  const escenario = vitrina[0]?.fotoGrande ?? null;
+  const titular = portada.titular || TITULAR_POR_OMISION;
   const entendiendo =
     entiendeFrases && navegacion.state === "loading" && navegacion.location?.pathname === "/propiedades";
 
   return (
     <div>
-      {/* ─── Primera pantalla: el titular, el buscador y una casa real ─── */}
+      {/* ─── Escenario: la foto de la casa principal, con el titular encima ───
+          La foto se abre hasta llenar la pantalla al bajar y el titular se va
+          con ella; debajo esperan el buscador y la vitrina. El saludo y el
+          lema lo acompañan en blanco: sobre tinta, el rojo de la marca no
+          contrasta (§19), así que el filete va en el claro del isotipo. */}
+      {escenario ? (
+        <EscenarioPortada foto={escenario} pista="Baja para verla entera">
+          {portada.saludo ? (
+            <p className="flex items-center gap-3 font-display text-xs font-medium tracking-[0.28em] text-[#f5515f] uppercase sm:text-sm motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
+              <span aria-hidden="true" className="h-px w-8 shrink-0 bg-[#f5515f]" />
+              {portada.saludo}
+            </p>
+          ) : null}
+          <h1 className="mt-5 max-w-[18ch] font-display text-display text-sobre-oscuro 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
+            {titular}
+          </h1>
+          {portada.lema ? (
+            <p className="mt-4 max-w-[46ch] text-guia text-sobre-oscuro-suave motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]">
+              {portada.lema}
+            </p>
+          ) : null}
+        </EscenarioPortada>
+      ) : null}
+
+      {/* ─── El buscador y una casa real ─── */}
       {/* «financiamiento» mide 8.4 veces el cuerpo del titular: a 1024 px son
           513 px y la mitad de la pantalla da 444, así que se salía. Hasta 1280
           el texto se lleva 3/5; desde ahí nunca baja de 36rem y la foto crece
@@ -102,24 +133,37 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
               escribió; vacío, no sale nada. El logotipo ya va siempre en la
               cabecera, y «Casas en venta y renta en Morelia» se quitó a pedido
               del usuario (18/09/2026): el negocio es para toda la República. */}
-          {portada.saludo ? (
-            <Antetitulo className="motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
-              {portada.saludo}
-            </Antetitulo>
-          ) : null}
-          <h1
-            className={`font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)] ${portada.saludo ? "mt-5" : ""}`}
-          >
-            {portada.titular || TITULAR_POR_OMISION}
-          </h1>
+          {/* Con escenario, el titular vive ARRIBA, sobre la foto. Sin foto
+              que enseñar (un catálogo recién puesto) vuelve aquí, para que la
+              portada nunca se quede sin `<h1>`. */}
+          {escenario ? null : (
+            <>
+              {portada.saludo ? (
+                <Antetitulo className="motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
+                  {portada.saludo}
+                </Antetitulo>
+              ) : null}
+              <h1
+                className={`font-display text-display text-tinta 3xl:text-[5rem] motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)] ${portada.saludo ? "mt-5" : ""}`}
+              >
+                {titular}
+              </h1>
+              {portada.lema ? <p className="mt-4 text-guia text-texto-suave">{portada.lema}</p> : null}
+            </>
+          )}
 
-          {portada.lema ? <p className="mt-4 text-guia text-texto-suave">{portada.lema}</p> : null}
+          {/* Con el titular arriba, en el escenario, esta columna empezaba en
+              una tarjeta suelta a media pantalla: el rótulo le da principio.
+              Sin escenario el titular sigue aquí y no hace falta. */}
+          {escenario ? (
+            <h2 className="font-display text-seccion text-tinta motion-safe:animate-entrada">Encuentra tu propiedad</h2>
+          ) : null}
 
           {/* El buscador es la acción principal: va en su propio panel para
               que se lea como una herramienta y no como texto suelto. */}
           <MarcoEstelar
             activo={Boolean(entendiendo)}
-            marco="mt-8 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]"
+            marco="mt-6 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]"
             className="rounded-2xl border border-linea bg-superficie p-4 sm:p-5"
           >
             <Form method="get" action="/propiedades" className="flex flex-col gap-3">
