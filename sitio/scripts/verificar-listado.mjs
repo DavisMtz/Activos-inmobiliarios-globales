@@ -118,6 +118,8 @@ async function abrir(ruta) {
   await cdp("Page.navigate", { url: BASE + ruta });
   await esperar(2500);
 }
+/** El migajón de la ficha: «← Todas las propiedades» o «← Volver a los resultados». */
+const MIGAJON = `[...document.querySelectorAll('a')].find((a) => a.textContent.startsWith('←'))`;
 async function clicEn(expresionDeCaja) {
   const { x, y } = JSON.parse(await ev(`JSON.stringify((() => { const r = (${expresionDeCaja}).getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + Math.min(r.height / 2, 40) }; })())`));
   await cdp("Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
@@ -174,8 +176,77 @@ try {
     `scroll ${antes.y} → ${e.y}; casa 20 a ${antes.top} → ${despues.top}`,
   );
 
+  // El botón «atrás» del navegador SIEMPRE funcionó; el que se perdía era el
+  // migajón de la ficha, que era un enlace nuevo a `/propiedades` (medido el
+  // 19/09/2026: 36 casas en `y=3539` → 12 casas en `y=0`, y sin los filtros).
+  console.log("   …y con el migajón de la ficha, no con el botón del navegador");
+  await abrir("/propiedades?tipo=casa");
+  await alFondo();
+  await esperarTarjetas(24);
+  await ev(`document.querySelectorAll('[data-animar-lista] > li')[19].scrollIntoView({ block: 'center' })`);
+  await esperar(800);
+  const antesDelMigajon = await leer();
+  await clicEn(`document.querySelectorAll('[data-animar-lista] > li a')[19]`);
+  for (let i = 0; i < 40 && !(await ev("location.pathname")).startsWith("/propiedades/"); i++) await esperar(150);
+  await esperar(1200);
+  const migajon = JSON.parse(
+    await ev(`JSON.stringify((() => { const a = ${MIGAJON}; return a ? { href: a.getAttribute('href'), texto: a.textContent.trim() } : null; })())`),
+  );
+  comprobar(
+    "el migajón guarda la búsqueda en su `href` (otra pestaña, sin JavaScript)",
+    migajon?.href === "/propiedades?tipo=casa" && migajon?.texto === "← Volver a los resultados",
+    JSON.stringify(migajon),
+  );
+  await clicEn(MIGAJON);
+  await esperar(2000);
+  e = await leer();
+  comprobar(
+    "al pulsarlo: el catálogo filtrado, con sus casas y en su lugar",
+    e.url === "/propiedades?tipo=casa" &&
+      e.tarjetas >= antesDelMigajon.tarjetas &&
+      Math.abs(e.y - antesDelMigajon.y) <= 60,
+    `${e.url}; ${antesDelMigajon.tarjetas} → ${e.tarjetas} casas; scroll ${antesDelMigajon.y} → ${e.y}`,
+  );
+
+  // Dejar los datos en «Me interesa» REEMPLAZA la entrada del historial, y una
+  // entrada nueva nace sin `state`: sin pasárselo al `<Form>`, justo el que más
+  // interés mostraba era el que perdía el camino de vuelta. El campo trampa
+  // («empresa») hace que la acción conteste que sí SIN escribir en la base ni
+  // gastar el limitador, así que esta prueba no deja un prospecto inventado.
+  const antesDelFormulario = e;
+  await clicEn(`document.querySelectorAll('[data-animar-lista] > li a')[19]`);
+  for (let i = 0; i < 40 && !(await ev("location.pathname")).startsWith("/propiedades/"); i++) await esperar(150);
+  await esperar(1200);
+  await ev(`(() => {
+    const f = document.querySelector('form[method="post"]');
+    const poner = (n, v) => { const c = f.elements[n]; Object.getOwnPropertyDescriptor(c.constructor.prototype, 'value').set.call(c, v); c.dispatchEvent(new Event('input', { bubbles: true })); };
+    poner('nombre', 'Prueba de regreso');
+    poner('telefono', '4431112233');
+    poner('empresa', 'campo trampa: no se guarda');
+    f.elements['acepto'].click();
+    f.scrollIntoView({ block: 'center' });
+  })()`);
+  await esperar(500);
+  await clicEn(`document.querySelector('form[method="post"] button[type="submit"]')`);
+  await esperar(2500);
+  const seEnvio = await ev(`document.body.textContent.includes('ya tenemos tu mensaje')`);
+  await ev("scrollTo(0, 0)");
+  await esperar(400);
+  await clicEn(MIGAJON);
+  await esperar(2000);
+  e = await leer();
+  comprobar(
+    "tras dejar los datos en «Me interesa», el migajón sigue sabiendo volver",
+    seEnvio && e.url === "/propiedades?tipo=casa" && Math.abs(e.y - antesDelFormulario.y) <= 60,
+    `enviado: ${seEnvio}; ${e.url}; scroll ${antesDelFormulario.y} → ${e.y}`,
+  );
+
   // ─── 4. Recargar ────────────────────────────────────────────────
   console.log("\n4. Recargar con la lista larga");
+  // Desde el catálogo entero otra vez: lo de arriba dejó puesto un filtro.
+  await abrir("/propiedades");
+  await alFondo();
+  await esperarTarjetas(24);
   await alFondo();
   e = await esperarTarjetas(36);
   await ev(`document.querySelectorAll('[data-animar-lista] > li')[30].scrollIntoView({ block: 'center' })`);

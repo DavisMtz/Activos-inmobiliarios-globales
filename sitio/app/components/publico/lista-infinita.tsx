@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Link, useLocation } from "react-router";
 import type { Pagina, Tarjeta } from "../../../server/db/propiedades";
 import { rutaDeListado, type Filtros } from "../../../shared/filtros";
+import { useYaHidrato } from "./hidratacion";
 import { Paginacion, TarjetaPropiedad } from "./piezas";
+import type { Volver } from "./volver";
 
 /**
  * El listado de /propiedades que sigue cargando al bajar («scroll infinito»,
@@ -28,22 +30,6 @@ import { Paginacion, TarjetaPropiedad } from "./piezas";
 type Estado = { items: Tarjeta[]; hasta: number; total: number; paginas: number };
 
 type RespuestaApi = { total: number; pagina: number; paginas: number; items: Tarjeta[] };
-
-// ─── Hidratación ──────────────────────────────────────────────────
-
-const sinSuscripcion = () => () => {};
-/**
- * `false` en el servidor y mientras React hidrata; `true` después, y desde el
- * primer instante en lo que se monta navegando. Mientras hidrata, el cliente
- * tiene que pintar lo mismo que el servidor: ni almacenamiento ni botones que
- * todavía no funcionan.
- */
-const useYaHidrato = () =>
-  useSyncExternalStore(
-    sinSuscripcion,
-    () => true,
-    () => false,
-  );
 
 // ─── Lo guardado por entrada del historial ────────────────────────
 // Skill `webapp-storage-cache`: llave con prefijo y versión, vigencia, todo en
@@ -113,9 +99,12 @@ function combinar(servidor: Estado, guardado: Guardado): Estado {
 const ESQUELETOS = ["", "hidden sm:block", "hidden lg:block", "hidden 2xl:block", "hidden 4xl:block"];
 
 export function ListaInfinita({ filtros, inicial }: { filtros: Filtros; inicial: Pagina }) {
-  const { key, search } = useLocation();
+  const { key, pathname, search } = useLocation();
   const llave = `${PREFIJO}${key}:${search}`;
   const yaHidrato = useYaHidrato();
+  // El camino de regreso que cada tarjeta le cuelga a su ficha: con la búsqueda
+  // tal cual está, para que el migajón de allá vuelva a ESTA lista (`volver.ts`).
+  const volver = useMemo<Volver>(() => ({ listado: `${pathname}${search}`, saltos: 1 }), [pathname, search]);
 
   const [estado, setEstado] = useState<Estado>(() => {
     const delServidor: Estado = { items: inicial.items, hasta: inicial.pagina, total: inicial.total, paginas: inicial.paginas };
@@ -278,7 +267,7 @@ export function ListaInfinita({ filtros, inicial }: { filtros: Filtros; inicial:
               className={nueva ? "motion-safe:animate-entrada" : undefined}
               style={nueva ? { animationDelay: `${(i - lote.desde) * 40}ms` } : undefined}
             >
-              <TarjetaPropiedad item={item} prioridad={i < 2} />
+              <TarjetaPropiedad item={item} prioridad={i < 2} volver={volver} />
             </li>
           );
         })}

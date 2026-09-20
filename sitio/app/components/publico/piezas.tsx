@@ -4,6 +4,7 @@ import { m2, precioMXN } from "../../../shared/formato";
 import { rutaDeListado, type Filtros } from "../../../shared/filtros";
 import type { Tarjeta } from "../../../server/db/propiedades";
 import { IconoBano, IconoRecamara, IconoSuperficie } from "./iconos";
+import type { Volver } from "./volver";
 
 /** Piezas del sitio público. Nada de aquí se usa en el panel. */
 
@@ -84,7 +85,16 @@ function Dato({ icono, children }: { icono: ReactNode; children: ReactNode }) {
  * tienen que empezar a bajar de inmediato. Las demás van en diferido, que es
  * además lo que evita generar derivados de Cloudinary de fotos que nadie ve.
  */
-export function TarjetaPropiedad({ item, prioridad = false }: { item: Tarjeta; prioridad?: boolean }) {
+export function TarjetaPropiedad({
+  item,
+  prioridad = false,
+  volver,
+}: {
+  item: Tarjeta;
+  prioridad?: boolean;
+  /** De dónde se viene, para que el migajón de la ficha sepa regresar (`volver.ts`). */
+  volver?: Volver;
+}) {
   const precio = textoPrecio(item);
   const superficie = m2(item.m2Construccion) ?? m2(item.m2Terreno);
   const destino = `/propiedades/${item.slug}`;
@@ -95,6 +105,7 @@ export function TarjetaPropiedad({ item, prioridad = false }: { item: Tarjeta; p
       <Link
         to={destino}
         viewTransition
+        state={volver}
         className="flex h-full flex-col overflow-hidden rounded-2xl border border-linea bg-superficie shadow-tarjeta transition-shadow hover:shadow-alzada"
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-marca-suave">

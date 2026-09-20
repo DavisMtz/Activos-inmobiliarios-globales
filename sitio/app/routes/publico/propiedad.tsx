@@ -1,5 +1,5 @@
-import { useEffect, useState, type InputHTMLAttributes, type ReactElement } from "react";
-import { data, Form, Link, useNavigation } from "react-router";
+import { useEffect, useState, type InputHTMLAttributes, type MouseEvent, type ReactElement } from "react";
+import { data, Form, Link, useNavigate, useNavigation } from "react-router";
 import { leerConfigDelSitio } from "../../../server/db/configuracion";
 import { leerFicha, similares } from "../../../server/db/propiedades";
 import { guardarProspecto, revisarProspecto } from "../../../server/db/prospectos";
@@ -15,6 +15,7 @@ import {
   IconoWhatsApp,
 } from "../../components/publico/iconos";
 import { EtiquetaEstado, TarjetaPropiedad, textoPrecio } from "../../components/publico/piezas";
+import { unSaltoMas, useVolverAlListado, type Volver } from "../../components/publico/volver";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/propiedad";
 
@@ -132,6 +133,10 @@ function avisarEvento(tipo: "ficha_vista" | "whatsapp_click", slug: string): voi
 
 export default function Propiedad({ loaderData, actionData }: Route.ComponentProps) {
   const { ficha, parecidas, url, modoDemo, whatsapp } = loaderData;
+  // De dónde se llegó, si fue del catálogo: retroceder por el historial es lo
+  // único que devuelve el scroll y las casas ya cargadas (`volver.ts`).
+  const volver = useVolverAlListado();
+  const navegar = useNavigate();
   const precio = textoPrecio(ficha);
   const cerrada = ficha.estado === "vendida" || ficha.estado === "rentada";
   const parrafos = (ficha.descripcion ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
@@ -154,8 +159,19 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
   return (
     <div className="pb-24 lg:pb-0">
       <div className="mx-auto max-w-sitio px-5 lg:px-10 pt-6">
-        <Link to="/propiedades" viewTransition className="text-sm font-bold text-marca underline underline-offset-4">
-          ← Todas las propiedades
+        <Link
+          to={volver?.listado ?? "/propiedades"}
+          viewTransition
+          onClick={(evento: MouseEvent<HTMLAnchorElement>) => {
+            // Abrir en otra pestaña (Ctrl, rueda…) sigue siendo un enlace
+            // normal, y ahora se lleva los filtros en vez de perderlos.
+            if (!volver || evento.button !== 0 || evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey) return;
+            evento.preventDefault();
+            navegar(-volver.saltos);
+          }}
+          className="text-sm font-bold text-marca underline underline-offset-4"
+        >
+          {volver && volver.listado !== "/propiedades" ? "← Volver a los resultados" : "← Todas las propiedades"}
         </Link>
       </div>
 
@@ -220,12 +236,12 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
             cabe entera: más alta que la ventana, el botón «Enviar» quedaría
             fuera de alcance hasta el final de la descripción. */}
         <aside className="mt-10 hidden lg:mt-4 lg:block lg:[@media(min-height:54rem)]:sticky lg:[@media(min-height:54rem)]:top-24">
-          <Acciones ficha={ficha} precio={precio} whatsapp={whatsapp} actionData={actionData} />
+          <Acciones ficha={ficha} precio={precio} whatsapp={whatsapp} actionData={actionData} volver={volver} />
         </aside>
       </div>
 
       <div className="mx-auto mt-10 max-w-sitio px-5 lg:px-10 lg:hidden">
-        <Acciones ficha={ficha} precio={precio} whatsapp={whatsapp} actionData={actionData} />
+        <Acciones ficha={ficha} precio={precio} whatsapp={whatsapp} actionData={actionData} volver={volver} />
       </div>
 
       {parecidas.length ? (
@@ -234,7 +250,9 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
           <ul data-animar-lista className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {parecidas.map((item) => (
               <li key={item.clave}>
-                <TarjetaPropiedad item={item} />
+                {/* La cadena se conserva: abrir una parecida aleja el catálogo
+                    un salto más, no lo pierde. */}
+                <TarjetaPropiedad item={item} volver={unSaltoMas(volver)} />
               </li>
             ))}
           </ul>
@@ -468,11 +486,19 @@ function Acciones({
   precio,
   whatsapp,
   actionData,
+  volver,
 }: {
   ficha: Route.ComponentProps["loaderData"]["ficha"];
   precio: { principal: string; segundo: string | null };
   whatsapp: string | null;
   actionData: Route.ComponentProps["actionData"];
+  /**
+   * Mandar el formulario reemplaza la entrada del historial, y una entrada
+   * nueva nace sin `state`: sin pasárselo al `<Form>`, quien deja sus datos
+   * perdía el camino de regreso y volvía al catálogo sin filtros y desde
+   * arriba (medido: `history.state.usr` quedaba en `null`).
+   */
+  volver: Volver | undefined;
 }) {
   const navegacion = useNavigation();
   const enviando = navegacion.state === "submitting";
@@ -506,7 +532,7 @@ function Acciones({
           </p>
         </div>
       ) : (
-        <Form method="post" className="flex flex-col gap-4 lg:mt-6">
+        <Form method="post" state={volver} className="flex flex-col gap-4 lg:mt-6">
           <p className="font-display text-xl font-semibold text-tinta">Me interesa esta propiedad</p>
 
           {error ? (
