@@ -9,8 +9,8 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`0791a369`** (20/09/2026, el buscador que entiende frases) |
-| **Reversión** | la anterior es `0ed0ddcf`: `npx wrangler rollback 0ed0ddcf-cf6f-4b99-a3a7-c7f877de4c67`. La migración `0005` no estorba a esa versión: no hace falta deshacerla |
+| **Worker** | `activos-inmobiliarios`, versión activa **`2168665c`** (20/09/2026, la portada que vende) |
+| **Reversión** | la anterior es `ecb59d6c`: `npx wrangler rollback ecb59d6c-4d04-4316-b91d-7732f99deeb0` (devuelve la portada con la foto encuadrada que se abría al bajar). Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
@@ -44,6 +44,28 @@ Lo que mejor ha funcionado, por si ayuda:
 - **Registrar con números** en `PLAN.md` §19 al cerrar, incluidas las trampas nuevas.
 
 ## 5. Lo último que se hizo (19-20/09/2026)
+
+**La portada que vende (20/09/2026, al cierre del día · EN PRODUCCIÓN, `2168665c`)** — pedido: «la portada
+como que aún no me gusta, quiero que sea atractiva y que se vea profesional enfocada en ventas y con una
+excelente composición». **Se le enseñaron CUATRO composiciones capturadas sobre la página real y eligió la 2**
+(«Me gusto la dos»). La foto de la casa **llena la primera pantalla** y en su pie van el titular, la casa con su
+precio, las tres cifras y el buscador en un renglón; la segunda pantalla lleva el rótulo, los accesos por tipo y
+la vitrina de siempre. Se fue el riel de 1.9 pantallas: el buscador estaba a **1 400 px de scroll**.
+
+| Archivo | Qué guarda |
+|---|---|
+| `app/components/publico/escenario-portada.tsx` | El héroe: la foto a pantalla completa, su desplazamiento al bajar (`translate`, nunca `scale`: la foto mide 112 % y se mueve un 5.5 %) y el `data-heroe` del `<html>` |
+| `app/styles/app.css` (`.escenario`, `.escenario-pie`, `.escenario-ficha`) | El velo **atado al pie** y con paradas en rem —un velo por porcentajes deja el titular del teléfono sobre 0.34 de tinta— y la píldora del precio |
+| `app/routes/publico/inicio.tsx` | `BuscadorPortada` (el mismo panel, en renglón desde `lg` con `lg:contents`), `FichaDeLaFoto` y `CifraClara` |
+| `app/routes/publico/marco.tsx` | El botón flotante de WhatsApp se aparta con `in-data-[heroe=dentro]`: en la primera pantalla su esquina se encimaba con la de «Ver las 188 propiedades» |
+
+**Para enseñarle opciones, la receta está en `PLAN.md` §19** («Cómo se enseñan cuatro composiciones sin tocar el
+repo»): la página de producción bajada con `curl`, sin `<script>` y con `<base href>`, y un guion de DOM por
+variante. Las maquetas y sus capturas quedaron en `Escritorio\portada-propuestas\` (fuera del repo).
+
+**Sin JavaScript la portada se ve igual** (todo el reposo es CSS) y `verificar:vitrina` necesita
+`--base http://localhost:5180`: su valor por omisión es el 4180 y sin él informa «0 montadas», como si la
+vitrina estuviera rota.
 
 **La portada abre con un escenario, y el buscador dice solo que entendió (20/09/2026, tarde)** — dos piezas de
 React Bits copiadas A MANO (variante JS + CSS, **sin dependencias**; el `npx shadcn add` del registro no aplica
