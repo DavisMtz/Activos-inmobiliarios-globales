@@ -60,8 +60,18 @@ inicio.tsx.
 | El enlace repetía el texto del botón del buscador; el párrafo del cierre partía «una a / la medida» | «Ver todo el catálogo»; `max-w-2xl` |
 
 **Falta que él elija:** se le enseñaron **cuatro maquetas de esa columna** (A píldoras como
-antes · B índice · C píldoras + colonias · **D índice + colonias, la que quedó puesta**). Están
-en el borrador de la sesión como `variante-a…d.png`; si pide otra, el cambio es de minutos.
+antes · B índice · C píldoras + colonias · **D índice + colonias, la que quedó puesta**), en
+`Escritorio\portada-propuestas\columna-20-09\` como `variante-a…d.png`. Si pide **la B**, se
+borra el bloque de colonias; si pide **la A**, el markup viejo de las píldoras está en
+`git show d658f0f^:sitio/app/routes/publico/inicio.tsx`.
+
+**Comprobado sin JavaScript** (`curl` y los `<script>` fuera): el HTML servido enseña el héroe
+con AIG-0188 y la primera tarjeta de la vitrina con **AIG-0184** —la clave del héroe no sale
+dos veces a la vista—, que es justo lo que se buscaba con la rotación.
+
+⚠ **En las colonias salen «Lomalta» y «Lomalta, Tres Marías» como dos píldoras distintas**, con
+5 casas cada una. Es **un dato de la base** (una colonia capturada con coma), no del código: el
+listado la enseña igual desde siempre. Se limpia donde vive la colonia, no aquí.
 
 **El héroe NO se tocó** (velo, foto, `--text-portada`, `pb`) ni el pie de página, que es de
 todas las páginas. Verificado con el preview en el 5180: 341 pruebas, `tsc`, `verificar:f2`
