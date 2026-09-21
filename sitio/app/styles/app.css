@@ -1267,17 +1267,20 @@
   translate: 3px 0;
 }
 
-/* ── El mostrador reacciona ── */
-.canal-icono {
-  transition:
-    background-color 0.2s ease-out,
-    border-color 0.2s ease-out,
-    color 0.2s ease-out;
-}
-.canal:has(a:is(:hover, :focus-visible)) .canal-icono {
-  border-color: var(--color-marca-claro);
-  background-color: var(--color-marca-claro);
-  color: var(--color-tinta);
+/* ── El mensaje llena la hoja ──
+   Con los datos de la oficina capturados, el mostrador mide más que el
+   formulario y la hoja se estira a su altura: el mensaje crece hasta llenarla,
+   en vez de dejar un hueco blanco bajo el botón (384 px, medido a 1440). */
+@media (min-width: 64rem) {
+  .campo-crece {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+  .campo-crece > textarea {
+    flex: 1 1 auto;
+    max-height: none;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -246,7 +246,7 @@ function Mostrador({
   const mapa = contacto.direccion
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contacto.direccion)}`
     : null;
-  const icono = "h-5 w-5";
+  const icono = "h-4 w-4";
 
   // Solo lo capturado en Panel › Configuración: hoy, en producción, nada. Por
   // eso el mostrador tiene que verse completo sin estos renglones.
@@ -329,28 +329,31 @@ function Mostrador({
         </div>
       ) : null}
 
+      {/* El icono va chico junto a la etiqueta y «Copiar» en esa misma línea:
+          así el dato tiene todo el ancho. Con un círculo de 44 px y el botón a
+          la derecha, el correo de la oficina se partía a media palabra. */}
       {canales.length ? (
-        <ul className="mt-10 grid gap-5 border-t border-white/12 pt-8 motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_220ms)]">
+        <ul className="mt-9 grid gap-5 border-t border-white/12 pt-7 motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_220ms)]">
           {canales.map((canal) => (
-            <li key={canal.clave} className="canal flex items-center gap-4">
-              <span className="canal-icono grid h-11 w-11 shrink-0 place-items-center self-start rounded-full border border-white/15 text-marca-claro">
-                {canal.icono}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-sobre-oscuro-suave">{canal.etiqueta}</p>
-                {canal.enlace ? (
-                  <a
-                    href={canal.enlace}
-                    className="text-base font-bold text-white tabular-nums [overflow-wrap:anywhere] hover:underline sm:text-lg"
-                  >
-                    {canal.valor}
-                  </a>
-                ) : (
-                  <p className="text-base font-bold text-white sm:text-lg">{canal.valor}</p>
-                )}
-                {canal.debajo}
+            <li key={canal.clave} data-canal={canal.clave} className="min-w-0">
+              <div className="flex min-h-7 items-center justify-between gap-3">
+                <p className="flex items-center gap-2 text-sm text-sobre-oscuro-suave">
+                  <span className="text-marca-claro">{canal.icono}</span>
+                  {canal.etiqueta}
+                </p>
+                {canal.copiable ? <BotonCopiar valor={canal.valor} que={canal.etiqueta.toLowerCase()} /> : null}
               </div>
-              {canal.copiable ? <BotonCopiar valor={canal.valor} que={canal.etiqueta.toLowerCase()} /> : null}
+              {canal.enlace ? (
+                <a
+                  href={canal.enlace}
+                  className="mt-0.5 block text-base font-bold text-white tabular-nums [overflow-wrap:anywhere] hover:underline sm:text-lg"
+                >
+                  {canal.clave === "correo" ? cortableTrasArroba(canal.valor) : canal.valor}
+                </a>
+              ) : (
+                <p className="mt-0.5 text-base font-bold text-white sm:text-lg">{canal.valor}</p>
+              )}
+              {canal.debajo}
             </li>
           ))}
         </ul>
@@ -361,13 +364,32 @@ function Mostrador({
           vez cada que la persona hace algo: `.contacto` en app.css. */}
       <div
         // En un 2560 el mostrador mide 1 500 px: el dibujo crece con él, o
-        // queda un campo de tinta con un dibujo chico en la esquina.
-        className="mt-auto -mr-2 w-52 self-end pt-8 sm:w-64 lg:-mr-3 lg:w-[min(100%,24rem)] 3xl:w-[30rem] 4xl:w-[36rem]"
+        // queda un campo de tinta con un dibujo chico en la esquina. Con los
+        // datos de la oficina se achica: si no, el mostrador medía 1 086 px
+        // contra 702 del formulario (medido a 1440).
+        className={`mt-auto -mr-2 w-52 self-end pt-8 sm:w-64 lg:-mr-3 ${
+          canales.length
+            ? "lg:w-[min(100%,17rem)] 3xl:w-[22rem] 4xl:w-[26rem]"
+            : "lg:w-[min(100%,24rem)] 3xl:w-[30rem] 4xl:w-[36rem]"
+        }`}
         style={{ "--i": 4 } as CSSProperties}
       >
         <DibujoDeServicio clave="asesoria" className="escena-contacto block h-auto w-full" />
       </div>
     </section>
+  );
+}
+
+/** Un correo largo se parte después de la «@», nunca a media palabra. */
+function cortableTrasArroba(correo: string): ReactNode {
+  const arroba = correo.indexOf("@");
+  if (arroba < 0) return correo;
+  return (
+    <>
+      {correo.slice(0, arroba + 1)}
+      <wbr />
+      {correo.slice(arroba + 1)}
+    </>
   );
 }
 
@@ -394,7 +416,7 @@ function BotonCopiar({ valor, que }: { valor: string; que: string }) {
             () => {},
           );
         }}
-        className="h-9 shrink-0 self-start rounded-full border border-white/15 px-3.5 text-xs font-bold text-sobre-oscuro transition-colors hover:border-white/45 hover:text-white"
+        className="h-7 shrink-0 rounded-full border border-white/15 px-3 text-xs font-bold text-sobre-oscuro transition-colors hover:border-white/45 hover:text-white"
       >
         {copiado ? "Copiado" : "Copiar"}
         <span className="sr-only"> {que}</span>
@@ -572,7 +594,7 @@ function FormularioContacto({
       onSubmit={alEnviar}
       onBlur={alSalir}
       onChange={alCambiar}
-      className="formulario-contacto flex flex-col gap-7"
+      className="formulario-contacto flex flex-col gap-7 lg:flex-1"
     >
       <div>
         <h2 id="formulario-titulo" className="font-display text-seccion text-tinta">
@@ -656,11 +678,14 @@ function FormularioContacto({
         )}
       </div>
 
-      <div>
+      {/* Si el mostrador es más alto que el formulario (con los datos de la
+          oficina capturados), el mensaje crece hasta llenar la hoja en vez de
+          dejar un hueco blanco debajo del botón. */}
+      <div className="lg:flex lg:flex-1 lg:flex-col">
         <label htmlFor="contacto-mensaje" className="block text-sm font-bold text-tinta">
           ¿En qué te ayudamos? <span className="font-medium text-texto-suave">(opcional)</span>
         </label>
-        <span className="campo-caja mt-2">
+        <span className="campo-caja campo-crece mt-2">
           <textarea
             id="contacto-mensaje"
             name="mensaje"

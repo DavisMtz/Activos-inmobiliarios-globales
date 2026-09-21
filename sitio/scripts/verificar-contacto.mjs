@@ -19,8 +19,11 @@
  *   5. (solo --local) Un envío de verdad con «Vender»: queda como tipo
  *      `vender` y con su frase delante del mensaje. Se borra al final.
  *   6. Con «menos movimiento», el gracias se ve entero.
+ *   7. (solo --local) Siembra teléfono, correo, dirección y horario en la
+ *      fila `contacto` y mira los renglones del mostrador: «Copiar», el correo
+ *      partido tras la «@» y el formulario llenando su hoja. Devuelve la fila.
  *
- * `--remote` corre todo menos el 5: contra producción no se escribe nada.
+ * `--remote` corre todo menos el 5 y el 7: contra producción no se escribe nada.
  */
 import { spawn } from "node:child_process";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
@@ -346,6 +349,55 @@ try {
   );
   comprobar("el globo y el título, a la vista", quieto.globo === "1" && quieto.titulo === "1", JSON.stringify(quieto).slice(0, 160));
   comprobar("con correo, dice que le escriben a su correo", quieto.texto.includes("te escribe pronto a prueba@ejemplo.invalid"));
+
+  // ─── 7. Con los datos de la oficina (solo local) ─────────────────
+  // En producción todavía no hay teléfono, correo ni dirección capturados, así
+  // que sin esto los renglones del mostrador no los ve nadie hasta que el
+  // dueño los capture. Se siembran en la base LOCAL y se devuelve la fila.
+  const [filaContacto] = remoto ? [] : consultar("SELECT valor FROM configuracion WHERE clave = 'contacto';", opciones);
+  if (filaContacto?.valor) {
+    console.log("\n7. Con los datos de la oficina (solo en local)");
+    const ejemplo = {
+      telefono: "443 298 3138",
+      correo: "info@activosinmobiliariosglobales.com",
+      direccion: "Batalla de Casa Mata #799, int. 9, Chapultepec Sur, Morelia, Mich.",
+      horario: "Lunes a viernes, 9:00 a 18:00",
+    };
+    try {
+      ejecutarSql(`UPDATE configuracion SET valor = ${sql(JSON.stringify(ejemplo))} WHERE clave = 'contacto';`, opciones);
+      for (const [ancho, alto, movil] of [[390, 844, true], [1440, 900, false]]) {
+        await abrirContacto(cdp, { ancho, alto, movil });
+        await esperar(600);
+        const m = JSON.parse(
+          await evaluar(
+            cdp,
+            `JSON.stringify({
+              canales: [...document.querySelectorAll('[data-canal]')].map((li) => li.dataset.canal),
+              copiar: document.querySelectorAll('[data-canal] button').length,
+              scroll: document.documentElement.scrollWidth, ancho: document.documentElement.clientWidth,
+              renglonesCorreo: (() => { const a = document.querySelector('[data-canal="correo"] a');
+                return a ? Math.round(a.getBoundingClientRect().height / parseFloat(getComputedStyle(a).lineHeight)) : 0; })(),
+              hueco: (() => { const hoja = document.getElementById('formulario-titulo').closest('section');
+                const e = getComputedStyle(hoja);
+                return Math.round(hoja.clientHeight - parseFloat(e.paddingTop) - parseFloat(e.paddingBottom)
+                  - document.querySelector('.formulario-contacto').getBoundingClientRect().height); })(),
+            })`,
+          ),
+        );
+        comprobar(
+          `${ancho}: los cuatro renglones, con «Copiar» en teléfono y correo`,
+          m.canales.join(",") === "telefono,correo,oficina,horario" && m.copiar === 2,
+          JSON.stringify(m),
+        );
+        comprobar(`${ancho}: sin desplazamiento horizontal`, m.scroll <= m.ancho + 1, `ancho ${m.ancho}, scroll ${m.scroll}`);
+        comprobar(`${ancho}: el correo se parte tras la «@», no a media palabra (≤ 2 renglones)`, m.renglonesCorreo <= 2, `${m.renglonesCorreo} renglones`);
+        if (!movil) comprobar(`${ancho}: el formulario llena su hoja, sin hueco bajo el botón`, m.hueco <= 4, `hueco de ${m.hueco} px`);
+        await capturar(cdp, `8-con-datos-${ancho}`);
+      }
+    } finally {
+      ejecutarSql(`UPDATE configuracion SET valor = ${sql(filaContacto.valor)} WHERE clave = 'contacto';`, opciones);
+    }
+  }
 
   if (CAPTURAS) {
     console.log("\n· Capturas de escritorio");

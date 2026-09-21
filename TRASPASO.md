@@ -284,6 +284,12 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 > usuario dejó abierto, no un arreglo pendiente de código.
 
 0.ter **De Contacto (21/09/2026), esperando SU palabra** (ninguna es un fallo):
+   - **Subir el ajuste de los renglones de contacto** (commit local, SIN empujar ni desplegar
+     —lo que dice §1 de `main` empujada vale hasta `1655eb7`—). Con teléfono, correo y dirección
+     capturados, el correo se partía a media palabra y la hoja del formulario quedaba 384 px
+     vacía; se vio sembrando los datos en LOCAL (`verificar:contacto` §7). En producción hoy no
+     se nota porque no hay datos: hay que subirlo **antes** de que los capture. Con su palabra:
+     `git push` y `npm run deploy`, con los tres pasos de §3 antes.
    - **La composición:** quedó puesta la A (el mostrador); las otras tres están retratadas en
      `Escritorio\portada-propuestas\contacto-21-09\` (§5 dice cómo se cambia).
    - **Dos decisiones que tomó el agente y son suyas:** la lista de «¿Qué necesitas?» (Comprar,
@@ -349,7 +355,7 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 | `npm run verificar:listado -- --base http://localhost:5180` | El listado y **volver de una ficha** (su apartado 3). Sin `--base` apunta al puerto 4180 |
 | `npm run verificar:vitrina -- --base http://localhost:5180` | La vitrina de la portada. Misma trampa del 4180 |
 | `npm run verificar:movimiento -- --base http://localhost:5180` | Que nada quede invisible, con y sin «menos movimiento». Incluye `/servicios` y `/contacto`, y **prueba el botón de pausa** |
-| `npm run verificar:contacto -- --base http://localhost:5180 --local [--capturas carpeta]` | Contacto **pulsando los botones**: errores en su campo, el camino sin JavaScript, el gracias con la trampa y, solo en local, un envío real que queda como `vender` y se borra. Con `--remote` no escribe nada (28 comprobaciones) |
+| `npm run verificar:contacto -- --base http://localhost:5180 --local [--capturas carpeta]` | Contacto **pulsando los botones**: errores en su campo, el camino sin JavaScript, el gracias con la trampa y, solo en local, un envío real que queda como `vender` y se borra, y los renglones de la oficina con datos sembrados (devuelve la fila). 39 en local; con `--remote` no escribe nada (28) |
 | `npm run verificar:f3 -- --base http://localhost:5180 --local` | El panel, por API |
 | `npm run verificar:f3-navegador -- --base http://localhost:5180 --local` | El panel pulsando botones, el campo «Dibujo» y, **solo en `--remote`**, el criterio 8 |
 | `npm run verificar:f4 -- --base http://localhost:5180 --local` | Prospectos y métricas |
