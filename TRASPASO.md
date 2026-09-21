@@ -9,7 +9,7 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`2168665c`** (20/09/2026, la portada que vende) |
+| **Worker** | `activos-inmobiliarios`, versión activa **`2168665c`** (20/09/2026, la portada que vende). **`main` va UN commit por delante:** `d658f0f`, la composición ordenada, sin desplegar |
 | **Reversión** | la anterior es `ecb59d6c`: `npx wrangler rollback ecb59d6c-4d04-4316-b91d-7732f99deeb0` (devuelve la portada con la foto encuadrada que se abría al bajar). Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
@@ -44,6 +44,34 @@ Lo que mejor ha funcionado, por si ayuda:
 - **Registrar con números** en `PLAN.md` §19 al cerrar, incluidas las trampas nuevas.
 
 ## 5. Lo último que se hizo (19-20/09/2026)
+
+**La composición de la portada, ordenada (20/09/2026, al cierre · en `main`, commit `d658f0f`,
+SIN DESPLEGAR)** — pedido: «Revisa la index… ayúdame a hacer que todos los contenidos estén
+armónicamente ordenados… le falta una última pulida a la composición de los componentes».
+**Nada de esto rediseña: todos los componentes siguen siendo los que él aprobó.** Solo cambia
+inicio.tsx.
+
+| Qué se arregló | Cómo se midió |
+|---|---|
+| **«Encuentra tu propiedad» flotaba.** La columna iba centrada contra una vitrina de 600 px: 260 px de vacío arriba y 230 abajo. Ahora `lg:items-stretch` y el enlace al pie (`lg:mt-auto`); los accesos por tipo son un **índice en renglones** (el patrón de Servicios) y debajo van las **cinco colonias con más casas**, las mismas de `listado.tsx` | `difArriba` y `difAbajo` = **0 px** a 1024, 1280, 1440 y 1920 |
+| **El aire de esa sección era el único propio** (40/48 y 64/48 contra `py-14 sm:py-20` de todas) | huecos **160/160/160** en escritorio |
+| **La casa del héroe y la primera tarjeta de la vitrina eran la misma**, misma foto y mismo precio a 900 px | la vitrina arranca en la segunda (`casasEnVitrina`); la del héroe cierra el ciclo |
+| **Las tres cifras caían 2+1 en el teléfono** («precio desde» sola en un tercer renglón) | `grid grid-cols-3` hasta `lg`; el pie del héroe mide **38 px menos** |
+| El enlace repetía el texto del botón del buscador; el párrafo del cierre partía «una a / la medida» | «Ver todo el catálogo»; `max-w-2xl` |
+
+**Falta que él elija:** se le enseñaron **cuatro maquetas de esa columna** (A píldoras como
+antes · B índice · C píldoras + colonias · **D índice + colonias, la que quedó puesta**). Están
+en el borrador de la sesión como `variante-a…d.png`; si pide otra, el cambio es de minutos.
+
+**El héroe NO se tocó** (velo, foto, `--text-portada`, `pb`) ni el pie de página, que es de
+todas las páginas. Verificado con el preview en el 5180: 341 pruebas, `tsc`, `verificar:f2`
+39/39, `verificar:vitrina` 22/22, `verificar:listado` 24/24 y `verificar:movimiento` sin nada
+invisible.
+
+> **Parte de la «falta de armonía» no es código:** «Lo que dicen los clientes» y las preguntas
+> frecuentes **no salen porque no hay nada publicado**, y el antetítulo y el renglón bajo el
+> titular tampoco, porque «Saludo» y «Lema» están vacíos en Panel › Contenido. Eso lo llena él.
+
 
 **La portada que vende (20/09/2026, al cierre del día · EN PRODUCCIÓN, `2168665c`)** — pedido: «la portada
 como que aún no me gusta, quiero que sea atractiva y que se vea profesional enfocada en ventas y con una
