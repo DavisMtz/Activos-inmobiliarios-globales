@@ -98,7 +98,8 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
   const enFicha = /^\/propiedades\/[^/]+$/.test(pathname);
   // En la página del enlace de una entrega el botón flotante tapaba los campos
   // del formulario en el celular, y ahí el cliente no viene a preguntar nada.
-  const sinFlotante = enFicha || pathname.startsWith("/entrega/");
+  // En Contacto pasaba lo mismo, y ahí WhatsApp ya está en el mostrador.
+  const sinFlotante = enFicha || pathname.startsWith("/entrega/") || pathname === "/contacto";
   const contenedor = useRef<HTMLDivElement>(null);
   // En la PRIMERA página que se abre del sitio, sea cual sea (pedido del
   // 19/09/2026: antes solo salía si se entraba por la portada, y a mucha gente

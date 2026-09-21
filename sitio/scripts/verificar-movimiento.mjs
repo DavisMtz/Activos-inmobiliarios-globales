@@ -37,7 +37,9 @@ const { values } = parseArgs({ options: { base: { type: "string", default: "http
 const BASE = values.base.replace(/\/+$/, "");
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
-const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-el-prado-4", "/servicios"];
+// `/contacto` entró el 21/09/2026: su mostrador trae el dibujo de asesoría y
+// toda la página tiene entrada.
+const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-el-prado-4", "/servicios", "/contacto"];
 /**
  * `/entregas` solo existe con alguna publicada (si no, 404): se revisa cuando
  * responde. Para cubrirla, correr antes `verificar:entregas --local --dejar`.

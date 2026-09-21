@@ -127,6 +127,14 @@ export const IconoUbicacion = ({ className }: Props) => (
   </Marco>
 );
 
+/** El horario de la oficina (Contacto). */
+export const IconoReloj = ({ className }: Props) => (
+  <Marco className={className}>
+    <circle cx="12" cy="12" r="8.75" />
+    <path d="M12 7.25V12l3.25 2" />
+  </Marco>
+);
+
 // ─── Interfaz ─────────────────────────────────────────────────────
 
 export const IconoBuscar = ({ className }: Props) => (

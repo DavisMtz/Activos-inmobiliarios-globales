@@ -27,6 +27,7 @@
     "verificar:entregas": "node scripts/verificar-entregas.mjs",
     "verificar:busqueda": "node scripts/verificar-busqueda.mjs",
     "verificar:redes": "node scripts/verificar-redes.mjs",
+    "verificar:contacto": "node scripts/verificar-contacto.mjs",
     "medir:ia": "node scripts/medir-ia.mjs",
     "capturar": "node scripts/capturar.mjs",
     "filmar": "node scripts/filmar.mjs",

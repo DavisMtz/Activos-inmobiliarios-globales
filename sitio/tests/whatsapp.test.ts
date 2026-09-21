@@ -4,8 +4,26 @@ import {
   enlaceWhatsApp,
   numeroInternacionalMX,
   numeroLimpio,
+  numeroParaLeer,
   textoDeWhatsApp,
 } from "../shared/whatsapp";
+
+describe("numeroParaLeer", () => {
+  it("quita la clave de México y agrupa como se dicta", () => {
+    expect(numeroParaLeer("524434922197")).toBe("443 492 2197");
+    expect(numeroParaLeer("+52 443 492 2197")).toBe("443 492 2197");
+    expect(numeroParaLeer("5214434922197")).toBe("443 492 2197");
+    expect(numeroParaLeer("(443) 298-3138")).toBe("443 298 3138");
+  });
+
+  it("lo que no es de México sale con su clave y sin partir", () => {
+    expect(numeroParaLeer("14155552671")).toBe("+14155552671");
+  });
+
+  it("vacío si no hay número", () => {
+    expect(numeroParaLeer("")).toBe("");
+  });
+});
 
 const DATOS = {
   titulo: "Casa en Jesús del Monte",

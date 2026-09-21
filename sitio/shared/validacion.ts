@@ -9,6 +9,54 @@ export const normalizarCorreo = (correo: string): string => correo.trim().toLowe
 export const correoValido = (correo: string): boolean =>
   correo.length <= 254 && /^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/.test(correo.trim());
 
+/** Diez cifras es un celular mexicano; con clave de país llega a doce. */
+export const telefonoValido = (telefono: string): boolean => telefono.replace(/\D+/g, "").length >= 10;
+
+// ─── Los formularios que dejan un prospecto ───────────────────────
+
+/** Lo que se revisa, en el orden en que se enseña: el primer error manda. */
+export const CAMPOS_DE_PROSPECTO = ["nombre", "telefono", "correo", "acepto"] as const;
+export type CampoDeProspecto = (typeof CAMPOS_DE_PROSPECTO)[number];
+
+export type DatosDeProspecto = { nombre: string; telefono: string; correo: string; acepto: boolean };
+
+/**
+ * El único error que no es de UN campo sino del par teléfono/correo. Viaja
+ * como error de `telefono` (el primero del par), y la página de Contacto lo
+ * reconoce por este texto para enseñarlo debajo de los dos.
+ */
+export const SIN_FORMA_DE_CONTESTAR = "Déjanos un teléfono o un correo para poder contestarte.";
+
+/**
+ * UNA regla para los tres formularios (contacto, «Me interesa» y la API): la
+ * aplica el servidor, que decide, y el navegador, que avisa antes de mandar y
+ * junto al campo. Devuelve todos los problemas, no solo el primero: el
+ * navegador los marca a la vez.
+ *
+ * **Sin teléfono y sin correo no hay a quién contestarle** (21/09/2026): el
+ * formulario de contacto aceptaba un nombre solo y el asesor no tenía por
+ * dónde buscarlo. «Me interesa» ya exigía el teléfono.
+ */
+export function problemasDeProspecto(
+  { nombre, telefono, correo, acepto }: DatosDeProspecto,
+  { telefonoObligatorio = false }: { telefonoObligatorio?: boolean } = {},
+): Partial<Record<CampoDeProspecto, string>> {
+  const problemas: Partial<Record<CampoDeProspecto, string>> = {};
+  if (nombre.length < 2) problemas.nombre = "Escribe tu nombre.";
+
+  if (telefonoObligatorio && !telefonoValido(telefono)) {
+    problemas.telefono = "Escribe un teléfono de 10 dígitos para poder contestarte.";
+  } else if (telefono && !telefonoValido(telefono)) {
+    problemas.telefono = "Ese teléfono no parece completo.";
+  } else if (!telefono && !correo) {
+    problemas.telefono = SIN_FORMA_DE_CONTESTAR;
+  }
+
+  if (correo && !correoValido(correo)) problemas.correo = "Revisa el correo.";
+  if (!acepto) problemas.acepto = "Necesitamos que aceptes el aviso de privacidad.";
+  return problemas;
+}
+
 export const LARGO_MINIMO_CLAVE = 10;
 const LARGO_MAXIMO_CLAVE = 128;
 

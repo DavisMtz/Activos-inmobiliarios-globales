@@ -11,7 +11,7 @@
  */
 
 import { TIPOS_PROSPECTO, type TipoProspecto } from "../../shared/prospecto";
-import { correoValido, normalizarCorreo } from "../../shared/validacion";
+import { CAMPOS_DE_PROSPECTO, normalizarCorreo, problemasDeProspecto } from "../../shared/validacion";
 
 // La lista vive en `shared/prospecto.ts`, donde también la lee la bandeja del
 // panel (F4); se reexporta para no cambiarle la puerta al sitio público.
@@ -38,13 +38,14 @@ const texto = (formulario: FormData, campo: string, tope: number): string =>
     .trim()
     .slice(0, tope);
 
-/** Diez cifras es un celular mexicano; con clave de país llega a doce. */
-const telefonoValido = (telefono: string): boolean => telefono.replace(/\D+/g, "").length >= 10;
-
 /**
  * Revisa lo que llegó del formulario. `trampa` es el campo oculto: si trae
  * algo, lo llenó un programa. No se distingue en la respuesta, para no
  * enseñarle al que lo llenó cómo evitarlo la próxima vez.
+ *
+ * Las reglas viven en `shared/validacion.ts` (`problemasDeProspecto`), que es
+ * también lo que corre el navegador: aquí se devuelve el primero, en el orden
+ * de los campos.
  */
 export function revisarProspecto(
   formulario: FormData,
@@ -54,23 +55,15 @@ export function revisarProspecto(
   const telefono = texto(formulario, "telefono", 30);
   const correo = normalizarCorreo(texto(formulario, "correo", 254));
   const mensaje = texto(formulario, "mensaje", 1000);
-  const acepto = formulario.get("acepto");
-
-  if (nombre.length < 2) return { ok: false, campo: "nombre", mensaje: "Escribe tu nombre." };
+  const acepto = Boolean(formulario.get("acepto"));
 
   // En «Me interesa» el teléfono es obligatorio: es por donde contestan.
-  if (tipo === "propiedad" && !telefonoValido(telefono)) {
-    return { ok: false, campo: "telefono", mensaje: "Escribe un teléfono de 10 dígitos para poder contestarte." };
-  }
-  if (telefono && !telefonoValido(telefono)) {
-    return { ok: false, campo: "telefono", mensaje: "Ese teléfono no parece completo." };
-  }
-  if (correo && !correoValido(correo)) {
-    return { ok: false, campo: "correo", mensaje: "Revisa el correo." };
-  }
-  if (!acepto) {
-    return { ok: false, campo: "acepto", mensaje: "Necesitamos que aceptes el aviso de privacidad." };
-  }
+  const problemas = problemasDeProspecto(
+    { nombre, telefono, correo, acepto },
+    { telefonoObligatorio: tipo === "propiedad" },
+  );
+  const campo = CAMPOS_DE_PROSPECTO.find((c) => problemas[c]);
+  if (campo) return { ok: false, campo, mensaje: problemas[campo] ?? "" };
 
   return {
     ok: true,

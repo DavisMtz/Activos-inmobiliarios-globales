@@ -31,6 +31,10 @@
   --color-marca: #a0051c;
   --color-marca-oscuro: #760415;
   --color-marca-suave: #f9e8ea;
+  /* El rojo claro del isotipo, para las piezas rojas que van SOBRE TINTA: ahí
+     el de marca casi desaparece (2.3:1 contra #111) y este da 5.6:1. Lo usa el
+     dibujo del mostrador de Contacto. */
+  --color-marca-claro: #f5515f;
   --color-tinta: #111111;
 
   /* Texto: el gris #808080 del sitio actual no llega a AA sobre blanco (3.9:1).
@@ -991,4 +995,364 @@
 .escenario-ficha:hover {
   border-color: rgba(255, 255, 255, 0.55);
   background: rgba(17, 17, 17, 0.5);
+}
+
+/* ─── Contacto (`routes/publico/contacto.tsx`) ───────────────────────
+   «El mostrador», elegido entre cuatro composiciones retratadas sobre la
+   página real (21/09/2026): un campo de tinta donde pasa la conversación
+   (titular, WhatsApp y el dibujo de asesoría de Servicios en línea clara) y
+   el formulario en una hoja blanca a su lado.
+
+   TODO el movimiento es CSS: la página entera cabe sobre el pliegue y GSAP
+   llega tarde. Cada gesto responde a algo que hizo la persona; nada se repite
+   solo, así que no hace falta botón de pausa (WCAG 2.2.2):
+   - el HILO: una raya roja se tiende bajo el campo que tiene el foco (es el
+     mismo hilo rojo que avisa de la carga entre páginas). Va solo en el tramo
+     recto: el `overflow: hidden` que lo recortaría a la curva también le
+     cortaría el anillo de foco al campo;
+   - la palomita verde se DIBUJA cuando un campo ya está bien (con la misma
+     curva de pluma que los dibujos), y el error llega bajo el campo, no en
+     un letrero arriba;
+   - las ESTELAS del isotipo detrás de la flecha de «Enviar»: se estiran al
+     pasar el ratón y corren mientras se manda;
+   - los puntos del globo rojo del dibujo «escriben» una vez al pasar por
+     WhatsApp, al entrar al formulario y al recibir el mensaje: del otro lado
+     hay alguien;
+   - y el globo de la respuesta llega con su palomita cuando el mensaje entró. */
+
+/* El dibujo sobre tinta: la línea pasa a crema, el papel toma el color del
+   campo (así las figuras quedan huecas y no como recortes blancos) y la pieza
+   roja usa el rojo claro. Sin capa a propósito: tiene que ganarle al
+   `text-tinta` que trae el dibujo, que vive en la capa de utilidades. */
+.escena-contacto {
+  --color-marca: var(--color-marca-claro);
+  --color-superficie: var(--color-tinta);
+  --color-marca-suave: rgb(255 255 255 / 0.07);
+  color: var(--color-sobre-oscuro);
+}
+
+/* ── El campo ── */
+.campo-caja {
+  position: relative;
+  display: block;
+}
+.campo-caja > input,
+.campo-caja > textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--color-linea);
+  border-radius: 0.875rem;
+  background-color: var(--color-superficie);
+  color: var(--color-tinta);
+  font-size: 1rem;
+  outline: none;
+  transition:
+    border-color 0.18s ease-out,
+    background-color 0.18s ease-out;
+}
+.campo-caja > input {
+  height: 3.25rem;
+  /* A la derecha vive la palomita: el texto no se mete debajo. */
+  padding: 0 2.75rem 0 1rem;
+}
+.campo-caja > textarea {
+  min-height: 7.5rem;
+  max-height: 18rem;
+  padding: 0.85rem 1rem;
+  line-height: 1.5;
+  resize: none;
+  /* Crece con lo que se escribe (Chrome 123+); en los demás, 4 renglones. */
+  field-sizing: content;
+}
+.campo-caja > :is(input, textarea)::placeholder {
+  /* #767676 es el gris más claro que llega a 4.5:1 sobre blanco. */
+  color: #767676;
+  opacity: 1;
+}
+.campo-caja > :is(input, textarea):hover {
+  border-color: #cdc3bd;
+}
+.campo-caja > :is(input, textarea):focus {
+  border-color: var(--color-tinta);
+}
+.campo-caja > [aria-invalid="true"] {
+  border-color: var(--color-marca);
+}
+/* El autocompletado del navegador pinta el campo de amarillo o azul: aquí
+   se queda con un papel apenas tibio, que sigue diciendo «esto lo llené yo». */
+.campo-caja > input:autofill,
+.campo-caja > input:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-tinta);
+  box-shadow: 0 0 0 100px #fbf6f2 inset;
+}
+
+.campo-caja::after {
+  content: "";
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0;
+  left: 0.875rem;
+  height: 2px;
+  border-radius: 1px;
+  background-color: var(--color-marca);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+  /* Se va más rápido de lo que llega. */
+  transition: transform 0.18s cubic-bezier(0.4, 0, 1, 1);
+}
+.campo-caja:focus-within::after,
+.campo-caja:has(> [aria-invalid="true"])::after {
+  transform: scaleX(1);
+  transition: transform 0.45s var(--ease-entrada);
+}
+
+.campo-bien {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: -0.5625rem;
+  color: var(--color-exito);
+  pointer-events: none;
+}
+
+.campo-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-marca-oscuro);
+}
+
+/* ── «¿Qué necesitas?» ── */
+.opcion {
+  display: inline-flex;
+  align-items: center;
+  /* 44 px: se toca con el pulgar sin atinarle a la de al lado. */
+  height: 2.75rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--color-linea);
+  border-radius: 999px;
+  background-color: var(--color-superficie);
+  color: var(--color-tinta);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.18s ease-out,
+    border-color 0.18s ease-out,
+    color 0.18s ease-out,
+    scale 0.12s ease-out;
+}
+.opcion:hover {
+  border-color: var(--color-tinta);
+}
+.opcion:active {
+  scale: 0.97;
+}
+.opcion:has(:checked) {
+  border-color: var(--color-tinta);
+  background-color: var(--color-tinta);
+  color: #fff;
+}
+/* El botón de radio va escondido: el anillo de foco lo lleva la píldora. */
+.opcion:has(:focus-visible) {
+  outline: 3px solid var(--color-marca);
+  outline-offset: 2px;
+}
+
+/* ── La casilla del aviso ── */
+.casilla {
+  position: relative;
+  flex: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: 0.05rem;
+}
+.casilla > input {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  /* #8a7f79: el borde de un control pide 3:1 y este da 3.9:1 sobre blanco. */
+  border: 1.5px solid #8a7f79;
+  border-radius: 0.4rem;
+  background-color: var(--color-superficie);
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease-out,
+    border-color 0.18s ease-out;
+}
+.casilla > input:hover {
+  border-color: var(--color-tinta);
+}
+.casilla > input:checked {
+  border-color: var(--color-marca);
+  background-color: var(--color-marca);
+}
+.casilla > input[aria-invalid="true"] {
+  border-color: var(--color-marca);
+}
+.casilla > svg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.casilla > input:checked + svg {
+  opacity: 1;
+}
+
+/* ── Enviar, con las estelas del isotipo ── */
+.boton-enviar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  height: 3.25rem;
+  padding: 0 1.2rem 0 1.5rem;
+  border-radius: 0.875rem;
+  background-color: var(--color-tinta);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease-out,
+    scale 0.12s ease-out;
+}
+.boton-enviar:hover {
+  background-color: var(--color-marca-oscuro);
+}
+.boton-enviar:active {
+  scale: 0.98;
+}
+.boton-enviar:disabled {
+  cursor: wait;
+}
+.flecha-estelas {
+  width: 1.875rem;
+  height: 1rem;
+  overflow: visible;
+}
+.flecha-estelas .estela {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  scale: 0.5 1;
+  opacity: 0.45;
+  transition:
+    scale 0.35s var(--ease-entrada),
+    opacity 0.35s var(--ease-entrada);
+}
+.flecha-estelas .punta {
+  transition: translate 0.35s var(--ease-entrada);
+}
+.boton-enviar:is(:hover, :focus-visible) .estela {
+  scale: 1 1;
+  opacity: 1;
+}
+.boton-enviar:is(:hover, :focus-visible) .punta {
+  translate: 3px 0;
+}
+
+/* ── El mostrador reacciona ── */
+.canal-icono {
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+.canal:has(a:is(:hover, :focus-visible)) .canal-icono {
+  border-color: var(--color-marca-claro);
+  background-color: var(--color-marca-claro);
+  color: var(--color-tinta);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .campo-bien path {
+    animation: dibujo-trazo 0.4s cubic-bezier(0.45, 0, 0.15, 1) backwards;
+  }
+  .campo-error {
+    animation: error-llega 0.22s var(--ease-entrada) both;
+  }
+  .casilla > input:checked + svg path {
+    animation: dibujo-trazo 0.3s cubic-bezier(0.45, 0, 0.15, 1) 0.05s backwards;
+  }
+
+  /* Mientras se manda, las estelas corren detrás de la flecha. */
+  .boton-enviar[aria-busy="true"] .estela {
+    scale: 1 1;
+    animation: estela-corre 0.75s linear infinite;
+  }
+  .boton-enviar[aria-busy="true"] .estela:nth-child(2) {
+    animation-delay: -0.25s;
+  }
+  .boton-enviar[aria-busy="true"] .estela:nth-child(3) {
+    animation-delay: -0.5s;
+  }
+
+  /* Los puntos del globo escriben: una vez por gesto, nunca en bucle. */
+  .contacto:has(.cta-mostrador:is(:hover, :focus-visible)) .escena-contacto .dibujo-punto,
+  .contacto:has(.formulario-contacto:focus-within) .escena-contacto .dibujo-punto,
+  .contacto[data-listo] .escena-contacto .dibujo-punto {
+    animation: vida-punto 4.5s ease-in-out;
+  }
+  .contacto:has(.cta-mostrador:is(:hover, :focus-visible)) .escena-contacto .dibujo-punto:nth-of-type(2),
+  .contacto:has(.formulario-contacto:focus-within) .escena-contacto .dibujo-punto:nth-of-type(2),
+  .contacto[data-listo] .escena-contacto .dibujo-punto:nth-of-type(2) {
+    animation-delay: 140ms;
+  }
+  .contacto:has(.cta-mostrador:is(:hover, :focus-visible)) .escena-contacto .dibujo-punto:nth-of-type(3),
+  .contacto:has(.formulario-contacto:focus-within) .escena-contacto .dibujo-punto:nth-of-type(3),
+  .contacto[data-listo] .escena-contacto .dibujo-punto:nth-of-type(3) {
+    animation-delay: 280ms;
+  }
+
+  /* La respuesta: el globo rojo llega desde su cola y la palomita se dibuja. */
+  .exito-globo {
+    transform-box: fill-box;
+    transform-origin: 8% 100%;
+    animation: exito-globo 0.55s var(--ease-entrada) backwards;
+  }
+  .exito-palomita {
+    animation: dibujo-trazo 0.5s cubic-bezier(0.45, 0, 0.15, 1) 0.3s backwards;
+  }
+}
+
+@keyframes error-llega {
+  from {
+    opacity: 0;
+    transform: translateY(-0.3rem);
+  }
+}
+@keyframes estela-corre {
+  from {
+    translate: 7px 0;
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    translate: -9px 0;
+    opacity: 0;
+  }
+}
+@keyframes exito-globo {
+  from {
+    opacity: 0;
+    transform: translateY(14%) scale(0.72);
+  }
 }

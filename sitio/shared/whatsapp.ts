@@ -31,6 +31,25 @@ export function numeroInternacionalMX(numero: string): string {
 }
 
 /**
+ * El número como se lee y se dicta: «524434922197» → «443 492 2197». Lo que
+ * no es un número mexicano se enseña con su clave de país, sin agrupar: vale
+ * más un número feo que uno mal partido. Vacío si no hay número.
+ */
+export function numeroParaLeer(numero: string): string {
+  const limpio = numeroLimpio(numero);
+  const nacional =
+    limpio.length === 10
+      ? limpio
+      : limpio.length === 12 && limpio.startsWith("52")
+        ? limpio.slice(2)
+        : limpio.length === 13 && limpio.startsWith("521")
+          ? limpio.slice(3)
+          : null;
+  if (nacional) return `${nacional.slice(0, 3)} ${nacional.slice(3, 6)} ${nacional.slice(6)}`;
+  return limpio ? `+${limpio}` : "";
+}
+
+/**
  * Rellena `{titulo}`, `{clave}` y `{url}` de la plantilla. Una llave que no
  * exista se deja tal cual: es un texto que escribió una persona en el panel y
  * borrarlo en silencio sería peor que enseñarlo.
