@@ -3,19 +3,25 @@ import "@fontsource-variable/jost/wght.css";
 import fuenteJost from "@fontsource-variable/jost/files/jost-latin-wght-normal.woff2?url";
 import fuenteNunito from "@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactElement } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigation } from "react-router";
 import { leerConfigDelSitio } from "../../../server/db/configuracion";
 import { hayEntregasPublicas } from "../../../server/db/entregas";
 import { enlaceWhatsApp } from "../../../shared/whatsapp";
+import { etiquetaDeRed, type ClaveDeRed, type EnlaceDeRed } from "../../../shared/redes";
 import {
   IconoCorreo,
   IconoFacebook,
   IconoFlecha,
   IconoInstagram,
+  IconoLinkedIn,
   IconoTelefono,
+  IconoThreads,
+  IconoTikTok,
   IconoUbicacion,
   IconoWhatsApp,
+  IconoX,
+  IconoYouTube,
 } from "../../components/publico/iconos";
 import { Bienvenida } from "../../components/publico/bienvenida";
 import { Isotipo } from "../../components/publico/isotipo";
@@ -179,7 +185,14 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
         <Outlet />
       </main>
 
-      <Pie nombreNegocio={nombreNegocio} contacto={contacto} redes={redes} anio={anio} navegacion={navegacion} />
+      <Pie
+        nombreNegocio={nombreNegocio}
+        contacto={contacto}
+        redes={redes}
+        whatsapp={whatsapp}
+        anio={anio}
+        navegacion={navegacion}
+      />
 
       {whatsapp && !sinFlotante ? (
         <a
@@ -470,18 +483,45 @@ function Cabecera({
 // ─── Pie ──────────────────────────────────────────────────────────
 
 type Contacto = { telefono: string; correo: string; direccion: string; horario: string };
-type Redes = { facebook: string; instagram: string };
+/** Lo que el `loader` deja de las redes: la lista que armó `server/db`. */
+type Redes = { lista: EnlaceDeRed[] };
+
+/**
+ * Qué dibujo le toca a cada red. Vive aquí, del lado del sitio, porque
+ * `shared/redes.ts` es solo datos: el panel no puede importar interfaz (F3,
+ * criterio 8). Agregar una red es su renglón allá y su dibujo aquí.
+ */
+const ICONO_DE_RED: Record<ClaveDeRed, (props: { className?: string }) => ReactElement> = {
+  facebook: IconoFacebook,
+  instagram: IconoInstagram,
+  tiktok: IconoTikTok,
+  x: IconoX,
+  youtube: IconoYouTube,
+  linkedin: IconoLinkedIn,
+  threads: IconoThreads,
+  whatsapp: IconoWhatsApp,
+};
+
+/** Cuántas columnas caben, escritas enteras: Tailwind solo genera las que lee. */
+const COLUMNAS_DEL_PIE: Record<number, string> = {
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+};
 
 function Pie({
   nombreNegocio,
   contacto,
   redes,
+  whatsapp,
   anio,
   navegacion: NAVEGACION,
 }: {
   nombreNegocio: string;
   contacto: Contacto;
   redes: Redes;
+  /** El enlace ya armado; `null` si el equipo no ha capturado el número. */
+  whatsapp: string | null;
   anio: number;
   navegacion: Enlace[];
 }) {
@@ -491,29 +531,86 @@ function Pie({
   // Lo que no existe no se enseña vacío (PLAN §0.4): sin ningún dato de
   // contacto capturado, la columna era un título sobre nada.
   const hayContacto = Boolean(contacto.telefono || contacto.correo || contacto.direccion || contacto.horario);
-  const hayRedes = Boolean(redes.facebook || redes.instagram);
-  const columnas = 1 + (hayContacto ? 1 : 0) + (hayRedes ? 1 : 0);
+  const hayRedes = redes.lista.length > 0;
+  // La última columna es Contacto si hay datos; si no, la invitación a
+  // escribir, que es lo que este negocio quiere que pase. Sin número de
+  // WhatsApp ni datos, no hay cuarta columna: nada vacío.
+  const hayCierre = hayContacto || Boolean(whatsapp);
+  const columnas = 2 + (hayRedes ? 1 : 0) + (hayCierre ? 1 : 0);
 
   return (
     <footer className="campo-oscuro bg-tinta text-sobre-oscuro">
       <div className="mx-auto max-w-sitio px-5 lg:px-10 py-14 sm:py-20">
-        {/* Desde 1280 px la marca y las columnas comparten renglón. */}
-        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:gap-16">
+        {/* Columnas PAREJAS y todas arrancando arriba. Antes la marca se
+            quedaba con un tercio del ancho para dos renglones de texto y las
+            secciones se apretaban en el resto: quedaba un hueco de 300 px
+            bajo el lema y otro a la derecha del todo. */}
+        <div className={`grid gap-10 sm:grid-cols-2 lg:gap-8 ${COLUMNAS_DEL_PIE[columnas]}`}>
           {/* Sobre el campo oscuro va el isotipo (que es rojo y se lee) más el
               nombre en tipografía: el logotipo completo lleva la palabra en negro
               y no existe versión clara (PLAN §6.4). */}
           <div>
-            <div className="flex items-center gap-4">
-              <Isotipo className="h-10 w-auto shrink-0" />
-              <p className="font-display text-seccion text-white">{nombreNegocio}</p>
+            <div className="flex items-center gap-3">
+              <Isotipo className="h-9 w-auto shrink-0" />
+              <p className="font-display text-lg leading-tight font-semibold text-white">{nombreNegocio}</p>
             </div>
-            <p className="mt-3 max-w-md text-sobre-oscuro-suave">Donde cada propiedad cuenta una historia</p>
+            <p className="mt-3 max-w-xs text-sm text-sobre-oscuro-suave">Donde cada propiedad cuenta una historia</p>
           </div>
 
-          <div className={`mt-12 grid gap-10 sm:grid-cols-2 xl:mt-0 ${columnas === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"}`}>
-            {hayContacto ? (
-              <section>
-                <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Contacto</h2>
+          <section>
+            <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Sitio</h2>
+            <ul className="mt-4 flex flex-col gap-3">
+              {NAVEGACION.map((enlace) => (
+                <li key={enlace.a}>
+                  <Link to={enlace.a} viewTransition className="hover:underline">
+                    {enlace.texto}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link to="/aviso-de-privacidad" viewTransition className="hover:underline">
+                  Aviso de privacidad
+                </Link>
+              </li>
+            </ul>
+          </section>
+
+          {hayRedes ? (
+            <section>
+              <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Redes</h2>
+              {/* Con su NOMBRE y no solo el icono: dos círculos sueltos no se
+                  leían como una columna, y un dibujo de marca sin su palabra
+                  obliga a adivinar. El orden es el que el equipo puso en
+                  Panel › Configuración. */}
+              <ul className="mt-4 flex flex-col gap-2">
+                {redes.lista.map(({ red, url }) => {
+                  const Icono = ICONO_DE_RED[red];
+                  return (
+                    <li key={red}>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-3 hover:underline"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 transition-colors group-hover:border-white/60 group-hover:bg-white/10">
+                          <Icono className="h-4.5 w-4.5" />
+                        </span>
+                        {etiquetaDeRed(red)}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ) : null}
+
+          {hayCierre ? (
+            <section>
+              <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">
+                {hayContacto ? "Contacto" : "Escríbenos"}
+              </h2>
+              {hayContacto ? (
                 <ul className="mt-4 flex flex-col gap-3 text-sobre-oscuro">
                   {contacto.telefono ? (
                     <li>
@@ -540,61 +637,24 @@ function Pie({
                   {/* El horario se oculta mientras nadie lo confirme (PLAN §6.3). */}
                   {contacto.horario ? <li className="pl-8">{contacto.horario}</li> : null}
                 </ul>
-              </section>
-            ) : null}
-
-            <section>
-              <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Sitio</h2>
-              <ul className="mt-4 flex flex-col gap-3">
-                {NAVEGACION.map((enlace) => (
-                  <li key={enlace.a}>
-                    <Link to={enlace.a} viewTransition className="hover:underline">
-                      {enlace.texto}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <Link to="/aviso-de-privacidad" viewTransition className="hover:underline">
-                    Aviso de privacidad
-                  </Link>
-                </li>
-              </ul>
+              ) : (
+                <p className="mt-4 max-w-xs text-sm text-sobre-oscuro-suave">
+                  Cuéntanos qué buscas y te respondemos por WhatsApp.
+                </p>
+              )}
+              {whatsapp ? (
+                <a
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-extrabold text-marca-oscuro transition-colors hover:bg-sobre-oscuro"
+                >
+                  <IconoWhatsApp className="h-4.5 w-4.5" />
+                  Escríbenos por WhatsApp
+                </a>
+              ) : null}
             </section>
-
-            {hayRedes ? (
-              <section>
-                <h2 className="text-sm font-bold tracking-widest text-sobre-oscuro-suave uppercase">Redes</h2>
-                <ul className="mt-4 flex gap-3">
-                  {redes.facebook ? (
-                    <li>
-                      <a
-                        href={redes.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Facebook"
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60 hover:bg-white/10"
-                      >
-                        <IconoFacebook />
-                      </a>
-                    </li>
-                  ) : null}
-                  {redes.instagram ? (
-                    <li>
-                      <a
-                        href={redes.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Instagram"
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white/60 hover:bg-white/10"
-                      >
-                        <IconoInstagram />
-                      </a>
-                    </li>
-                  ) : null}
-                </ul>
-              </section>
-            ) : null}
-          </div>
+          ) : null}
         </div>
 
         <p className="mt-14 border-t border-white/15 pt-6 text-sm text-sobre-oscuro-suave">

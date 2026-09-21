@@ -1,5 +1,6 @@
 import { data, Form, redirect } from "react-router";
 import { puede } from "../../../shared/permisos";
+import { CLAVES_DE_RED, TOPE_DE_REDES, etiquetaDeRed } from "../../../shared/redes";
 import { sesionDePeticion } from "../../../server/auth/guardia";
 import { leerConfiguracion } from "../../../server/db/configuracion";
 import { esClaveEditable, guardarConfiguracion } from "../../../server/db/panel/configuracion";
@@ -12,6 +13,9 @@ import type { Route } from "./+types/configuracion";
 export function meta() {
   return [{ title: "Configuración | Panel" }];
 }
+
+/** Los renglones del bloque «Redes»: tantos como redes caben en el pie. */
+const RENGLONES_DE_RED = Array.from({ length: TOPE_DE_REDES }, (_, i) => i);
 
 /**
  * Teléfono, WhatsApp, redes y aviso de privacidad (PLAN §6.3). Cambiar el
@@ -66,6 +70,15 @@ export async function action({ request, context }: Route.ActionArgs) {
   // Una casilla sin marcar NO viaja en el formulario (PLAN §17): el apagado se
   // manda escrito, o apagar el buscador desde aquí sería imposible.
   if (clave === "busqueda_ia") datos.activa = formulario.has("activa") ? "on" : "off";
+  // Las redes llegan en renglones sueltos (`red_0`/`url_0`…) para que el
+  // formulario funcione sin JavaScript; aquí se vuelven la lista que guarda la
+  // base, igual que los «valores» de Nosotros en `contenido.tsx`.
+  if (clave === "redes") {
+    datos.lista = RENGLONES_DE_RED.map((i) => ({
+      red: String(formulario.get(`red_${i}`) ?? ""),
+      url: String(formulario.get(`url_${i}`) ?? ""),
+    }));
+  }
 
   const r = await guardarConfiguracion(servicios.db, encontrada.sesion.usuario, clave, datos);
   return r.ok ? redirect(`/panel/configuracion?guardado=${clave}`) : data({ error: r.mensaje }, { status: r.estado });
@@ -150,11 +163,36 @@ export default function Configuracion({ loaderData, actionData }: Route.Componen
             </Form>
           </Bloque>
 
-          <Bloque titulo="Redes" descripcion="Los enlaces que salen en el pie. Vacío: no se enseña el icono.">
+          {/* Ocho renglones fijos, como los «valores» de Nosotros: así se
+              agregan redes sin tocar el código y el formulario funciona sin
+              JavaScript (un `select` siempre viaja; una casilla vacía, no).
+              Un renglón sin enlace no se guarda, y así también se BORRA una
+              red: se vacía su enlace. */}
+          <Bloque
+            titulo="Redes"
+            descripcion="Los enlaces que salen en el pie, en este orden. Elige la red y pega su enlace; para quitar una, borra su enlace."
+          >
             <Form method="post" className="flex flex-col gap-5">
               <input type="hidden" name="que" value="redes" />
-              <Campo etiqueta="Facebook" name="facebook" type="url" defaultValue={redes.facebook} />
-              <Campo etiqueta="Instagram" name="instagram" type="url" defaultValue={redes.instagram} />
+              {RENGLONES_DE_RED.map((i) => (
+                <div key={i} className="grid gap-3 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]">
+                  <CampoSelect etiqueta={`Red ${i + 1}`} name={`red_${i}`} defaultValue={redes.lista[i]?.red ?? ""}>
+                    <option value="">— ninguna —</option>
+                    {CLAVES_DE_RED.map((clave) => (
+                      <option key={clave} value={clave}>
+                        {etiquetaDeRed(clave)}
+                      </option>
+                    ))}
+                  </CampoSelect>
+                  <Campo
+                    etiqueta="Enlace"
+                    name={`url_${i}`}
+                    type="url"
+                    placeholder="https://…"
+                    defaultValue={redes.lista[i]?.url ?? ""}
+                  />
+                </div>
+              ))}
               <div>
                 <Boton type="submit">Guardar las redes</Boton>
               </div>

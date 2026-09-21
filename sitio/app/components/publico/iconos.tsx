@@ -55,6 +55,58 @@ export const IconoInstagram = ({ className }: Props) => (
   </Marco>
 );
 
+/**
+ * La nota de TikTok: el gancho de arriba, el mástil y la cabeza. Dibujada con
+ * el trazo de la familia y no copiada de memoria: un `path` de marca recordado
+ * sale torcido y en el código no se ve. Se revisa en `npm run hoja:redes`.
+ */
+export const IconoTikTok = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M13.6 3.2v10.9a3.9 3.9 0 1 1-3.9-3.9c.36 0 .7.05 1.03.15" />
+    <path d="M13.6 3.2a5.4 5.4 0 0 0 5.4 5.1" />
+  </Marco>
+);
+
+/**
+ * La X. Con el trazo de la familia y las puntas redondas se leía como el
+ * aspa de «cerrar» (se vio en la hoja): va maciza, con las astas de distinto
+ * grosor, que es lo que la distingue de una cruz cualquiera.
+ */
+export const IconoX = ({ className }: Props) => (
+  <Marco className={className} macizo>
+    <path d="M13.9 10.6 21.2 2.2h-1.73l-6.35 7.3-5.07-7.3H2.2l7.66 11.1-7.66 8.9h1.73l6.7-7.78 5.35 7.78h6.02l-7.95-11.6Zm-2.37 2.76-.78-1.11-6.17-8.83h2.66l4.99 7.14.78 1.11 6.48 9.27h-2.66l-5.3-7.58Z" />
+  </Marco>
+);
+
+export const IconoYouTube = ({ className }: Props) => (
+  <Marco className={className}>
+    <rect x="2.2" y="5.4" width="19.6" height="13.2" rx="4" />
+    <path d="m10.4 9.4 5.1 2.6-5.1 2.6z" fill="currentColor" stroke="none" />
+  </Marco>
+);
+
+export const IconoLinkedIn = ({ className }: Props) => (
+  <Marco className={className}>
+    <rect x="3" y="3" width="18" height="18" rx="4" />
+    <circle cx="7.6" cy="7.9" r="1.05" fill="currentColor" stroke="none" />
+    <path d="M7.6 10.9v5.6" />
+    <path d="M11.5 16.5v-5.6" />
+    <path d="M11.5 13.3a2.3 2.3 0 0 1 4.6 0v3.2" />
+  </Marco>
+);
+
+/**
+ * Threads: el anillo abierto arriba a la derecha y el gancho de adentro. El
+ * primer intento salió como un caracol (se vio en la hoja, no en el código):
+ * aquí el anillo es casi un círculo y el gancho, un arco corto a su derecha.
+ */
+export const IconoThreads = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M17.6 6.6C16.5 4.6 14.6 3.6 12.1 3.6 7.6 3.6 5 6.6 5 12.1s2.6 8.4 7.1 8.4c4.1 0 6.4-2 6.4-4.6 0-2.1-1.4-3.5-3.7-3.9" />
+    <path d="M14.8 12c-.3-1.5-1.4-2.3-3-2.3-1.9 0-3.1.9-3.1 2.4 0 1.5 1.2 2.5 3 2.5 2.4 0 3.8-1.6 3.8-4.2" />
+  </Marco>
+);
+
 export const IconoTelefono = ({ className }: Props) => (
   <Marco className={className}>
     <path d="M5.5 3.5h3l1.5 4-2 1.4a12.5 12.5 0 0 0 5.6 5.6l1.4-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" />

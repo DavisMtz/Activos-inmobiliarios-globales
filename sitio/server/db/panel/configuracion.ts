@@ -14,6 +14,7 @@
 import { puede, type Actor, type Permiso } from "../../../shared/permisos";
 import { MODELO_DE_FABRICA, modeloValido } from "../../ia/motor";
 import { TOPE_DIARIO_DE_FABRICA, TOPE_DIARIO_MAXIMO } from "../configuracion";
+import { revisarRedes } from "../../../shared/redes";
 import { correoValido } from "../../../shared/validacion";
 import { numeroLimpio } from "../../../shared/whatsapp";
 import { sentenciaBitacora } from "../../bitacora";
@@ -113,11 +114,10 @@ export function revisarConfiguracion(clave: ClaveEditable, crudo: Record<string,
     }
 
     case "redes": {
-      const facebook = texto(crudo, "facebook", 300);
-      const instagram = texto(crudo, "instagram", 300);
-      if (!enlaceValido(facebook)) return mal("facebook", "El enlace de Facebook tiene que empezar con https://");
-      if (!enlaceValido(instagram)) return mal("instagram", "El enlace de Instagram tiene que empezar con https://");
-      return { ok: true, valor: { facebook, instagram } };
+      // La regla entera vive en `shared/redes.ts`, la misma que usa el sitio
+      // al LEER: es lo único que impide que las dos puntas se separen.
+      const r = revisarRedes(crudo);
+      return r.ok ? { ok: true, valor: { lista: r.lista } } : mal(r.campo, r.mensaje);
     }
 
     case "portada": {

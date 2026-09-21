@@ -9,6 +9,7 @@
  */
 
 import { MODELO_DE_FABRICA, modeloValido } from "../ia/motor";
+import { redesDeBolsa, type EnlaceDeRed } from "../../shared/redes";
 
 export type Contacto = {
   telefono: string;
@@ -23,7 +24,12 @@ export type WhatsAppConfig = {
   plantillaGeneral: string;
 };
 
-export type Redes = { facebook: string; instagram: string };
+/**
+ * Las redes del pie, en el orden que puso el equipo. Era `{facebook,
+ * instagram}` y ahora es una lista, para que se puedan añadir TikTok, X y las
+ * que vengan sin tocar el código (`shared/redes.ts`).
+ */
+export type Redes = { lista: EnlaceDeRed[] };
 
 export type Portada = {
   saludo: string;
@@ -78,7 +84,7 @@ export type ConfigDelSitio = {
 
 const CONTACTO_VACIO: Contacto = { telefono: "", correo: "", direccion: "", horario: "" };
 const WHATSAPP_VACIO: WhatsAppConfig = { numero: "", plantillaPropiedad: "", plantillaGeneral: "" };
-const REDES_VACIAS: Redes = { facebook: "", instagram: "" };
+const REDES_VACIAS: Redes = { lista: [] };
 const PORTADA_VACIA: Portada = {
   saludo: "",
   titular: "",
@@ -124,7 +130,10 @@ const ARMADORES = {
     plantillaPropiedad: cadena(b, "plantilla_propiedad"),
     plantillaGeneral: cadena(b, "plantilla_general"),
   }),
-  redes: (b: Bolsa): Redes => ({ facebook: cadena(b, "facebook"), instagram: cadena(b, "instagram") }),
+  // La regla vive en `shared/redes.ts`, junto a la de guardar: la fila que hay
+  // en producción todavía es `{facebook, instagram}` y si solo se leyera
+  // `lista`, el pie se quedaría sin las dos redes que el negocio SÍ tiene.
+  redes: (b: Bolsa): Redes => ({ lista: redesDeBolsa(b) }),
   portada: (b: Bolsa): Portada => ({
     saludo: cadena(b, "saludo"),
     titular: cadena(b, "titular"),
@@ -182,6 +191,16 @@ const VACIA: Configuracion = {
   avisoPrivacidad: AVISO_VACIO,
   busquedaIA: BUSQUEDA_IA_APAGADA,
 };
+
+/**
+ * Las redes tal como salen de una fila de la base. Se expone con nombre
+ * propio para poder probar la conversión de la forma vieja sin levantar D1:
+ * la fila de producción todavía guarda `{facebook, instagram}` y si eso
+ * dejara de leerse, el pie se quedaría sin las dos redes del negocio.
+ */
+export const redesDeJson = (crudo: string | undefined): Redes => ARMADORES.redes(bolsaDe(crudo));
+
+// (la regla en sí vive en `shared/redes.ts`, que es lo que prueba `tests/redes.test.ts`)
 
 function armar(filas: { clave: string; valor: string }[]): Configuracion {
   const crudas = new Map(filas.map((f) => [f.clave, f.valor]));
