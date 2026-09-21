@@ -95,6 +95,12 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
   // hay escenario, y entonces el titular vuelve a su sitio de siempre.
   const casaDeLaFoto = vitrina[0] ?? null;
   const escenario = casaDeLaFoto?.fotoGrande ?? null;
+  // La vitrina arranca en la SIGUIENTE, no en la del héroe: la misma casa y
+  // la misma foto salían dos veces a 900 px de distancia (la pantalla de la
+  // foto y la primera tarjeta de la vitrina). La del héroe no se va, pasa al
+  // final del ciclo. Sin héroe (catálogo sin fotos) la vitrina no se rota:
+  // entonces la primera casa no se ha enseñado todavía.
+  const casasEnVitrina = escenario && vitrina.length > 1 ? [...vitrina.slice(1), vitrina[0]] : vitrina;
   const titular = portada.titular || TITULAR_POR_OMISION;
   const entendiendo =
     entiendeFrases && navegacion.state === "loading" && navegacion.location?.pathname === "/propiedades";
@@ -139,8 +145,14 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
               </div>
 
               {/* Tres cifras que salen de la base, no de un texto de venta: si
-                  el catálogo cambia, cambian solas. */}
-              <dl className="mt-7 flex flex-wrap gap-x-8 gap-y-4 lg:mt-0 lg:shrink-0 lg:justify-end">
+                  el catálogo cambia, cambian solas.
+
+                  En el teléfono van en TRES columnas, como las de la portada
+                  de respaldo: en renglón suelto cabían dos y «precio desde»
+                  caía sola en un tercer renglón, y ese renglón de más empujaba
+                  el buscador a 20 px del borde de la pantalla. Desde `lg`
+                  vuelven a ser un renglón pegado a la derecha. */}
+              <dl className="mt-7 grid grid-cols-3 gap-x-4 gap-y-4 sm:gap-x-8 lg:mt-0 lg:flex lg:shrink-0 lg:justify-end">
                 <CifraClara orden={0} valor={String(catalogo.total)} etiqueta="propiedades publicadas" />
                 <CifraClara
                   orden={1}
@@ -165,8 +177,16 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
           pantalla: entonces esta sección vuelve a ser la portada entera —el
           titular, el buscador y las cifras— para que la página nunca se quede
           sin `<h1>` ni sin su acción principal. */}
-      <section className="mx-auto max-w-sitio px-5 pt-10 pb-12 sm:pt-14 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-16 3xl:gap-20">
-        <div className="max-w-xl 3xl:max-w-none">
+      {/* El aire es el de TODAS las secciones (`py-14 sm:py-20`): era la única
+          con uno propio (40/48 y 64/48) y por eso se leía como una franja
+          metida a la fuerza entre la foto y las casas.
+
+          `lg:items-stretch`: la columna de la izquierda comparte los DOS
+          bordes con la vitrina —el rótulo a la altura del techo de la tarjeta
+          y el enlace a la de su pie (`lg:mt-auto`)—. Centrada dejaba 260 px
+          de campo vacío arriba y 230 abajo, y se veía suelta. */}
+      <section className="mx-auto max-w-sitio px-5 py-14 sm:py-20 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-stretch lg:gap-14 lg:px-10 3xl:gap-20">
+        <div className="flex max-w-xl flex-col 3xl:max-w-none">
           {escenario ? (
             <h2 className="font-display text-seccion text-tinta motion-safe:animate-entrada">Encuentra tu propiedad</h2>
           ) : (
@@ -200,18 +220,23 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </>
           )}
 
-          {/* Accesos por tipo, con los conteos de verdad. */}
+          {/* Accesos por tipo, con los conteos de verdad. Van como un ÍNDICE
+              en renglones —filete y la cuenta a la derecha, el mismo patrón
+              de la franja de Servicios— y ya no como píldoras sueltas: en dos
+              renglones de píldoras la columna no llegaba ni a la mitad de la
+              vitrina y dejaba 430 px de campo vacío debajo. Además se leen en
+              orden y las cuentas quedan alineadas, que es lo que se compara. */}
           {catalogo.tipos.length ? (
-            <nav aria-label="Por tipo de propiedad" className="mt-6">
-              <ul className="flex flex-wrap gap-2">
+            <nav aria-label="Por tipo de propiedad" className="mt-7">
+              <ul className="flex flex-col border-b border-linea">
                 {catalogo.tipos.map((t) => (
-                  <li key={t.tipo}>
+                  <li key={t.tipo} className="border-t border-linea">
                     <Link
                       to={rutaDeListado({ tipo: t.tipo })}
-                      className="flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2.5 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
+                      className="flex items-center justify-between gap-4 py-3 font-bold text-tinta transition-colors hover:text-marca"
                     >
                       {ETIQUETA_TIPO_PLURAL[t.tipo]}
-                      <span className="text-texto-suave tabular-nums">{t.n}</span>
+                      <span className="font-semibold text-texto-suave tabular-nums">{t.n}</span>
                     </Link>
                   </li>
                 ))}
@@ -219,18 +244,47 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             </nav>
           ) : null}
 
+          {/* Las colonias que de verdad tienen varias casas: las mismas cinco
+              que ya ofrece el listado (`listado.tsx`, decisión de zonas del
+              PLAN §15; las otras 93 tienen una sola y se alcanzan
+              escribiendo su nombre). Aquí cierran la columna a la altura del
+              pie de la vitrina y suman una puerta más al catálogo. */}
+          {catalogo.zonas.length ? (
+            <nav aria-label="Colonias con más propiedades" className="mt-7">
+              <p className="text-xs font-bold tracking-[0.18em] text-texto-suave uppercase">Colonias con más casas</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {catalogo.zonas.slice(0, 5).map((z) => (
+                  <li key={z.slug}>
+                    <Link
+                      to={rutaDeListado({ zona: z.slug })}
+                      className="flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
+                    >
+                      {z.colonia}
+                      <span className="text-texto-suave tabular-nums">{z.n}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : null}
+
+          {/* Al pie de la columna, a la altura del pie de la vitrina. El
+              texto ya no repite el del botón del buscador, que dice «Ver las
+              188 propiedades» una pantalla más arriba. */}
           <Link
             to="/propiedades"
-            className="mt-6 inline-flex items-center gap-2 font-bold text-marca underline underline-offset-4"
+            className="mt-6 inline-flex w-fit items-center gap-2 font-bold text-marca underline underline-offset-4 lg:mt-auto lg:pt-8"
           >
-            Ver las {catalogo.total} propiedades
+            Ver todo el catálogo
             <IconoFlecha className="h-4 w-4" />
           </Link>
         </div>
 
         {/* La llave: si cambian las casas (el loader se vuelve a correr), la
             vitrina arranca de cero en vez de heredar a medias el ciclo viejo. */}
-        {vitrina.length ? <Vitrina key={vitrina.map((casa) => casa.clave).join(" ")} casas={vitrina} /> : null}
+        {casasEnVitrina.length ? (
+          <Vitrina key={casasEnVitrina.map((casa) => casa.clave).join(" ")} casas={casasEnVitrina} />
+        ) : null}
       </section>
 
       {/* ─── Las casas ─── */}
@@ -316,7 +370,9 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
             <h2 className="mx-auto max-w-2xl font-display text-seccion text-white lg:mx-0">
               ¿Buscas algo que no está en la lista? Dinos qué necesitas.
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sobre-vino-suave lg:mx-0">
+            {/* El mismo tope que el rótulo: con `max-w-xl` dentro del flex la
+                última línea quedaba en «una a / la medida». */}
+            <p className="mx-auto mt-3 max-w-2xl text-sobre-vino-suave lg:mx-0">
               Tenemos propiedades que aún no publicamos y podemos buscarte una a la medida.
             </p>
           </div>
