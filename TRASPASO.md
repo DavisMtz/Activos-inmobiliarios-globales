@@ -9,8 +9,8 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`020cc1b9`** (20/09/2026, la composición ordenada). **`main` va por delante:** `503e9d5`, las redes desde el panel y el pie, sin desplegar |
-| **Reversión** | la anterior es `2168665c`: `npx wrangler rollback 2168665c-967a-4448-8aaf-6f1f9d324dad` (devuelve la portada que vende, con la columna centrada y las píldoras). Antes, `ecb59d6c`. Ninguna migración estorba |
+| **Worker** | `activos-inmobiliarios`, versión activa **`d71de42b`** (20/09/2026, las redes desde el panel y el pie). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
+| **Reversión** | la anterior es `020cc1b9`: `npx wrangler rollback 020cc1b9-3daf-457a-b9f6-a3b8fb3aafb7` (devuelve el pie viejo, con dos redes fijas). Antes, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
@@ -45,9 +45,21 @@ Lo que mejor ha funcionado, por si ayuda:
 
 ## 5. Lo último que se hizo (19-20/09/2026)
 
-**Redes desde el panel y el pie ordenado (20/09/2026, al cierre · en `main`, commit `503e9d5`,
-SIN DESPLEGAR)** — pedido: «actualizar el pie… dame propuestas y añade la opción de añadir más
-redes como tiktok, instagram, x y más desde el panel».
+**Redes desde el panel y el pie ordenado (20/09/2026, al cierre · EN PRODUCCIÓN, Worker
+`d71de42b`, commit `503e9d5`)** — desplegado a pedido del usuario («Sube a producción»), con el
+`git push` en la misma orden; antes, worktrees, ramas y `deployments list` revisados (la activa
+era la esperada) y **ninguna migración** en el cambio. Pedido: «actualizar el pie… dame
+propuestas y añade la opción de añadir más redes como tiktok, instagram, x y más desde el
+panel».
+
+**Comprobado EN PRODUCCIÓN, que era lo único que podía romperse:** la fila vieja
+(`{facebook, instagram}`) se sigue leyendo y el pie enseña las dos redes con sus enlaces reales.
+`verificar:f2 --remote` 39/39 y `verificar:movimiento` sin nada invisible.
+
+> **`npm run verificar:redes -- --remote` NO se ha corrido contra producción.** Crearía una
+> cuenta de dirección y **sobrescribiría temporalmente la fila `redes`** (la restaura al final,
+> pero si muere a medias se pierde). Se le ofreció al usuario: **pregunta antes de correrlo en
+> remoto.** En local pasa 10/10.
 
 | Archivo | Qué guarda |
 |---|---|
@@ -238,6 +250,26 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 **Dos fallos viejos del panel, arreglados** (los destapó probar con navegador; la API estaba bien): cada «Guardar» de un servicio borraba su columna `icono`, y **desmarcar «Se ve en el sitio» no ocultaba nada** —una casilla sin marcar no viaja en el formulario y el servidor leía su ausencia como «visible»—, o sea que desde el panel era imposible ocultar un servicio o una pregunta.
 
 ## 6. Pendientes, por orden
+
+> **Punto de retoma del 20/09/2026, al cierre de la sesión.** Todo lo de esta sesión está
+> **empujado y desplegado** (Worker `d71de42b`); el árbol quedó limpio y no hay nada a medias.
+> Lo primero de la lista es lo que el usuario dejó abierto, no un arreglo pendiente de código.
+
+0.bis **De esta sesión, esperando SU palabra** (ninguna es un fallo):
+   - **Elegir la columna de «Encuentra tu propiedad»:** quedó puesta la D (índice de tipos +
+     colonias). Las cuatro maquetas están en `Escritorio\portada-propuestas\columna-20-09\`.
+     Para volver a la A, el markup viejo está en `git show d658f0f^:sitio/app/routes/publico/inicio.tsx`.
+   - **Elegir el pie:** quedó puesto el de cuatro columnas (opción D de
+     `Escritorio\portada-propuestas\pie-20-09\opciones-de-pie.png`).
+   - **Pegar los enlaces de TikTok, X, YouTube… en Panel › Configuración › Redes.** Hasta que lo
+     haga, producción enseña solo Facebook e Instagram, que es lo correcto.
+   - **Capturar teléfono, correo y dirección** en Panel › Configuración: la columna «Escríbenos»
+     del pie se convierte sola en «Contacto» (hay captura de cómo se verá en `pie-20-09\`).
+   - **Escribir «Saludo» y «Lema»** en Panel › Contenido, y **más preguntas frecuentes**: la
+     sección existe en producción con UNA sola y se ve despoblada. Nada de eso se inventa aquí.
+   - **`npm run verificar:redes -- --remote`**: no se corrió; sobrescribe temporalmente la fila
+     `redes` de producción. Preguntar antes.
+
 
 0. **De la portada que vende** (en producción, §5), lo que el usuario dejó abierto:
    - **El movimiento.** El «se abre al bajar» lo pidió y aprobó él por la mañana y se fue con la composición
