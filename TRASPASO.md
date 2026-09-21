@@ -106,7 +106,9 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 - **El `ScrollExpand` original no existe sin JavaScript:** el alto de la escena y del riel se los pone el guión.
   Aquí los trae el CSS y el guión solo los afina.
 - **Su velo va al revés aquí:** entero al principio y al 45 % al abrirse. Con el velo del original (de 0 a 0.45)
-  el titular blanco no se leía sobre la fachada blanca de la casa de portada.
+  el titular blanco no se leía sobre la fachada blanca de la casa de portada. (**Hoy** el velo no anima: va
+  atado al pie y con paradas en rem — `.escenario-pie` en `app.css`. La trampa de fondo es la misma: sobre esa
+  fachada blanca, un velo flojo se come el titular.)
 - **La escena empezaba debajo de la cabecera** y su pie —la seña de «baja»— caía fuera de la primera pantalla.
   Sube 4.75rem (`pt-3` + `h-16`) y la píldora del menú flota sobre la foto.
 - **El encuadre del 42 % en un teléfono de 390 px es una estampilla de 164 px:** se mide por ancho.
