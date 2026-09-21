@@ -9,7 +9,7 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`020cc1b9`** (20/09/2026, la composición ordenada) |
+| **Worker** | `activos-inmobiliarios`, versión activa **`020cc1b9`** (20/09/2026, la composición ordenada). **`main` va por delante:** `503e9d5`, las redes desde el panel y el pie, sin desplegar |
 | **Reversión** | la anterior es `2168665c`: `npx wrangler rollback 2168665c-967a-4448-8aaf-6f1f9d324dad` (devuelve la portada que vende, con la columna centrada y las píldoras). Antes, `ecb59d6c`. Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
@@ -44,6 +44,41 @@ Lo que mejor ha funcionado, por si ayuda:
 - **Registrar con números** en `PLAN.md` §19 al cerrar, incluidas las trampas nuevas.
 
 ## 5. Lo último que se hizo (19-20/09/2026)
+
+**Redes desde el panel y el pie ordenado (20/09/2026, al cierre · en `main`, commit `503e9d5`,
+SIN DESPLEGAR)** — pedido: «actualizar el pie… dame propuestas y añade la opción de añadir más
+redes como tiktok, instagram, x y más desde el panel».
+
+| Archivo | Qué guarda |
+|---|---|
+| `shared/redes.ts` | **El catálogo y LA REGLA.** Las ocho redes con su etiqueta, y `redesDeBolsa` (leer) y `revisarRedes` (guardar), que son la misma regla aplicada por las dos puntas. Solo datos: el panel no puede importar interfaz del sitio (criterio 8) |
+| `app/routes/publico/marco.tsx` | `ICONO_DE_RED` —qué dibujo le toca a cada clave— y el `Pie` entero |
+| `app/components/publico/iconos.tsx` | Los dibujos: TikTok, X, YouTube, LinkedIn y Threads son nuevos |
+| `app/routes/panel/configuracion.tsx` | El bloque «Redes»: ocho renglones con desplegable y enlace, y la conversión de renglones a lista en el `action` |
+| `tests/redes.test.ts` · `scripts/verificar-redes.mjs` | 12 pruebas puras · y la de verdad, que **pulsa el botón** |
+
+**No hubo migración** y no hace falta: la tabla `configuracion` guarda JSON libre. La clave
+`redes` pasó de `{facebook, instagram}` a `{lista:[{red,url}]}`, y **la fila que hay en
+producción sigue siendo la vieja**: se convierte al leer y se moderniza sola la primera vez que
+alguien guarde desde el panel. Si algún día se quita esa conversión, el pie se queda sin las dos
+redes del negocio sin que nadie haya tocado nada.
+
+**Para agregar una red** hacen falta tres cosas: su renglón en `REDES` (`shared/redes.ts`), su
+dibujo en `iconos.tsx` **y** su entrada en `ICONO_DE_RED`. Y luego **mirarla en grande**: un
+icono de marca sacado de memoria sale torcido y en el código no se nota. Aquí se cayeron dos a
+la primera —Threads salía como un caracol y la X como el aspa de «cerrar»— y se vieron en una
+hoja de contactos, no leyendo el `path`.
+
+**El pie** pasó a cuatro columnas parejas —marca · Sitio · Redes · Escríbenos—: antes la marca
+se quedaba con un tercio del ancho para dos renglones y dejaba ~300 px de hueco bajo el lema.
+Las redes van con su NOMBRE junto al icono. La cuarta columna es **Contacto** cuando haya datos
+capturados y, mientras no, la invitación a escribir por WhatsApp. Se le enseñaron **cuatro
+pies** (`Escritorio\portada-propuestas\pie-20-09\opciones-de-pie.png`) y quedó puesta la D.
+
+> ⚠ **Al probar el pie, no busques `footer a[target="_blank"]`:** ahora el botón de WhatsApp
+> también lo es y no es una red. Hay que buscar dentro de la sección cuyo `h2` dice «Redes».
+> Esa trampa ya hizo fallar dos comprobaciones de `verificar:redes`.
+
 
 **La composición de la portada, ordenada (20/09/2026, al cierre · EN PRODUCCIÓN, Worker
 `020cc1b9`, commit `d658f0f`)** — desplegado a pedido del usuario («sube y despliega»), con el
@@ -244,6 +279,7 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 | `npm run verificar:f3-navegador -- --base http://localhost:5180 --local` | El panel pulsando botones, el campo «Dibujo» y, **solo en `--remote`**, el criterio 8 |
 | `npm run verificar:f4 -- --base http://localhost:5180 --local` | Prospectos y métricas |
 | `npm run verificar:entregas -- --base http://localhost:5180 --local` | Entregas. Con `--dejar` NO limpia (es para capturas): la corrida siguiente sin la bandera sí |
+| `npm run verificar:redes -- --base http://localhost:5180 --local` | Las redes del pie **pulsando «Guardar las redes»** en el panel: el desplegable, lo que queda en la base, lo que sale en el pie y que vaciar el enlace quita la red. Crea una cuenta de dirección y la borra; devuelve la fila a como estaba |
 | `npm run verificar:busqueda -- --base http://localhost:5180 --local [--ia]` | El buscador: lo que entiende sin modelo, la frase tecleada en la portada, el interruptor del panel y, con `--ia`, el modelo de verdad (gasta unas consultas). **En local el binding `AI` va a la nube:** también gasta |
 | `npm run medir:ia` | No verifica el sitio: compara modelos de Workers AI con 65 frases (`--sin-modelo` dice cuántas se resuelven sin preguntar). Necesita la sesión de wrangler con ámbito `ai` |
 
