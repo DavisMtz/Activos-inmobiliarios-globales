@@ -14,7 +14,7 @@ import { IconoBuscar, IconoFlecha, IconoWhatsApp } from "../../components/public
 import { Antetitulo, Preguntas, Testimonios } from "../../components/publico/contenido-portada";
 import { EscenarioPortada } from "../../components/publico/escenario-portada";
 import { MarcoEstelar } from "../../components/publico/marco-estelar";
-import { CampoSelect, CampoTexto, TarjetaPropiedad } from "../../components/publico/piezas";
+import { CampoSelect, CampoTexto, TarjetaPropiedad, textoPrecio } from "../../components/publico/piezas";
 import { CASAS_EN_VITRINA, Vitrina } from "../../components/publico/vitrina";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/inicio";
@@ -93,59 +93,89 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
   // («Casa de la foto principal») y, si no hay ninguna elegida, la de la más
   // reciente: es la misma que encabeza la vitrina. Sin catalogo con fotos no
   // hay escenario, y entonces el titular vuelve a su sitio de siempre.
-  const escenario = vitrina[0]?.fotoGrande ?? null;
+  const casaDeLaFoto = vitrina[0] ?? null;
+  const escenario = casaDeLaFoto?.fotoGrande ?? null;
   const titular = portada.titular || TITULAR_POR_OMISION;
   const entendiendo =
     entiendeFrases && navegacion.state === "loading" && navegacion.location?.pathname === "/propiedades";
+  const buscador = (
+    <BuscadorPortada catalogo={catalogo} entiendeFrases={entiendeFrases} entendiendo={Boolean(entendiendo)} />
+  );
 
   return (
     <div>
-      {/* ─── Escenario: la foto de la casa principal, con el titular encima ───
-          La foto se abre hasta llenar la pantalla al bajar y el titular se va
-          con ella; debajo esperan el buscador y la vitrina. El saludo y el
-          lema lo acompañan en blanco: sobre tinta, el rojo de la marca no
-          contrasta (§19), así que el filete va en el claro del isotipo. */}
+      {/* ─── La primera pantalla: la casa, el titular y el buscador ───────
+          La foto llena la pantalla y TODO lo que vende va en su pie, sobre el
+          degradado de tinta: titular, la casa con su precio, las tres cifras y
+          el buscador. Elegido entre cuatro composiciones enseñadas en capturas
+          (20/09/2026, tarde); antes la foto empezaba encuadrada y se abría al
+          bajar, y el buscador quedaba a 1 400 px de scroll.
+
+          Sobre tinta el rojo de la marca no contrasta (§19): el filete del
+          antetítulo va en claro, y el rojo se queda donde manda, en el botón. */}
       {escenario ? (
-        <EscenarioPortada foto={escenario} pista="Baja para verla entera">
-          {/* Sobre campo claro vuelven los colores de siempre del sitio: el
-              rojo de la marca en el filete y el gris del texto en el lema. */}
+        <EscenarioPortada foto={escenario}>
           <link rel="preload" as="font" type="font/woff2" href={fuenteTitular} crossOrigin="anonymous" />
-          {portada.saludo ? (
-            <p className="flex items-center gap-3 font-display text-xs font-medium tracking-[0.28em] text-marca uppercase sm:text-sm motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
-              <span aria-hidden="true" className="h-px w-8 shrink-0 bg-marca" />
-              {portada.saludo}
-            </p>
-          ) : null}
-          <h1 className="mt-6 max-w-[16ch] font-titular text-portada text-tinta motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)]">
-            {titular}
-          </h1>
-          {portada.lema ? (
-            <p className="mt-5 max-w-[46ch] text-guia text-texto-suave motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]">
-              {portada.lema}
-            </p>
-          ) : null}
+          <div className="mx-auto w-full max-w-sitio px-5 pb-5 lg:px-10 lg:pb-7">
+            <div className="lg:flex lg:items-end lg:justify-between lg:gap-12">
+              <div className="min-w-0">
+                {portada.saludo ? (
+                  <p className="flex items-center gap-3 font-display text-xs font-semibold tracking-[0.26em] text-white uppercase sm:text-sm motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
+                    <span aria-hidden="true" className="h-px w-7 shrink-0 bg-white/70" />
+                    {portada.saludo}
+                  </p>
+                ) : null}
+                <h1
+                  className={`max-w-[16ch] font-titular text-portada-pie text-white motion-safe:animate-entrada-titular motion-safe:[animation-delay:calc(var(--rb,0s)_+_60ms)] ${portada.saludo ? "mt-4" : ""}`}
+                >
+                  {titular}
+                </h1>
+                {portada.lema ? (
+                  <p className="mt-4 max-w-[52ch] text-sobre-oscuro motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_120ms)]">
+                    {portada.lema}
+                  </p>
+                ) : null}
+                {casaDeLaFoto ? <FichaDeLaFoto casa={casaDeLaFoto} /> : null}
+              </div>
+
+              {/* Tres cifras que salen de la base, no de un texto de venta: si
+                  el catálogo cambia, cambian solas. */}
+              <dl className="mt-7 flex flex-wrap gap-x-8 gap-y-4 lg:mt-0 lg:shrink-0 lg:justify-end">
+                <CifraClara orden={0} valor={String(catalogo.total)} etiqueta="propiedades publicadas" />
+                <CifraClara
+                  orden={1}
+                  valor={String(ciudades)}
+                  etiqueta={ciudades === 1 ? "ciudad de Michoacán" : "ciudades de Michoacán"}
+                />
+                {desde ? <CifraClara orden={2} valor={desde} etiqueta="precio desde" /> : null}
+              </dl>
+            </div>
+
+            {buscador}
+          </div>
         </EscenarioPortada>
       ) : null}
 
-      {/* ─── El buscador y una casa real ─── */}
-      {/* «financiamiento» mide 8.4 veces el cuerpo del titular: a 1024 px son
-          513 px y la mitad de la pantalla da 444, así que se salía. Hasta 1280
-          el texto se lleva 3/5; desde ahí nunca baja de 36rem y la foto crece
-          con lo que sobra. Medido con el titular real, no con uno de ejemplo.
-          Desde 1920 (`3xl`) el texto tiene columna fija de 44rem y el titular
-          sube a 5rem: «financiamiento» mide 42rem y cabe; la vitrina se queda
-          con todo lo demás, sin la columna del texto medio vacía. */}
-      <section className="mx-auto max-w-sitio px-5 pt-8 pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-14 xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1.2fr)] 3xl:grid-cols-[44rem_minmax(0,1fr)] 3xl:gap-20">
+      {/* ─── Segunda pantalla: por dónde entrar al catálogo, y la vitrina ───
+          El buscador y las cifras viven ahora en el pie de la foto, así que
+          aquí quedan los accesos por tipo con sus conteos de verdad y la
+          vitrina, que sigue pasando sus cinco casas de una en una.
+
+          Sin foto que enseñar (un catálogo recién puesto) no hay primera
+          pantalla: entonces esta sección vuelve a ser la portada entera —el
+          titular, el buscador y las cifras— para que la página nunca se quede
+          sin `<h1>` ni sin su acción principal. */}
+      <section className="mx-auto max-w-sitio px-5 pt-10 pb-12 sm:pt-14 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-14 lg:px-10 lg:pt-16 3xl:gap-20">
         <div className="max-w-xl 3xl:max-w-none">
-          {/* Encima del titular, solo el «Saludo» del panel, si el equipo lo
-              escribió; vacío, no sale nada. El logotipo ya va siempre en la
-              cabecera, y «Casas en venta y renta en Morelia» se quitó a pedido
-              del usuario (18/09/2026): el negocio es para toda la República. */}
-          {/* Con escenario, el titular vive ARRIBA, sobre la foto. Sin foto
-              que enseñar (un catálogo recién puesto) vuelve aquí, para que la
-              portada nunca se quede sin `<h1>`. */}
-          {escenario ? null : (
+          {escenario ? (
+            <h2 className="font-display text-seccion text-tinta motion-safe:animate-entrada">Encuentra tu propiedad</h2>
+          ) : (
             <>
+              {/* Encima del titular, solo el «Saludo» del panel, si el equipo
+                  lo escribió; vacío, no sale nada. El logotipo ya va siempre
+                  en la cabecera, y «Casas en venta y renta en Morelia» se
+                  quitó a pedido del usuario (18/09/2026): el negocio es para
+                  toda la República. */}
               {portada.saludo ? (
                 <Antetitulo className="motion-safe:animate-entrada motion-safe:[animation-delay:var(--rb,0s)]">
                   {portada.saludo}
@@ -157,89 +187,51 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
                 {titular}
               </h1>
               {portada.lema ? <p className="mt-4 text-guia text-texto-suave">{portada.lema}</p> : null}
+              {buscador}
+              <dl className="mt-7 grid grid-cols-3 gap-4 sm:gap-6">
+                <Cifra orden={0} valor={String(catalogo.total)} etiqueta="propiedades publicadas" />
+                <Cifra
+                  orden={1}
+                  valor={String(ciudades)}
+                  etiqueta={ciudades === 1 ? "ciudad de Michoacán" : "ciudades de Michoacán"}
+                />
+                {desde ? <Cifra orden={2} valor={desde} etiqueta="precio desde" /> : null}
+              </dl>
             </>
           )}
 
-          {/* Con el titular arriba, en el escenario, esta columna empezaba en
-              una tarjeta suelta a media pantalla: el rótulo le da principio.
-              Sin escenario el titular sigue aquí y no hace falta. */}
-          {escenario ? (
-            <h2 className="font-display text-seccion text-tinta motion-safe:animate-entrada">Encuentra tu propiedad</h2>
+          {/* Accesos por tipo, con los conteos de verdad. */}
+          {catalogo.tipos.length ? (
+            <nav aria-label="Por tipo de propiedad" className="mt-6">
+              <ul className="flex flex-wrap gap-2">
+                {catalogo.tipos.map((t) => (
+                  <li key={t.tipo}>
+                    <Link
+                      to={rutaDeListado({ tipo: t.tipo })}
+                      className="flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2.5 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
+                    >
+                      {ETIQUETA_TIPO_PLURAL[t.tipo]}
+                      <span className="text-texto-suave tabular-nums">{t.n}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           ) : null}
 
-          {/* El buscador es la acción principal: va en su propio panel para
-              que se lea como una herramienta y no como texto suelto. */}
-          <MarcoEstelar
-            activo={Boolean(entendiendo)}
-            marco="mt-6 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]"
-            className="rounded-2xl border border-linea bg-superficie p-4 sm:p-5"
+          <Link
+            to="/propiedades"
+            className="mt-6 inline-flex items-center gap-2 font-bold text-marca underline underline-offset-4"
           >
-            <Form method="get" action="/propiedades" className="flex flex-col gap-3">
-              <CampoTexto
-                etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "¿Qué colonia te interesa?"}
-                name="q"
-                type="search"
-                placeholder={entiendeFrases ? "Casa de 3 recámaras en Altozano…" : "Altozano, Tres Marías, El Prado…"}
-                autoComplete="off"
-                maxLength={160}
-              />
-              <div className="grid grid-cols-2 gap-3">
-                <CampoSelect etiqueta="Operación" name="operacion" defaultValue="">
-                  <option value="">Cualquiera</option>
-                  <option value="venta">En venta ({catalogo.operaciones.venta})</option>
-                  <option value="renta">En renta ({catalogo.operaciones.renta})</option>
-                </CampoSelect>
-                <CampoSelect etiqueta="Tipo" name="tipo" defaultValue="">
-                  <option value="">Todos</option>
-                  {catalogo.tipos.map((t) => (
-                    <option key={t.tipo} value={t.tipo}>
-                      {ETIQUETA_TIPO_PLURAL[t.tipo]} ({t.n})
-                    </option>
-                  ))}
-                </CampoSelect>
-              </div>
-              <button
-                type="submit"
-                className="mt-1 flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro"
-              >
-                <IconoBuscar />
-                Ver las {catalogo.total} propiedades
-              </button>
-            </Form>
-          </MarcoEstelar>
-
-          {/* Tres cifras que salen de la base, no de un texto de venta: si el
-              catálogo cambia, cambian solas. */}
-          <dl className="mt-7 grid grid-cols-3 gap-4 sm:gap-6">
-            <Cifra orden={0} valor={String(catalogo.total)} etiqueta="propiedades publicadas" />
-            <Cifra orden={1} valor={String(ciudades)} etiqueta={ciudades === 1 ? "ciudad de Michoacán" : "ciudades de Michoacán"} />
-            {desde ? <Cifra orden={2} valor={desde} etiqueta="precio desde" /> : null}
-          </dl>
+            Ver las {catalogo.total} propiedades
+            <IconoFlecha className="h-4 w-4" />
+          </Link>
         </div>
 
         {/* La llave: si cambian las casas (el loader se vuelve a correr), la
             vitrina arranca de cero en vez de heredar a medias el ciclo viejo. */}
         {vitrina.length ? <Vitrina key={vitrina.map((casa) => casa.clave).join(" ")} casas={vitrina} /> : null}
       </section>
-
-      {/* ─── Accesos por tipo, con los conteos de verdad ─── */}
-      {catalogo.tipos.length ? (
-        <nav aria-label="Por tipo de propiedad" className="mx-auto max-w-sitio px-5 lg:px-10">
-          <ul className="flex flex-wrap gap-2">
-            {catalogo.tipos.map((t) => (
-              <li key={t.tipo}>
-                <Link
-                  to={rutaDeListado({ tipo: t.tipo })}
-                  className="flex items-center gap-2 rounded-full border border-linea bg-superficie px-4 py-2.5 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca"
-                >
-                  {ETIQUETA_TIPO_PLURAL[t.tipo]}
-                  <span className="text-texto-suave tabular-nums">{t.n}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      ) : null}
 
       {/* ─── Las casas ─── */}
       {recientes.length ? (
@@ -355,12 +347,143 @@ export default function Inicio({ loaderData }: Route.ComponentProps) {
 
 // ─── Piezas de la primera pantalla ────────────────────────────────
 
+/**
+ * El buscador: la acción principal de la portada. Va en su propio panel para
+ * que se lea como una herramienta y no como texto suelto, y el mismo panel
+ * sirve en el pie de la foto (en un renglón, desde `lg`) y en la portada de
+ * respaldo, cuando no hay ninguna foto que enseñar.
+ *
+ * En el pie los tres campos y el botón van en un renglón: el envoltorio de
+ * los dos selects pasa a `contents` desde `lg` para que sus DOS hijos sean
+ * celdas de la misma retícula. En el teléfono vuelve a ser un bloque, con los
+ * selects a dos columnas.
+ */
+function BuscadorPortada({
+  catalogo,
+  entiendeFrases,
+  entendiendo,
+}: {
+  catalogo: Route.ComponentProps["loaderData"]["catalogo"];
+  entiendeFrases: boolean;
+  entendiendo: boolean;
+}) {
+  return (
+    <MarcoEstelar
+      activo={entendiendo}
+      marco="mt-6 shadow-alzada motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_200ms)]"
+      className="rounded-2xl border border-linea bg-superficie p-4 sm:p-5"
+    >
+      <Form
+        method="get"
+        action="/propiedades"
+        className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end lg:gap-4"
+      >
+        <CampoTexto
+          etiqueta={entiendeFrases ? "¿Qué estás buscando?" : "¿Qué colonia te interesa?"}
+          name="q"
+          type="search"
+          placeholder={entiendeFrases ? "Casa de 3 recámaras en Altozano…" : "Altozano, Tres Marías, El Prado…"}
+          autoComplete="off"
+          maxLength={160}
+        />
+        <div className="grid grid-cols-2 gap-3 lg:contents">
+          <CampoSelect etiqueta="Operación" name="operacion" defaultValue="">
+            <option value="">Cualquiera</option>
+            <option value="venta">En venta ({catalogo.operaciones.venta})</option>
+            <option value="renta">En renta ({catalogo.operaciones.renta})</option>
+          </CampoSelect>
+          <CampoSelect etiqueta="Tipo" name="tipo" defaultValue="">
+            <option value="">Todos</option>
+            {catalogo.tipos.map((t) => (
+              <option key={t.tipo} value={t.tipo}>
+                {ETIQUETA_TIPO_PLURAL[t.tipo]} ({t.n})
+              </option>
+            ))}
+          </CampoSelect>
+        </div>
+        <button
+          type="submit"
+          className="mt-1 flex h-13 items-center justify-center gap-2 rounded-xl bg-marca px-6 py-3.5 text-base font-extrabold text-white transition-colors hover:bg-marca-oscuro lg:mt-0 lg:whitespace-nowrap"
+        >
+          <IconoBuscar />
+          Ver las {catalogo.total} propiedades
+        </button>
+      </Form>
+    </MarcoEstelar>
+  );
+}
+
+/** Una casa que ya no está libre se anuncia por su estado, no por su operación. */
+const ESTADO_DE_LA_FOTO: Record<string, string> = {
+  apartada: "apartada",
+  vendida: "vendida",
+  rentada: "rentada",
+};
+
+/** `ETIQUETA_OPERACION` es la de los filtros y no contempla «venta o renta». */
+const OPERACION_DE_LA_FOTO: Record<"venta" | "renta" | "venta_renta", string> = {
+  venta: "en venta",
+  renta: "en renta",
+  venta_renta: "en venta o renta",
+};
+
+/**
+ * La casa de la foto, con su precio y un enlace a su página. Sin esto, la
+ * primera pantalla enseña una casa preciosa que nadie sabe cuánto cuesta ni
+ * cómo abrir.
+ */
+function FichaDeLaFoto({ casa }: { casa: Route.ComponentProps["loaderData"]["vitrina"][number] }) {
+  const precio = textoPrecio(casa);
+  // Su operación, salvo que la casa ya no esté libre: entonces manda el
+  // estado, que es lo que le importa a quien la está viendo.
+  const situacion = ESTADO_DE_LA_FOTO[casa.estado] ?? OPERACION_DE_LA_FOTO[casa.operacion];
+  return (
+    <Link
+      to={`/propiedades/${casa.slug}`}
+      className="escenario-ficha mt-6 motion-safe:animate-entrada motion-safe:[animation-delay:calc(var(--rb,0s)_+_160ms)]"
+    >
+      <span className="font-display text-base font-extrabold whitespace-nowrap tabular-nums sm:text-lg">
+        {precio.principal}
+      </span>
+      {/* En un teléfono de 390 px no caben el precio, el nombre y la
+          operación: la operación es lo que menos falta, y en la página de la
+          casa está toda. */}
+      <span className="min-w-0 truncate text-sm text-sobre-oscuro-suave">
+        {casa.titulo}
+        <span className="hidden sm:inline"> · {situacion}</span>
+      </span>
+      <span
+        aria-hidden="true"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-marca text-white"
+      >
+        <IconoFlecha className="h-4 w-4" />
+      </span>
+    </Link>
+  );
+}
+
 /** Clases enteras y no un número suelto: Tailwind solo genera las que lee escritas. */
 const RETRASO_CIFRA = [
   "motion-safe:[animation-delay:calc(var(--rb,0s)_+_300ms)]",
   "motion-safe:[animation-delay:calc(var(--rb,0s)_+_370ms)]",
   "motion-safe:[animation-delay:calc(var(--rb,0s)_+_440ms)]",
 ];
+
+/**
+ * Las mismas cifras, pero sobre la foto: sin el filete rojo, que sobre el
+ * velo de tinta se apaga (§19), y con la etiqueta en el claro que se usa
+ * sobre campos oscuros.
+ */
+function CifraClara({ valor, etiqueta, orden }: { valor: string; etiqueta: string; orden: number }) {
+  return (
+    <div
+      className={`flex flex-col-reverse justify-end motion-safe:animate-entrada ${RETRASO_CIFRA[orden] ?? ""}`}
+    >
+      <dt className="mt-0.5 text-xs leading-snug text-sobre-oscuro-suave sm:text-sm">{etiqueta}</dt>
+      <dd className="font-display text-xl leading-none font-extrabold text-white sm:text-2xl">{valor}</dd>
+    </div>
+  );
+}
 
 /** Valor arriba y etiqueta abajo, pero en el orden que lee un lector de pantalla: etiqueta y valor. */
 function Cifra({ valor, etiqueta, orden }: { valor: string; etiqueta: string; orden: number }) {

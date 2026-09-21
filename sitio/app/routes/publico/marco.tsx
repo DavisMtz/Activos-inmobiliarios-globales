@@ -187,7 +187,12 @@ export default function MarcoPublico({ loaderData }: Route.ComponentProps) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Escríbenos por WhatsApp"
-          className="fixed right-4 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-marca text-white shadow-flotante transition-colors hover:bg-marca-oscuro focus-visible:outline-offset-4"
+          // Mientras se ve la primera pantalla de la portada, el botón se
+          // aparta: ahí su esquina se encima con la del botón de buscar, y esa
+          // pantalla ya tiene el buscador y el «Escríbenos» de la cabecera.
+          // La marca la pone el escenario (`escenario-portada.tsx`); sin
+          // JavaScript no hay marca y el botón se ve siempre, como antes.
+          className="fixed right-4 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-marca text-white shadow-flotante transition-[background-color,opacity,scale] duration-300 hover:bg-marca-oscuro focus-visible:outline-offset-4 in-data-[heroe=dentro]:pointer-events-none in-data-[heroe=dentro]:scale-75 in-data-[heroe=dentro]:opacity-0"
         >
           <IconoWhatsApp className="h-7 w-7" />
         </a>

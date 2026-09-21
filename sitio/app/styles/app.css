@@ -74,6 +74,15 @@
   --text-portada--letter-spacing: -0.015em;
   --text-portada--font-weight: 500;
 
+  /* El titular cuando va en el PIE de la foto (la portada desde el 20/09/2026,
+     tarde): ahí comparte la pantalla con la casa, su precio, las cifras y el
+     buscador, así que no puede medir lo que medía cuando mandaba él solo. El
+     de arriba se conserva por si vuelve aquella composición. */
+  --text-portada-pie: clamp(2.05rem, 1.3rem + 3.1vw, 3.75rem);
+  --text-portada-pie--line-height: 1.04;
+  --text-portada-pie--letter-spacing: -0.02em;
+  --text-portada-pie--font-weight: 500;
+
   --text-titulo: clamp(2rem, 1.45rem + 2.4vw, 3.25rem);
   --text-titulo--line-height: 1.08;
   --text-titulo--letter-spacing: -0.02em;
@@ -871,119 +880,115 @@
 }
 
 /* ─── Escenario de la portada (`components/publico/escenario-portada.tsx`) ───
-   La foto de la casa empieza encuadrada en el centro de un campo de tinta y se
-   abre hasta llenar la pantalla al bajar. El guion afina las medidas, pero los
-   altos y el encuadre de partida van AQUÍ: sin JavaScript el original se queda
-   en cero y la portada no tendría titular.
+   La foto de la casa LLENA la primera pantalla y en su pie van el titular, la
+   casa con su precio, las cifras y el buscador. Elegido entre cuatro
+   composiciones enseñadas en capturas (20/09/2026).
 
-   El campo es tinta y no papel porque el titular va en blanco sobre él: con el
-   papel claro de siempre, el texto que asoma fuera de la foto no se leería. El
-   riel mide 1.9 pantallas (una de recorrido, 0.1 de sostén) y la escena se le
-   pega arriba: eso es lo que hace que la foto se abra sin que la página salte. */
+   Antes la foto empezaba encuadrada en el centro de un campo crema, con el
+   titular montado encima y un riel de 1.9 pantallas para abrirse al bajar. Se
+   cambió por tres razones medidas: el titular de tinta obligaba a lavar la
+   foto, más de media pantalla era campo vacío, y el buscador quedaba a 1 400
+   px de scroll. Aquí la primera pantalla ya vende.
+
+   Sin JavaScript se ve igual: todo el reposo es CSS y el guion solo añade el
+   desplazamiento de la foto al bajar. */
 .escenario {
   position: relative;
   width: 100%;
-  /* Crema, el papel de la casa. Elegido entre cuatro propuestas enseñadas en
-     capturas (20/09/2026): antes fue tinta («el color negro no queda») y
-     luego vino, y ninguno convenció. En claro, lo único saturado de la
-     primera pantalla es la casa, y el escenario enlaza con el resto del sitio
-     en vez de cortarlo. Degradado radial para que el campo tenga fondo y no
-     se lea como un rectángulo plano. */
-  background-color: #efe9e4;
-  background-image: radial-gradient(115% 85% at 50% 32%, #f7f3ef 0%, #ece5df 50%, #ded4cb 100%);
-  /* Sube por debajo de la cabecera (`pt-3` + `h-16` = 4.75rem), que es
-     flotante y se pega arriba: así la foto llega al borde de la pantalla y la
-     píldora del menú queda encima de ella, no sobre una franja de papel. Sin
-     esto la escena empezaba 76 px más abajo y su pie —la seña de «baja»— se
-     salía de la primera pantalla (medido). */
-  margin-top: -4.75rem;
-}
-.escenario-riel {
-  position: relative;
-  width: 100%;
-  height: calc(100svh * 1.9);
-}
-.escenario-escena {
-  position: sticky;
-  top: 0;
-  width: 100%;
   height: 100svh;
   overflow: hidden;
-}
-
-/* El encuadre de partida, el mismo que calcula el guion: `inset` de
-   (100 − ancho) / 2 a los lados y (100 − alto) / 2 arriba y abajo. */
-.escenario-marco {
-  position: absolute;
-  inset: 0;
-  clip-path: inset(22% 7% 22% 7% round 22px);
-  will-change: clip-path;
-}
-@media (min-width: 40rem) {
-  .escenario-marco {
-    clip-path: inset(21% 18% 21% 18% round 24px);
-  }
-}
-@media (min-width: 64rem) {
-  .escenario-marco {
-    clip-path: inset(21% 29% 21% 29% round 24px);
-  }
+  isolation: isolate;
+  /* Tinta mientras la foto llega: el pie es claro sobre oscuro desde el primer
+     pintado, así que el texto nunca aparece sobre un fondo que no contrasta. */
+  background-color: var(--color-tinta);
+  /* Sube por debajo de la cabecera (`pt-3` + `h-16` = 4.75rem), que es
+     flotante y se pega arriba: así la foto llega al borde de la pantalla y la
+     píldora del menú queda encima de ella. Sin esto la primera pantalla mide
+     100svh + 76 px y el pie del degradado se sale (medido en la maqueta). */
+  margin-top: -4.75rem;
 }
 
 .escenario-foto {
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 100%;
+  /* Un 12 % de sobrante (6 % por lado) para que el desplazamiento del guion
+     nunca descubra una orilla: se mueve como mucho un 5.5 %. */
+  height: 112%;
+  top: -6%;
   object-fit: cover;
-  transform: scale(1.3);
-  transform-origin: center;
   will-change: transform;
   user-select: none;
   -webkit-user-drag: none;
 }
-.escenario-velo {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  /* Sobre campo claro el velo ACLARA en vez de oscurecer: el titular es de
-     tinta y necesita que la foto ceda, no que se apague. Entero de salida y
-     al 45 % de esto al abrirse, cuando el texto ya se fue y lo que importa es
-     la casa a todo color. */
-  opacity: 1;
-  background: linear-gradient(to top, rgba(255, 252, 250, 0.6), rgba(255, 252, 250, 0.42) 48%, rgba(255, 252, 250, 0.5));
-}
+/* El pie: todo el contenido de la portada, pegado abajo, sobre su propio velo.
+   El velo va AQUÍ y no en una capa a pantalla completa porque el pie no mide
+   lo mismo en todas partes: en el teléfono ocupa el 71 % de la pantalla y en
+   un escritorio ancho el 42 %. Con un degradado fijo por porcentajes de
+   pantalla, el titular del teléfono caía donde el velo solo tenía un 0.06 de
+   tinta y se perdía sobre la fachada blanca (medido: `h1` de 240 a 343 px en
+   una pantalla de 844). Atado al pie, el texto va siempre sobre tinta.
 
-/* El titular va sobre TODO el escenario, no sobre la foto: al principio la
-   foto ocupa el centro y el texto la desborda a propósito. */
-.escenario-titulo {
+   Es el mismo velo que usan las tarjetas de casa, y por lo mismo. El
+   `padding-top` no es aire: es el tramo por el que el degradado se apaga
+   antes de llegar a la foto. */
+.escenario-pie {
   position: absolute;
-  inset: 0;
+  inset: auto 0 0 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  /* Deja sitio a la cabecera flotante por si el pie crece (teléfono chico en
+     horizontal): antes de taparla, el contenido se aprieta. */
+  max-height: calc(100% - 4.75rem);
+  padding-top: 7rem;
+  color: #fff;
+  /* Las paradas van en REM y no en porcentaje: el pie mide 716 px en un
+     teléfono y 456 px en un escritorio ancho, y con porcentajes el titular
+     del teléfono caía en un tramo de 0.34 de tinta —se leía a medias sobre la
+     fachada blanca—. Así el degradado se apaga siempre en los mismos 7 rem de
+     arriba (los del `padding-top`) y todo el contenido va sobre 0.86 o más,
+     mida lo que mida el pie. */
+  background: linear-gradient(
+    to bottom,
+    rgba(17, 17, 17, 0) 0,
+    rgba(17, 17, 17, 0.5) 4.25rem,
+    rgba(17, 17, 17, 0.86) 7rem,
+    rgba(17, 17, 17, 0.95) 100%
+  );
+}
+/* En una pantalla grande el desvanecido cae sobre el cielo de la foto y 7 rem
+   se notaban como una banda: se reparte en 11 y se apaga más abajo. */
+@media (min-width: 64rem) {
+  .escenario-pie {
+    padding-top: 11rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(17, 17, 17, 0) 0,
+      rgba(17, 17, 17, 0.28) 5rem,
+      rgba(17, 17, 17, 0.72) 8.5rem,
+      rgba(17, 17, 17, 0.88) 11rem,
+      rgba(17, 17, 17, 0.95) 100%
+    );
+  }
+}
+/* La ficha de la casa de la foto: precio, nombre y la flecha que lleva a su
+   página. Va en el pie, junto al titular, porque es la única casa que la
+   portada enseña arriba (la vitrina de cinco vive en la segunda pantalla). */
+.escenario-ficha {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 1.25rem;
-  text-align: center;
-  color: var(--color-tinta);
-  pointer-events: none;
-  will-change: opacity, transform;
+  gap: 0.9rem;
+  max-width: 100%;
+  width: max-content;
+  padding: 0.5rem 0.5rem 0.5rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.35);
+  color: #fff;
+  transition: border-color 0.2s, background-color 0.2s;
 }
-.escenario-titulo a,
-.escenario-titulo button {
-  pointer-events: auto;
-}
-.escenario-sena {
-  position: absolute;
-  right: 0;
-  bottom: 1.5rem;
-  left: 0;
-  text-align: center;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-texto-suave);
-  pointer-events: none;
-  will-change: opacity, transform;
+.escenario-ficha:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(17, 17, 17, 0.5);
 }

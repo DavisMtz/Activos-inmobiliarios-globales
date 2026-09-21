@@ -131,9 +131,9 @@ const { cdp, ev, errores } = navegador;
 
 /**
  * La vitrina se DETIENE fuera de la pantalla, a proposito (WCAG y bateria).
- * Desde el 20/09/2026 la portada abre con el escenario, asi que la vitrina
- * nace casi dos pantallas abajo: sin esto el guion la mira quieta y cree que
- * esta rota. Se llama despues de cada carga de la portada.
+ * Desde el 20/09/2026 la portada abre con la foto a pantalla completa, asi que
+ * la vitrina nace una pantalla abajo: sin esto el guion la mira quieta y cree
+ * que esta rota. Se llama despues de cada carga de la portada.
  */
 const alaVista = async (ev) => {
   await ev("document.querySelector('[aria-live]')?.scrollIntoView({ block: 'center' })");
@@ -211,15 +211,25 @@ try {
   await clic(cdp, ev, "[data-rotacion]"); // reanuda
   await alejarRaton(cdp);
   await ev(`document.querySelector('form[action="/propiedades"] button[type="submit"]').focus()`);
-  await tab(cdp); // al enlace de la casa
-  const foco = await ev("document.activeElement?.closest('[data-diapositiva]') ? 'casa' : document.activeElement?.tagName");
+  // Se tabula HASTA la casa y no un paso fijo: desde el 20/09/2026 (tarde) el
+  // buscador vive en el pie de la foto y entre su botón y la vitrina quedan el
+  // rótulo, los siete accesos por tipo y «Ver las N propiedades». Contar pasos
+  // hacía que el guion midiera el foco de un enlace cualquiera.
+  let foco = null;
+  for (let i = 0; i < 20 && foco !== "casa"; i++) {
+    await tab(cdp);
+    foco = await ev("document.activeElement?.closest('[data-diapositiva]') ? 'casa' : document.activeElement?.tagName");
+  }
   await esperar(2200);
   const conFoco = await avanza(ev, 2000);
   comprobar("con el foco del teclado en la casa, se detiene", foco === "casa" && !conFoco.si, `foco en ${foco}; ${conFoco.a} → ${conFoco.b}`);
-  await tab(cdp); // al botón de pausa: ahí no se detiene
-  const enBoton = await ev("document.activeElement?.hasAttribute('data-rotacion')");
+  let enBoton = false;
+  for (let i = 0; i < 5 && !enBoton; i++) {
+    await tab(cdp); // al botón de pausa: ahí no se detiene
+    enBoton = (await ev("document.activeElement?.hasAttribute('data-rotacion')")) === true;
+  }
   const conBoton = await avanza(ev);
-  comprobar("con el foco en el botón de pausa sigue moviéndose", enBoton === true && conBoton.si, `${conBoton.a} → ${conBoton.b}`);
+  comprobar("con el foco en el botón de pausa sigue moviéndose", enBoton && conBoton.si, `${conBoton.a} → ${conBoton.b}`);
 
   // ─── 7. Pestaña oculta a media cortina ─────────────────────────
   console.log("\n7. Pestaña oculta");
