@@ -9,8 +9,8 @@ Escrito el 20/09/2026 al cerrar una sesión. Es el **punto de retoma**: qué hay
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`2168665c`** (20/09/2026, la portada que vende). **`main` va UN commit por delante:** `d658f0f`, la composición ordenada, sin desplegar |
-| **Reversión** | la anterior es `ecb59d6c`: `npx wrangler rollback ecb59d6c-4d04-4316-b91d-7732f99deeb0` (devuelve la portada con la foto encuadrada que se abría al bajar). Ninguna migración estorba |
+| **Worker** | `activos-inmobiliarios`, versión activa **`020cc1b9`** (20/09/2026, la composición ordenada) |
+| **Reversión** | la anterior es `2168665c`: `npx wrangler rollback 2168665c-967a-4448-8aaf-6f1f9d324dad` (devuelve la portada que vende, con la columna centrada y las píldoras). Antes, `ecb59d6c`. Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
@@ -45,8 +45,11 @@ Lo que mejor ha funcionado, por si ayuda:
 
 ## 5. Lo último que se hizo (19-20/09/2026)
 
-**La composición de la portada, ordenada (20/09/2026, al cierre · en `main`, commit `d658f0f`,
-SIN DESPLEGAR)** — pedido: «Revisa la index… ayúdame a hacer que todos los contenidos estén
+**La composición de la portada, ordenada (20/09/2026, al cierre · EN PRODUCCIÓN, Worker
+`020cc1b9`, commit `d658f0f`)** — desplegado a pedido del usuario («sube y despliega»), con el
+`git push` en la misma orden. Antes: worktrees, ramas y `deployments list` revisados (la activa
+era la esperada, `2168665c`), y **ninguna migración** en el cambio.
+Pedido: «Revisa la index… ayúdame a hacer que todos los contenidos estén
 armónicamente ordenados… le falta una última pulida a la composición de los componentes».
 **Nada de esto rediseña: todos los componentes siguen siendo los que él aprobó.** Solo cambia
 inicio.tsx.
@@ -76,7 +79,11 @@ listado la enseña igual desde siempre. Se limpia donde vive la colonia, no aqu�
 **El héroe NO se tocó** (velo, foto, `--text-portada`, `pb`) ni el pie de página, que es de
 todas las páginas. Verificado con el preview en el 5180: 341 pruebas, `tsc`, `verificar:f2`
 39/39, `verificar:vitrina` 22/22, `verificar:listado` 24/24 y `verificar:movimiento` sin nada
-invisible.
+invisible. **Y otra vez EN PRODUCCIÓN al desplegar:** `verificar:f2 --remote` 39/39,
+`verificar:vitrina` 22/22, `verificar:movimiento` sin nada invisible, y la portada retratada
+(`desbordeX` 0). En producción la página mide 308 px más que en local porque **allá sí hay una
+pregunta frecuente publicada** y la sección existe; con una sola pregunta se ve despoblada a la
+derecha, y eso se arregla escribiendo más en Panel › Contenido, no en el código.
 
 > **Parte de la «falta de armonía» no es código:** «Lo que dicen los clientes» y las preguntas
 > frecuentes **no salen porque no hay nada publicado**, y el antetítulo y el renglón bajo el
