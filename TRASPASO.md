@@ -67,8 +67,13 @@ variante. Las maquetas y sus capturas quedaron en `Escritorio\portada-propuestas
 `--base http://localhost:5180`: su valor por omisión es el 4180 y sin él informa «0 montadas», como si la
 vitrina estuviera rota.
 
-**La portada abre con un escenario, y el buscador dice solo que entendió (20/09/2026, tarde)** — dos piezas de
-React Bits copiadas A MANO (variante JS + CSS, **sin dependencias**; el `npx shadcn add` del registro no aplica
+**La portada abre con un escenario, y el buscador dice solo que entendió (20/09/2026, tarde)**
+> ⚠ **El ESCENARIO de este apartado lo sustituyó, el mismo día, la portada de arriba.** Se conserva entero
+> porque `npx wrangler rollback ecb59d6c-…` lo devuelve, porque sus lecciones de método siguen valiendo y
+> porque el `StarBorder` del buscador y `entendido.tsx` **siguen vivos tal cual**. Lo que ya NO es cierto va
+> marcado «YA NO» ahí donde está.
+
+Son dos piezas de React Bits copiadas A MANO (variante JS + CSS, **sin dependencias**; el `npx shadcn add` del registro no aplica
 aquí: no hay `components.json`). En producción desde el 20/09/2026, Worker **`ecb59d6c`** (para revertir,
 `20cd3c29`; antes, `bd0fe253`, `18878e94` y `0791a369`).
 
@@ -79,17 +84,20 @@ Tinta → «el color negro no queda»; vino → «ni la fuente ni el color de fo
 instalar ni recompilar nada, y solo la elegida se instaló de verdad. **Con este usuario, para color y
 tipografía: enseñar cuatro, no proponer una.**
 
-Lo que quedó: campo **crema** (el papel de la casa), el velo de la foto **aclara en vez de oscurecer** porque
-el titular es de tinta, y **Playfair Display** importada SOLO en `inicio.tsx` —la única página que la usa— y
+Lo que quedó: campo **crema** (el papel de la casa) —**YA NO:** no hay campo, la foto llena la pantalla—, el
+velo de la foto **aclara en vez de oscurecer** porque el titular es de tinta —**YA NO:** oscurece, y el
+titular es blanco—, y **Playfair Display** importada SOLO en `inicio.tsx` —la única página que la usa— y
 precargada desde ahí: las demás no bajan sus 38 KB. **La cuesta de la escala la fija el teléfono:** a 390 px
 «Comercialización,» es la palabra más ancha y con 48 px dejaba 4 px de aire a cada lado; con
-`clamp(2.4rem, 1.46rem + 5.05vw, 6rem)` quedan 20 px y el escritorio se queda en 96 px. El tamaño de un
+`clamp(2.4rem, 1.46rem + 5.05vw, 6rem)` quedan 20 px y el escritorio se queda en 96 px. **YA NO:** ese token
+(`--text-portada`) **se conserva SIN USO a propósito**, por si vuelve aquella composición; el que manda hoy es
+`--text-portada-pie`, `clamp(2.05rem, 1.3rem + 3.1vw, 3.75rem)`. No lo borres por «token muerto». El tamaño de un
 titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a ojo.
 
 | Archivo | Qué guarda |
 |---|---|
 | `app/components/publico/marco-estelar.tsx` | El `StarBorder`: el destello que recorre la orilla del buscador mientras entiende, y mientras lo entendido siga puesto. Envuelve un panel (no es un botón negro), el destello es `--color-marca` sobre un halo de **2 px**, y la sombra va al marco de afuera porque el `overflow: hidden` la recortaba |
-| `app/components/publico/escenario-portada.tsx` | El `ScrollExpand`: la foto de la casa principal encuadrada en un campo de tinta, el titular centrado encima, y la foto abriéndose al bajar. La foto es `vitrina[0].fotoGrande` —la **casa elegida en Panel › Contenido** o la más reciente— en la variante `galeria` que ya existía: **no se tocó ni el panel ni la base** |
+| ~~`app/components/publico/escenario-portada.tsx`~~ **YA NO** (lo sustituyó el héroe de arriba; el archivo es el mismo, el contenido no) | El `ScrollExpand`: la foto de la casa principal encuadrada en un campo de tinta, el titular centrado encima, y la foto abriéndose al bajar. La foto sigue siendo `vitrina[0].fotoGrande` —la **casa elegida en Panel › Contenido** o la más reciente— en la variante `galeria` que ya existía: **no se tocó ni el panel ni la base** |
 | `app/styles/app.css` (`.marco-estelar`, `.escenario`) | Todo el movimiento, en CSS. Con «menos movimiento» el destello no se dibuja y queda el halo quieto |
 | `app/components/publico/entendido.tsx` | «Así lo entendimos» subió ARRIBA del formulario y su rótulo va en un solo renglón |
 
@@ -105,7 +113,8 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 - **Dos guiones se arreglaron, no el diseño.** `verificar:f2` tomaba por desbordada la foto que su escena
   RECORTA (ahora exime también `overflow-x: hidden`); `verificar:vitrina` y `verificar:movimiento` veían la
   vitrina quieta porque **se detiene fuera de la pantalla a propósito** y ahora nace dos pantallas abajo: la
-  llevan a la vista antes de mirarla.
+  llevan a la vista antes de mirarla. (**Hoy nace UNA pantalla abajo**, y `verificar:vitrina` además tabula
+  hasta la casa en vez de contar pasos fijos.)
 - **Aquí no hay configuración de Prettier:** un `npx prettier --write` reformatea a 80 columnas y deja un diff
   enorme de ruido. No se corre sobre archivos del proyecto.
 - **Un emoji escrito como pareja de subrogados en un guión de Python dejó `PLAN.md` en CERO bytes** a media
@@ -148,9 +157,19 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 
 ## 6. Pendientes, por orden
 
-0. **Del escenario de la portada** (en producción, §5): **medir Lighthouse móvil otra vez**. El LCP de la
-   portada ya no es el titular sino la foto de 1600 px, y F2 venía con 82 contra la meta de 90. Y verlo en el
-   Safari del iPad: usa `100svh` y `clip-path` animado.
+0. **De la portada que vende** (en producción, §5), lo que el usuario dejó abierto:
+   - **El movimiento.** El «se abre al bajar» lo pidió y aprobó él por la mañana y se fue con la composición
+     nueva; eligió la 2 mirando una captura QUIETA, se le avisó al cerrar y **no contestó**. Si lo pide de
+     vuelta, va sobre la composición de ahora (la foto ya empieza abierta: sería otro movimiento, no aquel
+     riel de 1.9 pantallas).
+   - **La foto de portada.** Hoy es AIG-0188, la imagen más visible del sitio, y trae alambre de púas a la
+     izquierda y una obra de ladrillo a la derecha. Se cambia en Panel › Contenido, «Casa de la foto
+     principal». Ya se le dijo dos veces: es decisión suya, no se toca la base por un agente.
+   - **«Saludo» y «Lema» están vacíos** en Panel › Contenido. El antetítulo con su filete y el renglón bajo el
+     titular existen en el código y no salen por eso. Los escribe él: aquí no se inventa contenido del negocio.
+   - **Medir Lighthouse móvil otra vez.** El LCP sigue siendo la foto de 1600 px —ahora a pantalla completa y
+     con `fetchPriority="high"`— y F2 venía con 82 contra la meta de 90. Y verlo en el Safari del iPad: usa
+     `100svh` (el `clip-path` animado ya no existe).
 
 1. **Del buscador que entiende frases** (en producción desde el 20/09/2026, §5): probarlo en el Safari del iPad, que es donde el usuario mira el sitio; mirar en Panel › Configuración cuánto se usa de verdad (si casi nadie llega al modelo, el tope de 300 sobra; si el modelo falla seguido, cambiarlo ahí mismo); y en F6, que la etiqueta `canonical` no lleve `frase` ni `literal`. Tres decisiones que tomó el agente y el usuario puede cambiar: nace encendido, lo apagan maestro y director, y el buscador de casas del PANEL no usa el modelo.
 
@@ -188,6 +207,11 @@ Los que crean cuentas chocan con el freno de acceso (8 por minuto desde una mism
 - `npm run capturar -- <url> salida.png [ancho] [alto] [movil]` — una captura.
 - `npm run filmar -- servicios carpeta/` y `py scripts/armar-gif.py carpeta/ salida.gif` — la página moviéndose, a velocidad real. Necesita Pillow.
 - `npm run hoja:dibujos -- salida.png` — los dibujos en grande y en reposo.
+- **Fuera del repo**, en `Escritorio\portada-propuestas\_maquetas\` (su `LEEME.txt` explica cada uno):
+  `node medir-heroe.mjs` mide la primera pantalla en 390/768/1024/1280/1366/1920 —dónde acaba el héroe, el
+  renglón más ancho del titular, el buscador y el desborde horizontal— y es lo que cerró la composición de
+  hoy; `node scroll-capturar.mjs` la retrata a varias alturas de scroll; `sh rehacer.sh` cierra el preview,
+  reconstruye y lo vuelve a levantar. Ahí están también las cuatro maquetas que se le enseñaron.
 
 ## 8. El worktree
 
