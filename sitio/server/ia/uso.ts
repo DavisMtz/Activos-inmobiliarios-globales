@@ -11,13 +11,13 @@
  *   devuelven «no hay» y las escrituras se callan: la persona busca igual.
  */
 
-import { ahora } from "../fechas";
+import { ahora, diaDeMorelia } from "../fechas";
 
 /** Siete días: en una ciudad la gente busca lo mismo, y el catálogo no cambia lo que una frase QUIERE decir. */
 const VIGENCIA_DE_CACHE_MS = 7 * 24 * 3_600_000;
 
-/** «2026-09-20» en la hora de Morelia (UTC-6, sin horario de verano desde 2022). */
-export const diaDeMorelia = (fecha = new Date()): string => new Date(fecha.getTime() - 6 * 3_600_000).toISOString().slice(0, 10);
+/** «2026-09-20» en la hora de Morelia. Vive en `server/fechas.ts`, que también la usan las métricas. */
+export { diaDeMorelia };
 
 // ─── La memoria ───────────────────────────────────────────────────
 

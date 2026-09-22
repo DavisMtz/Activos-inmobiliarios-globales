@@ -29,7 +29,13 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { RAIZ, consultar, ejecutarSql, texto as sql } from "./lib/d1.mjs";
+import { importarTs } from "./lib/importar-ts.mjs";
 import { borrarUsuarioDePrueba, buscarUsuario, crearUsuarioConTemporal } from "./lib/usuarios.mjs";
+
+// La MISMA ventana que usa la pantalla (días de Morelia, 21/09/2026): contada
+// aparte como «30 × 24 horas desde este minuto», el `COUNT(*)` a mano se lleva
+// las visitas de la noche de hace 30 días y deja de cuadrar sin que nada falle.
+const { ventanaDeMetricas } = await importarTs("server/metricas.ts");
 
 const { values } = parseArgs({
   options: {
@@ -213,10 +219,24 @@ try {
   aBorrar.propiedades.push(casa);
   comprobar("la casa de prueba queda a nombre del asesor", Boolean(casa), JSON.stringify(nueva.datos));
 
-  // Eventos medidos: 5 vistas, 2 clics de WhatsApp y 1 de teléfono de HOY, y
-  // 3 vistas de hace 40 días, que la ventana de 30 tiene que dejar fuera.
+  // La lista de casas trae las 25 con más vistas y, a empate, la de id más
+  // bajo: con tráfico de verdad (o con la muestra de `sembrar-metricas-demo`)
+  // 5 vistas ya no alcanzan para entrar y la casa de prueba se quedaba fuera.
+  // Necesita más vistas que la 25.ª de TODA la historia.
+  const umbral = Number(
+    consultar(
+      `SELECT COALESCE(MAX(n), 0) AS n FROM (
+         SELECT COUNT(*) AS n FROM eventos WHERE tipo = 'ficha_vista' AND propiedad_id IS NOT NULL
+          GROUP BY propiedad_id ORDER BY n DESC LIMIT 1 OFFSET 24);`,
+      opciones,
+    )[0]?.n ?? 0,
+  );
+  const vistasDePrueba = Math.max(5, umbral + 1);
+
+  // Eventos medidos: las vistas de arriba, 2 clics de WhatsApp y 1 de teléfono
+  // de HOY, y 3 vistas de hace 40 días, que la ventana de 30 tiene que dejar fuera.
   const eventos = [
-    ...Array.from({ length: 5 }, () => ["ficha_vista", ahora()]),
+    ...Array.from({ length: vistasDePrueba }, () => ["ficha_vista", ahora()]),
     ...Array.from({ length: 2 }, () => ["whatsapp_click", ahora()]),
     ["telefono_click", ahora()],
     ...Array.from({ length: 3 }, () => ["ficha_vista", haceDias(40)]),
@@ -381,15 +401,16 @@ try {
   const mia = (metricas.datos?.casas ?? []).find((fila) => fila.id === casa);
   comprobar(
     "la casa de prueba sale en la lista con sus cifras de los últimos 30 días",
-    mia?.vistas === 5 && mia?.whatsapp === 2 && mia?.telefono === 1,
-    JSON.stringify(mia ?? null),
+    mia?.vistas === vistasDePrueba && mia?.whatsapp === 2 && mia?.telefono === 1,
+    `${vistasDePrueba} vistas esperadas · ${JSON.stringify(mia ?? null)}`,
   );
 
+  const ventana30 = ventanaDeMetricas(30);
   const enLaTabla = consultar(
     `SELECT
-       (SELECT COUNT(*) FROM eventos WHERE propiedad_id = ${casa} AND tipo = 'ficha_vista' AND creado_en >= ${sql(haceDias(30))}) AS vistas30,
+       (SELECT COUNT(*) FROM eventos WHERE propiedad_id = ${casa} AND tipo = 'ficha_vista' AND creado_en >= ${sql(ventana30.desde)}) AS vistas30,
        (SELECT COUNT(*) FROM eventos WHERE propiedad_id = ${casa} AND tipo = 'ficha_vista') AS vistasTodo,
-       (SELECT COUNT(*) FROM eventos WHERE tipo = 'ficha_vista' AND creado_en >= ${sql(haceDias(30))}) AS totalVistas30,
+       (SELECT COUNT(*) FROM eventos WHERE tipo = 'ficha_vista' AND creado_en >= ${sql(ventana30.desde)}) AS totalVistas30,
        (SELECT COUNT(*) FROM prospectos WHERE propiedad_id = ${casa}) AS prospectosCasa;`,
     opciones,
   )[0];
@@ -408,7 +429,9 @@ try {
   const miaTodo = (todoElTiempo.datos?.casas ?? []).find((fila) => fila.id === casa);
   comprobar(
     "la ventana de 30 días deja fuera las vistas de hace 40, y «todo» las incluye",
-    mia?.vistas === 5 && miaTodo?.vistas === Number(enLaTabla?.vistasTodo) && miaTodo?.vistas === 8,
+    mia?.vistas === vistasDePrueba &&
+      miaTodo?.vistas === Number(enLaTabla?.vistasTodo) &&
+      miaTodo?.vistas === vistasDePrueba + 3,
     `30 días: ${mia?.vistas} · todo: ${miaTodo?.vistas} · tabla: ${enLaTabla?.vistasTodo}`,
   );
   comprobar(
@@ -433,7 +456,7 @@ try {
   const casaContenido = (deContenido.datos?.casas ?? []).find((fila) => fila.id === casa);
   comprobar(
     "contenido ve las vistas…",
-    deContenido.estado === 200 && resumenContenido.vistas > 0 && casaContenido?.vistas === 8,
+    deContenido.estado === 200 && resumenContenido.vistas > 0 && casaContenido?.vistas === vistasDePrueba + 3,
     JSON.stringify(resumenContenido),
   );
   comprobar(
@@ -455,6 +478,98 @@ try {
     JSON.stringify(filaAsesor ?? null),
   );
 
+  // ─── 4b. El tablero (21/09/2026): cada gráfica cuadra con la tabla ─
+  // Cada cifra nueva se compara contra un SELECT escrito aparte, como las de
+  // arriba: si saliera del mismo código, la prueba solo diría que el código es
+  // igual a sí mismo.
+  console.log("\n4b. Las gráficas del tablero cuadran con la tabla");
+  const d = metricas.datos ?? {};
+  const suma = (lista, campo) => (lista ?? []).reduce((total, fila) => total + Number(fila[campo] ?? 0), 0);
+  const sumaRejilla = (rejilla) => (rejilla ?? []).flat().reduce((total, n) => total + n, 0);
+  const puntos = d.serie?.puntos ?? [];
+  comprobar(
+    "la serie de 30 días trae 30 puntos, uno por día de Morelia, del primero a hoy",
+    d.serie?.cubeta === "dia" &&
+      puntos.length === 30 &&
+      puntos[0]?.desde === ventana30.primerDia &&
+      puntos.at(-1)?.desde === ventana30.hoy,
+    `${d.serie?.cubeta} · ${puntos.length} puntos · ${puntos[0]?.desde} → ${puntos.at(-1)?.desde}`,
+  );
+  comprobar(
+    "la suma de la serie es el total del periodo (vistas, WhatsApp y prospectos)",
+    suma(puntos, "vistas") === d.resumen?.vistas &&
+      suma(puntos, "whatsapp") === d.resumen?.whatsapp &&
+      suma(puntos, "prospectos") === d.resumen?.prospectos,
+    `serie ${suma(puntos, "vistas")}/${suma(puntos, "whatsapp")}/${suma(puntos, "prospectos")} · resumen ${d.resumen?.vistas}/${d.resumen?.whatsapp}/${d.resumen?.prospectos}`,
+  );
+  comprobar("el mapa de horas reparte esas mismas vistas", sumaRejilla(d.horas) === d.resumen?.vistas, `${sumaRejilla(d.horas)} contra ${d.resumen?.vistas}`);
+
+  const anteriorEnLaTabla = consultar(
+    `SELECT COUNT(*) AS n FROM eventos WHERE tipo = 'ficha_vista'
+        AND creado_en >= ${sql(ventana30.anterior.desde)} AND creado_en < ${sql(ventana30.anterior.hasta)};`,
+    opciones,
+  )[0];
+  comprobar(
+    "el periodo anterior (mismo largo, cortado a la misma hora) cuadra con la tabla",
+    d.anterior?.vistas === Number(anteriorEnLaTabla?.n),
+    `API ${d.anterior?.vistas} · tabla ${anteriorEnLaTabla?.n}`,
+  );
+  comprobar("«Todo» no se compara con nada: no hay periodo anterior", todoElTiempo.datos?.anterior === null);
+
+  const delCatalogo = consultar(
+    `SELECT
+       (SELECT COUNT(*) FROM propiedades WHERE eliminada_en IS NULL) AS casas,
+       (SELECT COUNT(*) FROM propiedades WHERE eliminada_en IS NULL AND estado IN ('publicada', 'apartada')) AS enElSitio,
+       (SELECT COUNT(*) FROM eventos e JOIN propiedades p ON p.id = e.propiedad_id
+         WHERE e.tipo = 'ficha_vista' AND e.creado_en >= ${sql(ventana30.desde)} AND p.eliminada_en IS NULL) AS vistasDeCasas;`,
+    opciones,
+  )[0];
+  comprobar(
+    "«qué busca la gente» reparte TODAS las vistas de casas del catálogo y todas las casas del sitio",
+    suma(d.demanda?.porTipo, "vistas") === Number(delCatalogo?.vistasDeCasas) &&
+      suma(d.demanda?.porTipo, "catalogo") === Number(delCatalogo?.enElSitio),
+    `vistas ${suma(d.demanda?.porTipo, "vistas")}/${delCatalogo?.vistasDeCasas} · catálogo ${suma(d.demanda?.porTipo, "catalogo")}/${delCatalogo?.enElSitio}`,
+  );
+  comprobar(
+    "el inventario cuenta todas las casas, y «en el sitio» son las publicadas y las apartadas",
+    Object.values(d.inventario?.porEstado ?? {}).reduce((total, n) => total + n, 0) === Number(delCatalogo?.casas) &&
+      d.cobertura?.enElSitio === Number(delCatalogo?.enElSitio),
+    JSON.stringify({ inventario: d.inventario?.porEstado, cobertura: d.cobertura, tabla: delCatalogo }),
+  );
+
+  const porEstadoEnLaTabla = Object.fromEntries(
+    consultar(`SELECT estado, COUNT(*) AS n FROM prospectos WHERE creado_en >= ${sql(ventana30.desde)} GROUP BY estado;`, opciones).map(
+      (fila) => [fila.estado, Number(fila.n)],
+    ),
+  );
+  const panorama = d.prospectos ?? {};
+  comprobar(
+    "«cómo van los prospectos» es el GROUP BY estado de la tabla, y suma el total del periodo",
+    Object.entries(panorama.porEstado ?? { x: -1 }).every(([estado, n]) => n === (porEstadoEnLaTabla[estado] ?? 0)) &&
+      panorama.total === d.resumen?.prospectos,
+    `API ${JSON.stringify(panorama.porEstado)} · tabla ${JSON.stringify(porEstadoEnLaTabla)}`,
+  );
+
+  const dc = deContenido.datos ?? {};
+  comprobar(
+    "contenido tiene sus gráficas de vistas, sin panorama de prospectos ni contactos en la serie",
+    dc.prospectos === null &&
+      (dc.serie?.puntos ?? []).every((p) => p.whatsapp === 0 && p.telefono === 0 && p.prospectos === 0) &&
+      sumaRejilla(dc.horas) === dc.resumen?.vistas &&
+      dc.resumen?.vistas > 0,
+    JSON.stringify({ prospectos: dc.prospectos, vistas: dc.resumen?.vistas, horas: sumaRejilla(dc.horas) }),
+  );
+
+  const da = delAsesorMetricas.datos ?? {};
+  comprobar(
+    "el asesor: su inventario, su serie y sus prospectos son los de SU casa y nada más",
+    da.casasEnTotal === 1 &&
+      Object.values(da.inventario?.porEstado ?? {}).reduce((total, n) => total + n, 0) === 1 &&
+      suma(da.serie?.puntos, "vistas") === vistasDePrueba + 3 &&
+      da.prospectos?.total === Number(enLaTabla?.prospectosCasa),
+    JSON.stringify({ casas: da.casasEnTotal, inventario: da.inventario?.porEstado, vistas: suma(da.serie?.puntos, "vistas"), prospectos: da.prospectos?.total }),
+  );
+
   // ─── 5. Las pantallas existen y responden ──────────────────────
   console.log("\n5. Las pantallas nuevas responden (y el aviso del inicio ya lleva a algún lado)");
   const bandeja = await pedir("/panel/prospectos", { cookie: gente.director.cookie });
@@ -468,6 +583,21 @@ try {
     "la pantalla de métricas se pinta en el servidor",
     pantallaMetricas.estado === 200 && pantallaMetricas.texto.includes("Fichas vistas"),
     `estado ${pantallaMetricas.estado}`,
+  );
+  comprobar(
+    "y sus gráficas también: el SVG ya viene en el HTML, sin esperar a JavaScript",
+    pantallaMetricas.texto.includes("<svg") &&
+      pantallaMetricas.texto.includes("Cómo van los prospectos") &&
+      pantallaMetricas.texto.includes("A qué hora miran"),
+  );
+  const pantallaDeContenido = await pedir("/panel/metricas", { cookie: gente.contenido.cookie });
+  comprobar(
+    "contenido ve su pantalla sin nada comercial: ni prospectos ni clics de WhatsApp",
+    pantallaDeContenido.estado === 200 &&
+      pantallaDeContenido.texto.includes("Fichas vistas") &&
+      !pantallaDeContenido.texto.includes("Cómo van los prospectos") &&
+      !pantallaDeContenido.texto.includes("Clics en WhatsApp"),
+    `estado ${pantallaDeContenido.estado}`,
   );
   const inicio = await pedir("/panel", { cookie: gente.director.cookie });
   comprobar(

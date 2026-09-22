@@ -10,7 +10,10 @@
     "shared/**/*",
     "server/auth/clave.ts",
     "server/cloudinary.ts",
-    "server/redirecciones.ts"
+    "server/redirecciones.ts",
+    "server/fechas.ts",
+    "server/metricas.ts",
+    "app/components/panel/cifras.ts"
   ],
   "compilerOptions": {
     "composite": true,

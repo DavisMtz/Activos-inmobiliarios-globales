@@ -35,7 +35,8 @@
     "fichas:descargar": "node scripts/descargar-fichas.mjs",
     "sembrar": "node scripts/sembrar-desde-wordpress.mjs",
     "comparar": "node scripts/comparar-con-sitio-actual.mjs",
-    "fotos:migrar": "node scripts/migrar-fotos-a-cloudinary.mjs"
+    "fotos:migrar": "node scripts/migrar-fotos-a-cloudinary.mjs",
+    "metricas:muestra": "node scripts/sembrar-metricas-demo.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jost": "^5.3.0",
