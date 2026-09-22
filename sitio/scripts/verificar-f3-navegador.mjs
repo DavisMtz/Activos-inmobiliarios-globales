@@ -482,7 +482,10 @@ try {
     // Los trozos del panel se reconocen por lo que DICEN, no por su nombre:
     // `routes/publico/marco.tsx` y `routes/panel/marco.tsx` producen archivos
     // que se llaman igual.
-    const MARCAS = ["Pegar texto de Facebook", "Hacer portada", "Mandar a la papelera", "Contraseña temporal"];
+    // «Qué busca la gente» es de Métricas (21/09/2026): su trozo, con las
+    // gráficas, pesa 10 KB y no traía ninguna de las otras cuatro frases, así
+    // que esta comprobación no lo estaba vigilando.
+    const MARCAS = ["Pegar texto de Facebook", "Hacer portada", "Mandar a la papelera", "Contraseña temporal", "Qué busca la gente"];
     const trozosDelPanel = readdirSync(assets)
       .filter((archivo) => archivo.endsWith(".js"))
       .filter((archivo) => {
