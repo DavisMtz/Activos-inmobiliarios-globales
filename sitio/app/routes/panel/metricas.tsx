@@ -97,6 +97,19 @@ const COLOR_DE_ESTADO_DE_CASA: Record<(typeof ESTADOS_PROPIEDAD)[number], string
   borrador: RAMPA_TINTA[0],
 };
 
+/**
+ * Una sola fila de tarjetas en escritorio, sea cual sea su número: con una
+ * rejilla fija de 6, cinco tarjetas dejaban un hueco al final. Escritas
+ * enteras para que Tailwind las encuentre.
+ */
+const COLUMNAS_DE_TARJETAS: Record<number, string> = {
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "xl:grid-cols-4",
+  5: "xl:grid-cols-5",
+  6: "xl:grid-cols-3 2xl:grid-cols-6",
+};
+
 /** «1 de cada 33 vistas»: con cifras chicas se lee mejor que «3.0 %». */
 function unoDeCada(parte: number, total: number): string | null {
   if (parte <= 0 || total <= 0) return null;
@@ -125,6 +138,7 @@ export default function Metricas({ loaderData }: Route.ComponentProps) {
   const conCompartir = comercial && (resumen.compartir > 0 || (anterior?.compartir ?? 0) > 0);
   const puntos = serie.puntos;
   const unidad = serie.cubeta === "dia" ? "Día a día" : serie.cubeta === "semana" ? "Semana a semana" : "Mes a mes";
+  const tarjetas = 2 + (comercial ? 2 : 0) + (conTelefono ? 1 : 0) + (conCompartir ? 1 : 0);
 
   return (
     <div className="flex flex-col gap-6">
@@ -174,12 +188,7 @@ export default function Metricas({ loaderData }: Route.ComponentProps) {
       ) : null}
 
       {/* ─── Las cifras del periodo ─────────────────────────────── */}
-      <section
-        aria-label="Resumen del periodo"
-        className={`grid grid-cols-2 gap-3 sm:gap-4 ${comercial ? "xl:grid-cols-4" : "lg:grid-cols-2"} ${
-          conTelefono || conCompartir ? "2xl:grid-cols-6" : ""
-        }`}
-      >
+      <section aria-label="Resumen del periodo" className={`grid grid-cols-2 gap-3 sm:gap-4 ${COLUMNAS_DE_TARJETAS[tarjetas]}`}>
         <Tarjeta
           titulo="Fichas vistas"
           valor={resumen.vistas}

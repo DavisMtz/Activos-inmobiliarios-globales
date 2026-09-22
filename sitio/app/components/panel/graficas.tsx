@@ -29,9 +29,9 @@ export { cifra, fechaCorta, type Cubeta } from "./cifras";
  *   contexto (el catálogo, lo que no cuenta) y los pasos de un proceso van en
  *   una rampa de un solo tono. El rojo claro de la rampa da 2.46:1, por encima
  *   del 2:1 que se exige a una marca ordinal.
- * - **Marcas delgadas:** barras de 12 px con la punta redonda (4 px) y la base
- *   recta, línea de 2 px, rejilla de un pelo. Los números van en tinta, nunca
- *   del color del dato.
+ * - **Marcas delgadas:** barras de 8 px con la punta redonda y la base recta,
+ *   columnas de 24 px como mucho, línea de 2 px, rejilla de un pelo. Los
+ *   números van en tinta, nunca del color del dato.
  * - Nada se mueve al entrar (el panel no lleva movimiento de lucimiento,
  *   `routes/panel/marco.tsx`); solo el cambio de 150 ms al señalar una marca.
  *

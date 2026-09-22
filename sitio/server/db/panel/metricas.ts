@@ -15,8 +15,9 @@
  *
  * Nunca se piden las filas de `eventos`: es la tabla que más crece (una por
  * ficha vista) y las filas leídas se pagan (PLAN §17). Todo son `COUNT` sobre la
- * ventana, con el índice `idx_eventos_fecha` de la migración 0003, y van en UN
- * solo `db.batch`: una ida y vuelta a la base por pantalla.
+ * ventana, con el índice `idx_eventos_fecha` de la migración 0003, y van juntos
+ * en un `db.batch`: una ida y vuelta a la base (dos para quien ve «todo», que
+ * además pide la tabla por asesor).
  *
  * Por eso la condición de fecha **se quita del SQL** cuando se piden todos los
  * tiempos, en vez de escribir `(? IS NULL OR creado_en >= ?)`: con ese `OR`,
