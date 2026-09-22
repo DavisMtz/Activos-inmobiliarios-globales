@@ -1,6 +1,6 @@
 # Traspaso · para quien siga
 
-Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 21/09/2026 (Contacto). Es el **punto de retoma**: qué hay, qué falta y cómo se trabaja aquí. No repite `PLAN.md`; dice por dónde entrarle. Si algo de aquí contradice a `PLAN.md`, manda `PLAN.md` (y corrige este archivo).
+Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 21/09/2026 (Contacto y, por la noche, Métricas con gráficas). Es el **punto de retoma**: qué hay, qué falta y cómo se trabaja aquí. No repite `PLAN.md`; dice por dónde entrarle. Si algo de aquí contradice a `PLAN.md`, manda `PLAN.md` (y corrige este archivo).
 
 > El repositorio es **público**: aquí no va ninguna clave, contraseña ni dato de una persona real.
 
@@ -9,9 +9,9 @@ Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 21/09/2026 (Cont
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`4ba9e535`** (21/09/2026, Contacto: el mostrador y el formulario que avisa). **`main` está empujada y desplegada (`450da0c` y el registro que le sigue): no hay nada pendiente de subir** |
+| **Worker** | `activos-inmobiliarios`, versión activa **`4ba9e535`** (21/09/2026, Contacto: el mostrador y el formulario que avisa). En `origin/main` hasta `1655eb7`. **⚠ En `main` LOCAL hay commits SIN empujar ni desplegar, esperando su palabra:** `62a2db4` (Contacto: los renglones de la oficina) y **`2593612` + `d70f16b` (Métricas con gráficas, §5)**, más el registro que les sigue. Ninguno lleva migración |
 | **Reversión** | la anterior es `d71de42b`: `npx wrangler rollback d71de42b-d777-4309-9880-3ba39a4da4d9` (devuelve el Contacto viejo). Antes, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
-| **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
+| **Código** | rama `main`, con los commits locales de arriba por encima de `origin/main`. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
 
@@ -44,6 +44,27 @@ Lo que mejor ha funcionado, por si ayuda:
 - **Registrar con números** en `PLAN.md` §19 al cerrar, incluidas las trampas nuevas.
 
 ## 5. Lo último que se hizo (19-21/09/2026)
+
+**Métricas con gráficas: el tablero (21/09/2026, noche · SOLO LOCAL, commits `2593612` y
+`d70f16b`, sin empujar ni desplegar).** Pedido: «que en panel de administración el apartado
+de métricas tenga gráficos y demás métricas de forma visual para poder ver el desempeño de
+todo». Se le mandaron capturas de la primera versión (con datos de muestra inventados, en
+local) mientras se pulía; **no ha contestado todavía**. `PLAN.md` §19 tiene el detalle y las
+cifras; aquí, dónde vive cada cosa:
+
+| Archivo | Qué guarda |
+|---|---|
+| `app/components/panel/graficas.tsx` | Las piezas, hechas a mano y sin biblioteca: tarjeta con cambio y tendencia, la serie en el tiempo (vistas arriba, contactos abajo, un globo para las dos, flechas del teclado), barra partida, «lo que hay contra lo que se ve», el mapa de horas y la tabla plegada de cada una. Los colores y el porqué, en su comentario de cabecera |
+| `app/components/panel/cifras.ts` | Cómo se escriben cifras, fechas, porcentajes y cambios, y el tope de un eje. Sin JSX, para que `tests/` lo importe |
+| `app/routes/panel/metricas.tsx` | La pantalla: qué pieza va dónde, según el rol |
+| `server/db/panel/metricas.ts` | Las consultas (un `db.batch`, con `INDEXED BY idx_eventos_fecha` si hay ventana) y cómo se arma todo en JavaScript sobre el catálogo |
+| `server/metricas.ts` · `server/fechas.ts` | La ventana en días de Morelia y el periodo anterior (mismo largo, cortado a la misma hora), las cubetas, los rangos de precio, la rejilla de horas y la mediana. `diaDeMorelia` se mudó aquí desde `server/ia/uso.ts`, que la reexporta |
+| `scripts/sembrar-metricas-demo.mjs` | `npm run metricas:muestra -- --local`: cuatro meses de datos INVENTADOS para mirar la pantalla, con sesiones de maestro, asesora y contenido en `%TEMP%\aig-metricas-demo.json`. **Se niega a correr en remoto** y `--limpiar` deja la base como estaba |
+| `scripts/verificar-f4.mjs` (4b) | Cada gráfica contra un `SELECT` a mano; la casa de prueba ya entra a las 25 aunque haya tráfico |
+
+> ⚠ **Si cambias la ventana** (qué son «30 días»), cámbiala en `ventanaDeMetricas` y en
+> ningún otro lado: `verificar:f4` la importa de ahí para su `COUNT(*)` a mano. Contada
+> aparte, la prueba deja de cuadrar sin que nada esté mal.
 
 **Contacto: el mostrador y un formulario que avisa junto al campo (21/09/2026 · EN
 PRODUCCIÓN, Worker `4ba9e535`, commit `450da0c`)** — desplegado a pedido del usuario
@@ -279,9 +300,34 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 
 ## 6. Pendientes, por orden
 
-> **Punto de retoma del 21/09/2026 (Contacto).** Todo está **empujado y desplegado** (Worker
-> `4ba9e535`); el árbol quedó limpio y no hay nada a medias. Lo primero de la lista es lo que el
-> usuario dejó abierto, no un arreglo pendiente de código.
+> **Punto de retoma del 21/09/2026, noche (Métricas).** En producción sigue `4ba9e535`. En
+> `main` LOCAL esperan su palabra tres commits de código —`62a2db4` (Contacto) y `2593612` +
+> `d70f16b` (Métricas)— más el registro; verificados, sin migración. El árbol quedó limpio, la
+> base local sin datos de muestra y el `vite preview` apagado. Lo primero es lo que él decida.
+
+0.quater **De Métricas con gráficas (21/09/2026, noche), esperando SU palabra:**
+   - **Subirlo.** Con su «Despliega»: los tres pasos de §3 (activa esperada `4ba9e535`; el
+     worktree sigue en `bf0226f` y `git log main..worktree-f5-formularios-y-guion` debe salir
+     vacío), `git push`, `npm run deploy` (se van también los renglones de Contacto de 0.ter).
+     Después, en remoto: `verificar:f4` (escribe y limpia, como siempre), **`verificar:f3-navegador`
+     por el criterio 8** —el trozo de Métricas del panel creció de 2.2 a 10.5 KB gzip y nada de
+     `graficas.tsx` debe pedirse al navegar el sitio— y `verificar:f2`; cerrar mirando la base
+     (188 casas, 0 cuentas de prueba NUEVAS: las dos `entregas-*` son de §6.2) y
+     `fotos:migrar -- --remote --verificar` en ceros. Para revertir: `4ba9e535`.
+   - **En producción se verá casi vacío:** hay una semana de visitas (98, casi todas del
+     equipo: en modo propuesta no llega nadie más) y un prospecto. Es lo esperado; con datos
+     de muestra se ve como en las capturas de `Escritorio\portada-propuestas\metricas-21-09\`.
+   - **Decisiones del agente que son suyas:** (1) teléfono y «compartir» ocultos mientras no
+     haya ninguno, porque **ninguna página los emite**; si quiere medirlos, se cablea
+     `telefono_click` en los `tel:` de `marco.tsx` (pie) y `contacto.tsx`, y de paso el WhatsApp
+     GENERAL (botón flotante, Contacto, pie), que hoy tampoco se cuenta: solo el de las fichas;
+     (2) 10 casas a la vista de 25; (3) 4 tipos y 6 colonias nombradas, el resto en una línea;
+     (4) el último punto punteado «en curso»; (5) mediana y no promedio para el tiempo de
+     atención; (6) tinta para lo que se ve y rojo para lo que se convierte. Si pide otro color o
+     composición, **enséñale cuatro retratadas**, como siempre: las piezas toman los colores de
+     `COLOR` y las rampas de `graficas.tsx`.
+   - **Las visitas del propio equipo cuentan como visitas.** Se podría no contar a quien trae la
+     cookie del panel (`__Host-aig_sesion`) al avisar el evento; es decisión suya, no se hizo.
 
 0.ter **De Contacto (21/09/2026), esperando SU palabra** (ninguna es un fallo):
    - **Subir el ajuste de los renglones de contacto** (commit local, SIN empujar ni desplegar
@@ -350,7 +396,7 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 
 | Comando | Qué cubre |
 |---|---|
-| `npm test` · `npx tsc -b` | 366 pruebas · tipos |
+| `npm test` · `npx tsc -b` | 382 pruebas · tipos |
 | `npm run verificar:f2 -- --base http://localhost:5180 --local` | El sitio público: 39 comprobaciones |
 | `npm run verificar:listado -- --base http://localhost:5180` | El listado y **volver de una ficha** (su apartado 3). Sin `--base` apunta al puerto 4180 |
 | `npm run verificar:vitrina -- --base http://localhost:5180` | La vitrina de la portada. Misma trampa del 4180 |
@@ -358,7 +404,8 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 | `npm run verificar:contacto -- --base http://localhost:5180 --local [--capturas carpeta]` | Contacto **pulsando los botones**: errores en su campo, el camino sin JavaScript, el gracias con la trampa y, solo en local, un envío real que queda como `vender` y se borra, y los renglones de la oficina con datos sembrados (devuelve la fila). 39 en local; con `--remote` no escribe nada (28) |
 | `npm run verificar:f3 -- --base http://localhost:5180 --local` | El panel, por API |
 | `npm run verificar:f3-navegador -- --base http://localhost:5180 --local` | El panel pulsando botones, el campo «Dibujo» y, **solo en `--remote`**, el criterio 8 |
-| `npm run verificar:f4 -- --base http://localhost:5180 --local` | Prospectos y métricas |
+| `npm run verificar:f4 -- --base http://localhost:5180 --local` | Prospectos y métricas: 54 comprobaciones, con cada gráfica del tablero contra un `SELECT` a mano (su sección 4b) |
+| `npm run metricas:muestra -- --local [--limpiar]` | No verifica: siembra en LOCAL cuatro meses de datos inventados para MIRAR Métricas (sesiones de maestro, asesora y contenido en `%TEMP%\aig-metricas-demo.json`, para `capturar` con `AIG_COOKIE`). **Ciérralo siempre con `--limpiar`**: F3 y F4 esperan la base sin cuentas de prueba. En remoto se niega |
 | `npm run verificar:entregas -- --base http://localhost:5180 --local` | Entregas. Con `--dejar` NO limpia (es para capturas): la corrida siguiente sin la bandera sí |
 | `npm run verificar:redes -- --base http://localhost:5180 --local` | Las redes del pie **pulsando «Guardar las redes»** en el panel: el desplegable, lo que queda en la base, lo que sale en el pie y que vaciar el enlace quita la red. Crea una cuenta de dirección y la borra; devuelve la fila a como estaba |
 | `npm run verificar:busqueda -- --base http://localhost:5180 --local [--ia]` | El buscador: lo que entiende sin modelo, la frase tecleada en la portada, el interruptor del panel y, con `--ia`, el modelo de verdad (gasta unas consultas). **En local el binding `AI` va a la nube:** también gasta |
