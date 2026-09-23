@@ -9,8 +9,8 @@ Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 23/09/2026 (el p
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`b328a05c`** (23/09/2026: el panel en el teléfono, §5). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
-| **Reversión** | la anterior es `5bdc97d4`: `npx wrangler rollback 5bdc97d4-3108-4af9-9e2b-294af045395a` (devuelve el panel de antes, con Métricas en gráficas). Antes, `4ba9e535`, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
+| **Worker** | `activos-inmobiliarios`, versión activa **`f87709f8`** (23/09/2026: el panel en el teléfono con la barra de abajo, §5). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
+| **Reversión** | la anterior es `b328a05c`: `npx wrangler rollback b328a05c-97c3-4301-b5ed-cf59a4e97885` (devuelve el menú plegable arriba, con lo demás de la primera mano). Antes, `5bdc97d4` (el panel de antes), `4ba9e535`, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
@@ -67,7 +67,23 @@ Capturas de antes y ahora, y las cuatro maquetas de navegación, en
 `Escritorio\portada-propuestas\panel-23-09\`.
 
 > ⚠ **El criterio 8 ya vigila el trozo de Prospectos** («Solo los que faltan por cerrar» en
-> `MARCAS`): 5 trozos. Si cambias ese texto del filtro, cambia también la frase.
+> `MARCAS`) **y el marco del panel** («Secciones del panel»): 6 trozos. Si cambias alguno de
+> esos textos, cambia también la frase.
+
+**Y la barra de abajo (23/09/2026 · EN PRODUCCIÓN, Worker `f87709f8`, commit `49f4015`)** —
+eligió la B de las cuatro maquetas y pidió desplegar en el mismo mensaje («la b» · «y
+despliegas»). Todo vive en `app/routes/panel/marco.tsx`:
+
+| Pieza | Qué hace |
+|---|---|
+| `BarraInferior` | Las 4 primeras secciones del menú (ya filtrado por permisos) + «Más». Si caben todas (≤5, el asesor), sin «Más». `EN_LA_BARRA = 4` |
+| `Mas` | `<details>` con la hoja que sube desde la barra. `key={ruta}` la cierra al navegar; el velo y `Esc`, con JS |
+| `Cuenta` · `CuentaParaLeer` | La píldora de «sin atender» (se ve) y la frase para el lector (se lee DESPUÉS del nombre) |
+| `--alto-barra` | En el `div` raíz del marco: 69 px + `safe-area` en el celular, 0 desde `lg`. Lo usan el `pb` de `main` y el `sticky` del «Guardar» de `formulario-propiedad.tsx`. **Todo lo que se pegue abajo en el panel tiene que usarla**, o quedará debajo de la barra |
+
+El número sale de `prospectosSinAtender` (`server/db/panel/inicio.ts`), que comparte la
+consulta con el aviso de Inicio: **si cambia qué es «sin atender», se cambia en
+`consultaSinAtender` y en ningún otro lado.**
 
 **Métricas con gráficas: el tablero (21-22/09/2026 · EN PRODUCCIÓN, Worker `5bdc97d4`,
 commits `2593612` y `d70f16b`)** — desplegado a pedido del usuario («Despliega»), con el `git
@@ -328,18 +344,19 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 
 ## 6. Pendientes, por orden
 
-> **Punto de retoma del 23/09/2026 (el panel en el teléfono, en producción).** Todo está **empujado y
-> desplegado** (Worker `b328a05c`); el árbol quedó limpio salvo `Plan_CRM_Inmobiliario_AIG.md`, la base local sin datos de muestra
+> **Punto de retoma del 23/09/2026 (el panel en el teléfono con su barra de abajo, en producción).** Todo está **empujado y
+> desplegado** (Worker `f87709f8`); el árbol quedó limpio salvo `Plan_CRM_Inmobiliario_AIG.md`, la base local sin datos de muestra
 > y el `vite preview` apagado. Lo primero de la lista es lo que el usuario dejó abierto, no un
 > arreglo pendiente de código.
 
 0.quinquies **Del panel en el teléfono (en producción desde el 23/09/2026), esperando SU palabra:**
-   - **Elegir cómo se navega en el teléfono:** cuatro maquetas retratadas sobre la página real en
-     `Escritorio\portada-propuestas\panel-23-09\navegacion-en-telefono-4-opciones.png` — A menú
-     plegable (hoy), B barra inferior (Inicio · Casas · Prospectos con su número · Métricas ·
-     Más), C barra oscura con «Subir casa» al centro, D accesos deslizables bajo la cabecera. El
-     agente recomendó la B; **no contestó antes de pedir el despliegue**, así que sigue la A.
-     La maqueta vive en `maqueta-nav.mjs` (temporal de la sesión): inyecta la barra por CDP.
+   - ~~Elegir cómo se navega en el teléfono~~ **Hecho:** eligió la B (barra de abajo), en
+     producción desde `f87709f8` (§5). Las cuatro maquetas siguen en
+     `Escritorio\portada-propuestas\panel-23-09\`.
+   - **Probar la barra en el Safari del iPhone/iPad:** el `viewport` de `root.tsx` ya lleva
+     `viewport-fit=cover`, así que `env(safe-area-inset-bottom)` vale de verdad y la barra se
+     estira sobre la rayita de inicio (todo medido fue en Chrome, donde vale 0). Mirar que la
+     hoja «Más» y el «Guardar» de una casa queden bien encima de ella.
    - **Seguir con el resto:** Contenido y Configuración (páginas largas: un índice de anclas
      arriba ayudaría), Cuentas (en el teléfono el alta va antes que la lista) y Bitácora
      («el prospecto #68» en vez del nombre, y la etiqueta «estado» suelta en cada renglón).
