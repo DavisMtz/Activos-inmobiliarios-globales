@@ -187,6 +187,15 @@ export const IconoBasura = ({ className }: Props) => (
   </Marco>
 );
 
+/** «Más», en la barra de abajo del teléfono: tres puntos, no el «+» de agregar. */
+export const IconoPuntos = ({ className }: Props) => (
+  <Marco className={className}>
+    <circle cx="5.5" cy="12" r="1.1" />
+    <circle cx="12" cy="12" r="1.1" />
+    <circle cx="18.5" cy="12" r="1.1" />
+  </Marco>
+);
+
 // ─── Contestar (bandeja de prospectos) ────────────────────────────
 
 /** Un globo con el auricular dentro: se lee «WhatsApp» sin copiar el logotipo. */

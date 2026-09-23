@@ -32,6 +32,31 @@ type Consulta = {
 
 const DESDE_CASAS = "FROM propiedades p LEFT JOIN zonas z ON z.id = p.zona_id";
 
+/**
+ * «Sin atender»: los prospectos que siguen en `nuevo` (el asesor, solo los
+ * suyos; quien no ve prospectos, ninguno). Es LA cuenta: la usan el aviso de
+ * Inicio y el número de «Prospectos» en el menú, y tienen que decir lo mismo.
+ */
+function consultaSinAtender(actor: Actor): { sql: string; valores: unknown[] } | null {
+  if (!puede(actor, "prospectos.ver")) return null;
+  const suyos = alcance(actor, "prospectos.ver") === "propias";
+  return {
+    sql: `SELECT COUNT(*) AS n FROM prospectos WHERE estado = 'nuevo'${suyos ? " AND asesor_id = ?" : ""}`,
+    valores: suyos ? [actor.id] : [],
+  };
+}
+
+/** El número del menú: un solo COUNT sobre `prospectos`, en cada pantalla del panel. */
+export async function prospectosSinAtender(db: D1Database, actor: Actor): Promise<number> {
+  const consulta = consultaSinAtender(actor);
+  if (!consulta) return 0;
+  const fila = await db
+    .prepare(consulta.sql)
+    .bind(...consulta.valores)
+    .first<{ n: number }>();
+  return Number(fila?.n ?? 0);
+}
+
 export async function avisosDeInicio(db: D1Database, actor: Actor): Promise<AvisoDeInicio[]> {
   const consultas: Consulta[] = [];
   // «Solo las suyas» para el asesor, todas para los demás (§9).
@@ -73,16 +98,15 @@ export async function avisosDeInicio(db: D1Database, actor: Actor): Promise<Avis
     valores: valorMias,
   });
 
-  if (puede(actor, "prospectos.ver")) {
-    const suyos = alcance(actor, "prospectos.ver") === "propias";
+  const sinAtender = consultaSinAtender(actor);
+  if (sinAtender) {
     consultas.push({
       clave: "prospectos",
       titulo: (n) => (n === 1 ? "1 persona interesada sin atender" : `${n} personas interesadas sin atender`),
       // Con el filtro puesto: el aviso lleva a esa lista, no a la bandeja entera.
       ruta: "/panel/prospectos?estado=nuevo",
       tono: "urgente",
-      sql: `SELECT COUNT(*) AS n FROM prospectos WHERE estado = 'nuevo'${suyos ? " AND asesor_id = ?" : ""}`,
-      valores: suyos ? [actor.id] : [],
+      ...sinAtender,
     });
   }
 

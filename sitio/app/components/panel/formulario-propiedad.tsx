@@ -381,7 +381,7 @@ export function FormularioDePropiedad({
         </Bloque>
       ) : null}
 
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-3 border-t border-linea bg-fondo/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 xl:col-span-2">
+      <div className="sticky bottom-[var(--alto-barra,0px)] -mx-4 flex items-center gap-3 border-t border-linea bg-fondo/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 xl:col-span-2">
         {/* La copia local NO se borra al pulsar: se borra sola la próxima vez
             que se abra el formulario, porque entonces coincidirá con lo que
             traiga el servidor. Si el guardado falla, lo escrito sigue a salvo. */}
