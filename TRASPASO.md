@@ -1,6 +1,6 @@
 # Traspaso · para quien siga
 
-Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 22/09/2026 (Métricas con gráficas, en producción). Es el **punto de retoma**: qué hay, qué falta y cómo se trabaja aquí. No repite `PLAN.md`; dice por dónde entrarle. Si algo de aquí contradice a `PLAN.md`, manda `PLAN.md` (y corrige este archivo).
+Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 23/09/2026 (el panel en el teléfono, en producción; el CRM anotado como lo que sigue tras F6). Es el **punto de retoma**: qué hay, qué falta y cómo se trabaja aquí. No repite `PLAN.md`; dice por dónde entrarle. Si algo de aquí contradice a `PLAN.md`, manda `PLAN.md` (y corrige este archivo).
 
 > El repositorio es **público**: aquí no va ninguna clave, contraseña ni dato de una persona real.
 
@@ -9,8 +9,8 @@ Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 22/09/2026 (Mét
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`5bdc97d4`** (22/09/2026: Métricas con gráficas, §5, y los renglones de la oficina de Contacto, `62a2db4`). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
-| **Reversión** | la anterior es `4ba9e535`: `npx wrangler rollback 4ba9e535-6c58-48c6-8848-5fb84a2aa040` (devuelve Métricas en tablas y Contacto sin el ajuste de renglones). Antes, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
+| **Worker** | `activos-inmobiliarios`, versión activa **`b328a05c`** (23/09/2026: el panel en el teléfono, §5). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
+| **Reversión** | la anterior es `5bdc97d4`: `npx wrangler rollback 5bdc97d4-3108-4af9-9e2b-294af045395a` (devuelve el panel de antes, con Métricas en gráficas). Antes, `4ba9e535`, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
 | **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
@@ -43,7 +43,31 @@ Lo que mejor ha funcionado, por si ayuda:
 - **«Me gusta» es una orden de conservar.** Refinar no es rediseñar: la lista de Servicios sigue siendo lista.
 - **Registrar con números** en `PLAN.md` §19 al cerrar, incluidas las trampas nuevas.
 
-## 5. Lo último que se hizo (19-22/09/2026)
+## 5. Lo último que se hizo (19-23/09/2026)
+
+**El panel en el teléfono, primera mano (23/09/2026 · EN PRODUCCIÓN, Worker `b328a05c`,
+commit `22e9139`)** — desplegado a pedido del usuario («despliega»), con el `git push`; antes,
+worktrees, ramas y `deployments list` revisados (la activa era `5bdc97d4`, la esperada) y
+**ninguna migración**. Pedido: «que el panel tenga un mejor aspecto, sea fácil de entender y
+que esté preparado para usarse en teléfonos». Refinar, no rediseñar: misma tipografía, mismos
+colores, mismo menú sobre tinta. `PLAN.md` §19 tiene las cifras; aquí, dónde vive cada cosa:
+
+| Archivo | Qué guarda |
+|---|---|
+| `app/routes/panel/prospectos.tsx` | `FichaProspecto` (compacta: quién, estado, casa, mensaje y los botones para contestar) y `Seguimiento`, el `<details>` con el estado a mano, la asignación y las `Notas`. Los formularios siguen mandando los mismos `que`/`name` |
+| `app/components/panel/piezas.tsx` | `FiltrosDeLista`: en el teléfono, buscador + botón «Filtros» (casilla escondida sin `name` y `peer-checked`, abre sin JS); en escritorio, un renglón. La usan Casas y Prospectos; Bitácora no (dos desplegables, cabe) |
+| `app/components/panel/fotos.tsx` | «Quitar» con icono, y en el teléfono seis fotos y «Ver las N fotos» (`data-todas`) |
+| `app/components/panel/iconos.tsx` | Iconos nuevos: mensaje, teléfono, correo, filtros, abajo y basura |
+| `app/routes/panel/marco.tsx` | `FranjaDemo`: arriba en el teléfono, dentro de la columna de contenido en escritorio (arriba de todo cortaba «Salir») |
+
+**Cómo se miró:** `metricas:muestra -- --local` para tener 72 prospectos, y un guion de CDP que
+retrata cada pantalla a página entera en 390 y 1440 px (vive en el directorio temporal de la
+sesión; es `capturar.mjs` con un bucle y `Emulation.setDeviceMetricsOverride` al alto real).
+Capturas de antes y ahora, y las cuatro maquetas de navegación, en
+`Escritorio\portada-propuestas\panel-23-09\`.
+
+> ⚠ **El criterio 8 ya vigila el trozo de Prospectos** («Solo los que faltan por cerrar» en
+> `MARCAS`): 5 trozos. Si cambias ese texto del filtro, cambia también la frase.
 
 **Métricas con gráficas: el tablero (21-22/09/2026 · EN PRODUCCIÓN, Worker `5bdc97d4`,
 commits `2593612` y `d70f16b`)** — desplegado a pedido del usuario («Despliega»), con el `git
@@ -304,10 +328,24 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 
 ## 6. Pendientes, por orden
 
-> **Punto de retoma del 22/09/2026 (Métricas en producción).** Todo está **empujado y
-> desplegado** (Worker `5bdc97d4`); el árbol quedó limpio, la base local sin datos de muestra
+> **Punto de retoma del 23/09/2026 (el panel en el teléfono, en producción).** Todo está **empujado y
+> desplegado** (Worker `b328a05c`); el árbol quedó limpio salvo `Plan_CRM_Inmobiliario_AIG.md`, la base local sin datos de muestra
 > y el `vite preview` apagado. Lo primero de la lista es lo que el usuario dejó abierto, no un
 > arreglo pendiente de código.
+
+0.quinquies **Del panel en el teléfono (en producción desde el 23/09/2026), esperando SU palabra:**
+   - **Elegir cómo se navega en el teléfono:** cuatro maquetas retratadas sobre la página real en
+     `Escritorio\portada-propuestas\panel-23-09\navegacion-en-telefono-4-opciones.png` — A menú
+     plegable (hoy), B barra inferior (Inicio · Casas · Prospectos con su número · Métricas ·
+     Más), C barra oscura con «Subir casa» al centro, D accesos deslizables bajo la cabecera. El
+     agente recomendó la B; **no contestó antes de pedir el despliegue**, así que sigue la A.
+     La maqueta vive en `maqueta-nav.mjs` (temporal de la sesión): inyecta la barra por CDP.
+   - **Seguir con el resto:** Contenido y Configuración (páginas largas: un índice de anclas
+     arriba ayudaría), Cuentas (en el teléfono el alta va antes que la lista) y Bitácora
+     («el prospecto #68» en vez del nombre, y la etiqueta «estado» suelta en cada renglón).
+   - **`Plan_CRM_Inmobiliario_AIG.md`** sigue sin commit en la raíz (el repo es público y trae
+     su nombre completo); se le preguntó si subirlo o sacarlo y no contestó. `PLAN.md` F8 lo
+     menciona por nombre.
 
 0.quater **De Métricas con gráficas (en producción desde el 22/09/2026), lo que queda abierto:**
    - **En producción se ve casi vacío:** una semana de visitas (~100, casi todas del equipo: en
