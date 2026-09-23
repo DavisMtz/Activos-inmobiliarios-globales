@@ -11,7 +11,7 @@ import {
   type FilaPanel,
 } from "../../../server/db/panel/propiedades";
 import { IconoAdelante, IconoBuscarPanel, IconoMas } from "../../components/panel/iconos";
-import { Bloque, BotonEnlace, Etiqueta, Vacio, type TonoEtiqueta } from "../../components/panel/piezas";
+import { Bloque, BotonEnlace, Etiqueta, FiltrosDeLista, Vacio, type TonoEtiqueta } from "../../components/panel/piezas";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/propiedades";
 
@@ -90,10 +90,11 @@ export default function Propiedades({ loaderData }: Route.ComponentProps) {
       </header>
 
       {/* ── Filtros: un GET de toda la vida ───────────────────────── */}
-      <Form method="get" className="flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 sm:p-5">
-        {filtros.papelera ? <input type="hidden" name="papelera" value="1" /> : null}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <label className="flex flex-col gap-1.5 lg:col-span-2">
+      <FiltrosDeLista
+        activos={[filtros.estado, filtros.avisos, filtros.asesorId].filter(Boolean).length}
+        ocultos={filtros.papelera ? <input type="hidden" name="papelera" value="1" /> : null}
+        buscador={
+          <label className="flex flex-col gap-1.5">
             <span className="text-sm font-bold text-tinta">Buscar</span>
             <span className="relative">
               <IconoBuscarPanel className="absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-texto-suave" />
@@ -106,82 +107,83 @@ export default function Propiedades({ loaderData }: Route.ComponentProps) {
               />
             </span>
           </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-bold text-tinta">Estado</span>
-            <select
-              name="estado"
-              defaultValue={filtros.estado ?? ""}
-              className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
+        }
+        pie={
+          <>
+            <button
+              type="submit"
+              className="inline-flex h-12 items-center justify-center rounded-xl bg-tinta px-5 text-base font-bold text-white transition-colors hover:bg-black"
             >
-              <option value="">Todos</option>
-              {ESTADOS_PROPIEDAD.map((estado) => (
-                <option key={estado} value={estado}>
-                  {ETIQUETA_ESTADO[estado]}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-bold text-tinta">Avisos</span>
-            <select
-              name="avisos"
-              defaultValue={filtros.avisos ?? ""}
-              className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
-            >
-              {OPCIONES_AVISOS.map((opcion) => (
-                <option key={opcion.valor} value={opcion.valor}>
-                  {opcion.texto}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          {asesores.length ? (
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-bold text-tinta">Asesor</span>
-              <select
-                name="asesor"
-                defaultValue={filtros.asesorId ?? ""}
-                className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
+              Filtrar
+            </button>
+            {hayFiltros ? (
+              <Link
+                to={filtros.papelera ? "/panel/propiedades?papelera=1" : "/panel/propiedades"}
+                className="text-sm font-bold text-marca underline underline-offset-4"
               >
-                <option value="">Cualquiera</option>
-                {asesores.map((asesor) => (
-                  <option key={asesor.id} value={asesor.id}>
-                    {asesor.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : null}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="submit"
-            className="inline-flex h-12 items-center justify-center rounded-xl bg-tinta px-5 text-base font-bold text-white transition-colors hover:bg-black"
+                Quitar filtros
+              </Link>
+            ) : null}
+            {puedeVerPapelera ? (
+              <Link
+                to={filtros.papelera ? "/panel/propiedades" : "/panel/propiedades?papelera=1"}
+                className="ml-auto text-sm font-bold text-texto-suave underline underline-offset-4 hover:text-marca"
+              >
+                {filtros.papelera ? "Ver las casas activas" : "Ver la papelera"}
+              </Link>
+            ) : null}
+          </>
+        }
+      >
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-bold text-tinta">Estado</span>
+          <select
+            name="estado"
+            defaultValue={filtros.estado ?? ""}
+            className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
           >
-            Filtrar
-          </button>
-          {hayFiltros ? (
-            <Link
-              to={filtros.papelera ? "/panel/propiedades?papelera=1" : "/panel/propiedades"}
-              className="text-sm font-bold text-marca underline underline-offset-4"
+            <option value="">Todos</option>
+            {ESTADOS_PROPIEDAD.map((estado) => (
+              <option key={estado} value={estado}>
+                {ETIQUETA_ESTADO[estado]}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-bold text-tinta">Avisos</span>
+          <select
+            name="avisos"
+            defaultValue={filtros.avisos ?? ""}
+            className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
+          >
+            {OPCIONES_AVISOS.map((opcion) => (
+              <option key={opcion.valor} value={opcion.valor}>
+                {opcion.texto}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {asesores.length ? (
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-bold text-tinta">Asesor</span>
+            <select
+              name="asesor"
+              defaultValue={filtros.asesorId ?? ""}
+              className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
             >
-              Quitar filtros
-            </Link>
-          ) : null}
-          {puedeVerPapelera ? (
-            <Link
-              to={filtros.papelera ? "/panel/propiedades" : "/panel/propiedades?papelera=1"}
-              className="ml-auto text-sm font-bold text-texto-suave underline underline-offset-4 hover:text-marca"
-            >
-              {filtros.papelera ? "Ver las casas activas" : "Ver la papelera"}
-            </Link>
-          ) : null}
-        </div>
-      </Form>
+              <option value="">Cualquiera</option>
+              {asesores.map((asesor) => (
+                <option key={asesor.id} value={asesor.id}>
+                  {asesor.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+      </FiltrosDeLista>
 
       {pagina.items.length === 0 ? (
         <Bloque>

@@ -18,8 +18,17 @@ import {
   listarProspectos,
   type FilaProspecto,
 } from "../../../server/db/panel/prospectos";
-import { IconoBuscarPanel } from "../../components/panel/iconos";
-import { Aviso, Bloque, Boton, Etiqueta, Vacio, type TonoEtiqueta } from "../../components/panel/piezas";
+import {
+  IconoAbajo,
+  IconoBuscarPanel,
+  IconoCasas,
+  IconoCorreo,
+  IconoListo,
+  IconoMensaje,
+  IconoTelefono,
+} from "../../components/panel/iconos";
+import { Aviso, Bloque, Boton, Etiqueta, FiltrosDeLista, Vacio, type TonoEtiqueta } from "../../components/panel/piezas";
+import { numeroParaLeer } from "../../../shared/whatsapp";
 import { contextoServidor } from "../../contexto";
 import type { Route } from "./+types/prospectos";
 
@@ -107,7 +116,7 @@ const cuando = new Intl.DateTimeFormat("es-MX", {
 });
 
 const CAMPO_CORTO =
-  "h-10 rounded-lg border border-linea bg-superficie px-2 text-sm text-tinta outline-none focus:border-marca";
+  "h-10 min-w-0 flex-1 rounded-lg border border-linea bg-superficie px-2 text-sm text-tinta outline-none focus:border-marca";
 
 export default function Prospectos({ loaderData, actionData }: Route.ComponentProps) {
   const { filtros, pagina, asesores, puedeAsignar, puedeGestionar, puedeExportar } = loaderData;
@@ -140,9 +149,10 @@ export default function Prospectos({ loaderData, actionData }: Route.ComponentPr
       {actionData?.error ? <Aviso>{actionData.error}</Aviso> : null}
 
       {/* ── Filtros: un GET de toda la vida ───────────────────────── */}
-      <Form method="get" className="flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 sm:p-5">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <label className="flex flex-col gap-1.5 lg:col-span-2">
+      <FiltrosDeLista
+        activos={[filtros.estado, filtros.asesor, filtros.abiertos].filter(Boolean).length}
+        buscador={
+          <label className="flex flex-col gap-1.5">
             <span className="text-sm font-bold text-tinta">Buscar</span>
             <span className="relative">
               <IconoBuscarPanel className="absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-texto-suave" />
@@ -155,68 +165,70 @@ export default function Prospectos({ loaderData, actionData }: Route.ComponentPr
               />
             </span>
           </label>
+        }
+        pie={
+          <>
+            <button
+              type="submit"
+              className="inline-flex h-12 items-center justify-center rounded-xl bg-tinta px-5 text-base font-bold text-white transition-colors hover:bg-black"
+            >
+              Filtrar
+            </button>
+            {hayFiltros ? (
+              <Link to="/panel/prospectos" className="text-sm font-bold text-marca underline underline-offset-4">
+                Quitar filtros
+              </Link>
+            ) : null}
+          </>
+        }
+      >
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-bold text-tinta">Estado</span>
+          <select
+            name="estado"
+            defaultValue={filtros.estado ?? ""}
+            className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
+          >
+            <option value="">Todos</option>
+            {ESTADOS_PROSPECTO.map((estado) => (
+              <option key={estado} value={estado}>
+                {ETIQUETA_ESTADO_PROSPECTO[estado]}
+              </option>
+            ))}
+          </select>
+        </label>
 
+        {/* Quien no puede asignar tampoco elige de quién son: los suyos y ya. */}
+        {puedeAsignar ? (
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-bold text-tinta">Estado</span>
+            <span className="text-sm font-bold text-tinta">Quién atiende</span>
             <select
-              name="estado"
-              defaultValue={filtros.estado ?? ""}
+              name="asesor"
+              defaultValue={filtros.asesor ?? ""}
               className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
             >
-              <option value="">Todos</option>
-              {ESTADOS_PROSPECTO.map((estado) => (
-                <option key={estado} value={estado}>
-                  {ETIQUETA_ESTADO_PROSPECTO[estado]}
+              <option value="">Cualquiera</option>
+              <option value="nadie">Sin asignar</option>
+              {asesores.map((asesor) => (
+                <option key={asesor.id} value={asesor.id}>
+                  {asesor.nombre}
                 </option>
               ))}
             </select>
           </label>
+        ) : null}
 
-          {/* Quien no puede asignar tampoco elige de quién son: los suyos y ya. */}
-          {puedeAsignar ? (
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-bold text-tinta">Quién atiende</span>
-              <select
-                name="asesor"
-                defaultValue={filtros.asesor ?? ""}
-                className="h-12 w-full rounded-xl border border-linea bg-superficie px-3 text-base text-tinta transition-colors outline-none focus:border-marca"
-              >
-                <option value="">Cualquiera</option>
-                <option value="nadie">Sin asignar</option>
-                {asesores.map((asesor) => (
-                  <option key={asesor.id} value={asesor.id}>
-                    {asesor.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : null}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-4">
-          <button
-            type="submit"
-            className="inline-flex h-12 items-center justify-center rounded-xl bg-tinta px-5 text-base font-bold text-white transition-colors hover:bg-black"
-          >
-            Filtrar
-          </button>
-          <label className="flex items-center gap-2 text-sm font-bold text-tinta">
-            <input
-              type="checkbox"
-              name="abiertos"
-              value="1"
-              defaultChecked={filtros.abiertos}
-              className="h-5 w-5 rounded border-linea text-marca focus:ring-marca"
-            />
-            Solo los que faltan por cerrar
-          </label>
-          {hayFiltros ? (
-            <Link to="/panel/prospectos" className="text-sm font-bold text-marca underline underline-offset-4">
-              Quitar filtros
-            </Link>
-          ) : null}
-        </div>
-      </Form>
+        <label className="flex h-12 items-center gap-2 self-end text-sm font-bold text-tinta">
+          <input
+            type="checkbox"
+            name="abiertos"
+            value="1"
+            defaultChecked={filtros.abiertos}
+            className="h-5 w-5 rounded border-linea text-marca focus:ring-marca"
+          />
+          Solo los que faltan por cerrar
+        </label>
+      </FiltrosDeLista>
 
       {pagina.items.length === 0 ? (
         <Bloque>
@@ -230,7 +242,7 @@ export default function Prospectos({ loaderData, actionData }: Route.ComponentPr
           </Vacio>
         </Bloque>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
           {pagina.items.map((prospecto) => (
             <li key={prospecto.id}>
               <FichaProspecto
@@ -251,6 +263,14 @@ export default function Prospectos({ loaderData, actionData }: Route.ComponentPr
 
 // ─── Una ficha ────────────────────────────────────────────────────
 
+/**
+ * Una persona que preguntó. En el teléfono cabe en media pantalla: arriba quién
+ * es y en qué va, luego lo que dijo, y los botones grandes para contestar.
+ * Cambiar el estado a mano, asignarla y las notas van plegados en
+ * «Seguimiento»: con los seis controles abiertos cada ficha medía ~580 px y la
+ * bandeja, 14 600. El paso siguiente del estado («Marcar contactado») sí va a
+ * la vista, porque es lo que se hace justo después de contestar.
+ */
 function FichaProspecto({
   prospecto,
   asesores,
@@ -263,213 +283,251 @@ function FichaProspecto({
   puedeGestionar: boolean;
 }) {
   const siguiente = SIGUIENTE_ESTADO[prospecto.estado];
+  const telefono = prospecto.telefono ? numeroParaLeer(prospecto.telefono) : null;
 
   return (
-    <article id={`p-${prospecto.id}`} className="rounded-2xl border border-linea bg-superficie">
-      <header className="flex flex-wrap items-start justify-between gap-3 border-b border-linea px-4 py-3.5 sm:px-5">
-        <div className="min-w-0">
-          <p className="flex flex-wrap items-center gap-2">
-            <span className="font-bold text-tinta">{prospecto.nombre}</span>
-            <Etiqueta tono={TONO_ESTADO[prospecto.estado]}>{ETIQUETA_ESTADO_PROSPECTO[prospecto.estado]}</Etiqueta>
-          </p>
-          <p className="mt-1 text-sm text-texto-suave">
-            {ETIQUETA_TIPO_PROSPECTO[prospecto.tipo]} ·{" "}
-            <span className="tabular-nums">{cuando.format(new Date(prospecto.creadoEn))}</span>
-          </p>
-        </div>
-        <p className="text-sm text-texto-suave">
-          {prospecto.asesor ? (
-            <>
-              Atiende <span className="font-bold text-texto">{prospecto.asesor}</span>
-            </>
-          ) : (
-            <span className="font-bold text-aviso">Sin asignar</span>
-          )}
-        </p>
-      </header>
-
-      <div className="flex flex-col gap-4 p-4 sm:p-5">
-        {/* Contestar es lo primero que se hace aquí, así que va arriba. */}
-        <div className="flex flex-wrap items-center gap-2">
-          {prospecto.whatsapp ? (
-            <a
-              href={prospecto.whatsapp}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-11 items-center justify-center rounded-xl bg-marca px-4 text-sm font-bold text-white transition-colors hover:bg-marca-oscuro"
-            >
-              Contestar por WhatsApp
-            </a>
-          ) : null}
-          {prospecto.telefono ? (
-            <a
-              href={`tel:${prospecto.telefono.replace(/\s+/g, "")}`}
-              className="inline-flex h-11 items-center justify-center rounded-xl border border-linea px-4 text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca tabular-nums"
-            >
-              {prospecto.telefono}
-            </a>
-          ) : null}
-          {prospecto.correo ? (
-            <a
-              href={`mailto:${prospecto.correo}`}
-              className="text-sm font-semibold break-all text-marca underline underline-offset-4"
-            >
-              {prospecto.correo}
-            </a>
-          ) : null}
-        </div>
+    <article id={`p-${prospecto.id}`} className="scroll-mt-24 rounded-2xl border border-linea bg-superficie">
+      <div className="flex flex-col gap-3 p-4 sm:p-5">
+        <header className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="truncate text-base font-extrabold text-tinta">{prospecto.nombre}</h2>
+            <p className="mt-0.5 text-sm text-texto-suave">
+              {ETIQUETA_TIPO_PROSPECTO[prospecto.tipo]} ·{" "}
+              <span className="whitespace-nowrap tabular-nums">{cuando.format(new Date(prospecto.creadoEn))}</span>
+            </p>
+            <p className="mt-0.5 text-sm text-texto-suave">
+              {prospecto.asesor ? (
+                <>
+                  Atiende <span className="font-bold text-texto">{prospecto.asesor}</span>
+                </>
+              ) : (
+                <span className="font-bold text-aviso">Sin asignar</span>
+              )}
+            </p>
+          </div>
+          <Etiqueta tono={TONO_ESTADO[prospecto.estado]}>{ETIQUETA_ESTADO_PROSPECTO[prospecto.estado]}</Etiqueta>
+        </header>
 
         {prospecto.casa ? (
-          <p className="text-sm">
-            <span className="text-texto-suave">Preguntó por </span>
-            <Link
-              to={`/panel/propiedades/${prospecto.casa.id}`}
-              className="font-bold text-marca underline underline-offset-4"
-            >
-              {prospecto.casa.clave} · {prospecto.casa.titulo}
-            </Link>
-          </p>
+          <Link
+            to={`/panel/propiedades/${prospecto.casa.id}`}
+            className="flex min-w-0 items-center gap-2 rounded-xl bg-fondo px-3 py-2 text-sm text-tinta transition-colors hover:text-marca"
+          >
+            <IconoCasas className="h-4.5 w-4.5 shrink-0 text-texto-suave" />
+            <span className="truncate">
+              <span className="font-bold">{prospecto.casa.clave}</span> · {prospecto.casa.titulo}
+            </span>
+          </Link>
         ) : null}
 
         {prospecto.mensaje ? (
-          <blockquote className="border-l-2 border-linea pl-4 text-texto whitespace-pre-line">
-            {prospecto.mensaje}
-          </blockquote>
+          <p className="line-clamp-4 text-sm leading-relaxed whitespace-pre-line text-texto">{prospecto.mensaje}</p>
         ) : null}
 
-        {puedeGestionar ? (
-          <div className="flex flex-wrap items-center gap-2 border-t border-linea pt-4">
-            {siguiente ? (
-              <Form method="post">
-                <input type="hidden" name="que" value="estado" />
-                <input type="hidden" name="id" value={prospecto.id} />
-                <input type="hidden" name="estado" value={siguiente} />
-                <Boton type="submit" tono="secundario" pequeno>
-                  Marcar {ETIQUETA_ESTADO_PROSPECTO[siguiente].toLowerCase()}
-                </Boton>
-              </Form>
-            ) : null}
-
-            <Form method="post" className="flex items-center gap-2">
-              <input type="hidden" name="que" value="estado" />
-              <input type="hidden" name="id" value={prospecto.id} />
-              <label className="sr-only" htmlFor={`estado-${prospecto.id}`}>
-                Estado de {prospecto.nombre}
-              </label>
-              <select
-                id={`estado-${prospecto.id}`}
-                name="estado"
-                defaultValue={prospecto.estado}
-                className={CAMPO_CORTO}
+        {/* Contestar es lo primero que se hace aquí: dos botones del mismo
+            ancho, y el correo (que casi nunca es lo primero) solo con icono. */}
+        {prospecto.whatsapp || telefono || prospecto.correo ? (
+          <div className="flex gap-2">
+            {prospecto.whatsapp ? (
+              <a
+                href={prospecto.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-marca px-3 text-sm font-bold text-white transition-colors hover:bg-marca-oscuro"
               >
-                {ESTADOS_PROSPECTO.map((estado) => (
-                  <option key={estado} value={estado} title={EXPLICACION_ESTADO_PROSPECTO[estado]}>
-                    {ETIQUETA_ESTADO_PROSPECTO[estado]}
-                  </option>
-                ))}
-              </select>
-              <Boton type="submit" tono="secundario" pequeno>
-                Cambiar
-              </Boton>
-            </Form>
-
-            {puedeAsignar ? (
-              <Form method="post" className="flex items-center gap-2">
-                <input type="hidden" name="que" value="asignar" />
-                <input type="hidden" name="id" value={prospecto.id} />
-                <label className="sr-only" htmlFor={`asesor-${prospecto.id}`}>
-                  Quién atiende a {prospecto.nombre}
-                </label>
-                <select
-                  id={`asesor-${prospecto.id}`}
-                  name="asesor_id"
-                  defaultValue={prospecto.asesorId ?? ""}
-                  className={CAMPO_CORTO}
-                >
-                  <option value="">Sin asignar</option>
-                  {asesores.map((asesor) => (
-                    <option key={asesor.id} value={asesor.id}>
-                      {asesor.nombre}
-                    </option>
-                  ))}
-                </select>
-                <Boton type="submit" tono="secundario" pequeno>
-                  Asignar
-                </Boton>
-              </Form>
+                <IconoMensaje className="h-5 w-5 shrink-0" />
+                WhatsApp
+              </a>
+            ) : null}
+            {telefono ? (
+              <a
+                href={`tel:${(prospecto.telefono ?? "").replace(/\s+/g, "")}`}
+                aria-label={`Llamar al ${telefono}`}
+                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-linea px-3 text-sm font-bold whitespace-nowrap text-tinta tabular-nums transition-colors hover:border-marca hover:text-marca"
+              >
+                <IconoTelefono className="h-5 w-5 shrink-0" />
+                {telefono}
+              </a>
+            ) : null}
+            {prospecto.correo ? (
+              <a
+                href={`mailto:${prospecto.correo}`}
+                aria-label={`Escribir a ${prospecto.correo}`}
+                title={prospecto.correo}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-linea text-tinta transition-colors hover:border-marca hover:text-marca"
+              >
+                <IconoCorreo className="h-5 w-5" />
+              </a>
             ) : null}
           </div>
         ) : null}
-
-        <Notas prospecto={prospecto} puedeGestionar={puedeGestionar} />
       </div>
+
+      {puedeGestionar ? (
+        <div className="border-t border-linea">
+          {siguiente ? (
+            <Form method="post" className="px-4 pt-3 sm:px-5">
+              <input type="hidden" name="que" value="estado" />
+              <input type="hidden" name="id" value={prospecto.id} />
+              <input type="hidden" name="estado" value={siguiente} />
+              <Boton type="submit" tono="secundario" pequeno ancho>
+                <IconoListo className="h-5 w-5" />
+                Marcar {ETIQUETA_ESTADO_PROSPECTO[siguiente].toLowerCase()}
+              </Boton>
+            </Form>
+          ) : null}
+          <Seguimiento prospecto={prospecto} asesores={asesores} puedeAsignar={puedeAsignar} />
+        </div>
+      ) : prospecto.notas.length ? (
+        <div className="border-t border-linea">
+          <Seguimiento prospecto={prospecto} asesores={asesores} puedeAsignar={false} soloLeer />
+        </div>
+      ) : null}
     </article>
   );
 }
 
 /**
- * Las notas van plegadas: lo que se necesita para contestar es el mensaje y el
- * teléfono, y una lista de seguimientos abierta en cada ficha convertiría la
- * bandeja en un muro. Es un `<details>`, así que abre sin JavaScript.
+ * Lo que no se hace en cada visita: cambiar el estado a cualquiera (también
+ * hacia atrás), asignar y las notas. Un `<details>`: abre sin JavaScript.
+ */
+function Seguimiento({
+  prospecto,
+  asesores,
+  puedeAsignar,
+  soloLeer = false,
+}: {
+  prospecto: FilaProspecto;
+  asesores: { id: string; nombre: string }[];
+  puedeAsignar: boolean;
+  soloLeer?: boolean;
+}) {
+  const notas = prospecto.notas.length;
+  return (
+    <details className="group">
+      <summary className="flex h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-bold text-tinta transition-colors hover:text-marca sm:px-5 [&::-webkit-details-marker]:hidden">
+        <span>
+          {soloLeer ? "Notas" : "Seguimiento"}
+          {notas ? (
+            <span className="ml-1.5 font-semibold text-texto-suave tabular-nums">
+              · {notas} {notas === 1 ? "nota" : "notas"}
+            </span>
+          ) : null}
+        </span>
+        <IconoAbajo className="h-5 w-5 text-texto-suave transition-transform group-open:rotate-180" />
+      </summary>
+
+      <div className="flex flex-col gap-4 border-t border-linea bg-fondo/60 px-4 py-4 sm:px-5">
+        {!soloLeer ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Form method="post" className="flex flex-col gap-1.5">
+              <input type="hidden" name="que" value="estado" />
+              <input type="hidden" name="id" value={prospecto.id} />
+              <label className="text-sm font-bold text-tinta" htmlFor={`estado-${prospecto.id}`}>
+                Estado
+              </label>
+              <div className="flex gap-2">
+                <select id={`estado-${prospecto.id}`} name="estado" defaultValue={prospecto.estado} className={CAMPO_CORTO}>
+                  {ESTADOS_PROSPECTO.map((estado) => (
+                    <option key={estado} value={estado} title={EXPLICACION_ESTADO_PROSPECTO[estado]}>
+                      {ETIQUETA_ESTADO_PROSPECTO[estado]}
+                    </option>
+                  ))}
+                </select>
+                <Boton type="submit" tono="secundario" pequeno>
+                  Cambiar
+                </Boton>
+              </div>
+            </Form>
+
+            {puedeAsignar ? (
+              <Form method="post" className="flex flex-col gap-1.5">
+                <input type="hidden" name="que" value="asignar" />
+                <input type="hidden" name="id" value={prospecto.id} />
+                <label className="text-sm font-bold text-tinta" htmlFor={`asesor-${prospecto.id}`}>
+                  Quién atiende
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    id={`asesor-${prospecto.id}`}
+                    name="asesor_id"
+                    defaultValue={prospecto.asesorId ?? ""}
+                    className={CAMPO_CORTO}
+                  >
+                    <option value="">Sin asignar</option>
+                    {asesores.map((asesor) => (
+                      <option key={asesor.id} value={asesor.id}>
+                        {asesor.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  <Boton type="submit" tono="secundario" pequeno>
+                    Asignar
+                  </Boton>
+                </div>
+              </Form>
+            ) : null}
+          </div>
+        ) : null}
+
+        <Notas prospecto={prospecto} puedeGestionar={!soloLeer} />
+      </div>
+    </details>
+  );
+}
+
+/**
+ * Las notas de una persona: lo que se hizo («no contestó», «quedamos el
+ * jueves»). Viven dentro de «Seguimiento», que ya va plegado.
  */
 function Notas({ prospecto, puedeGestionar }: { prospecto: FilaProspecto; puedeGestionar: boolean }) {
   if (!puedeGestionar && prospecto.notas.length === 0) return null;
 
   return (
-    <details className="rounded-xl border border-linea bg-fondo">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-tinta [&::-webkit-details-marker]:hidden">
-        <span>
-          Notas {prospecto.notas.length > 0 ? <span className="tabular-nums">({prospecto.notas.length})</span> : null}
-        </span>
-        <span className="text-xs font-bold text-texto-suave">
-          {prospecto.notas.length ? "Ver y agregar" : "Agregar"}
-        </span>
-      </summary>
+    <section aria-label={`Notas sobre ${prospecto.nombre}`} className="flex flex-col gap-3">
+      <p className="text-sm font-bold text-tinta">Notas</p>
+      {prospecto.notas.length ? (
+        <ul className="flex flex-col gap-3">
+          {prospecto.notas.map((nota) => (
+            <li key={nota.id} className="text-sm">
+              <p className="whitespace-pre-line text-texto">{nota.texto}</p>
+              <p className="mt-0.5 text-xs text-texto-suave">
+                {nota.quien} · <span className="tabular-nums">{cuando.format(new Date(nota.cuando))}</span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-texto-suave">
+          Aquí queda lo que se hizo: «no contestó», «quedamos el jueves a las 5».
+        </p>
+      )}
 
-      <div className="flex flex-col gap-4 border-t border-linea px-4 py-4">
-        {prospecto.notas.length ? (
-          <ul className="flex flex-col gap-3">
-            {prospecto.notas.map((nota) => (
-              <li key={nota.id} className="text-sm">
-                <p className="whitespace-pre-line text-texto">{nota.texto}</p>
-                <p className="mt-0.5 text-xs text-texto-suave">
-                  {nota.quien} · <span className="tabular-nums">{cuando.format(new Date(nota.cuando))}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-texto-suave">
-            Aquí queda lo que se hizo: «no contestó», «quedamos el jueves a las 5».
-          </p>
-        )}
-
-        {puedeGestionar ? (
-          <Form method="post" className="flex flex-col gap-2">
-            <input type="hidden" name="que" value="nota" />
-            <input type="hidden" name="id" value={prospecto.id} />
-            <label className="sr-only" htmlFor={`nota-${prospecto.id}`}>
-              Nota sobre {prospecto.nombre}
-            </label>
-            <textarea
-              id={`nota-${prospecto.id}`}
-              name="texto"
-              rows={2}
-              required
-              minLength={2}
-              maxLength={1000}
-              placeholder="Qué pasó con esta persona"
-              className="w-full rounded-xl border border-linea bg-superficie px-3 py-2 text-base leading-relaxed text-tinta outline-none placeholder:text-texto-suave/70 focus:border-marca"
-            />
-            <div>
-              <Boton type="submit" tono="secundario" pequeno>
-                Guardar la nota
-              </Boton>
-            </div>
-          </Form>
-        ) : null}
-      </div>
-    </details>
+      {puedeGestionar ? (
+        <Form method="post" className="flex flex-col gap-2">
+          <input type="hidden" name="que" value="nota" />
+          <input type="hidden" name="id" value={prospecto.id} />
+          <label className="sr-only" htmlFor={`nota-${prospecto.id}`}>
+            Nota sobre {prospecto.nombre}
+          </label>
+          <textarea
+            id={`nota-${prospecto.id}`}
+            name="texto"
+            rows={2}
+            required
+            minLength={2}
+            maxLength={1000}
+            placeholder="Qué pasó con esta persona"
+            className="w-full rounded-xl border border-linea bg-superficie px-3 py-2 text-base leading-relaxed text-tinta outline-none placeholder:text-texto-suave/70 focus:border-marca"
+          />
+          <div>
+            <Boton type="submit" tono="secundario" pequeno>
+              Guardar la nota
+            </Boton>
+          </div>
+        </Form>
+      ) : null}
+    </section>
   );
 }
 

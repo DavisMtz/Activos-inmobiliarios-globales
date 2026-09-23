@@ -180,6 +180,50 @@ export const IconoAtencion = ({ className }: Props) => (
   </Marco>
 );
 
+export const IconoBasura = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M4.75 6.75h14.5M9.75 6.75V4.75h4.5v2M6.5 6.75l.9 12.5h9.2l.9-12.5" />
+    <path d="M10.25 10.5v5.5M13.75 10.5v5.5" />
+  </Marco>
+);
+
+// ─── Contestar (bandeja de prospectos) ────────────────────────────
+
+/** Un globo con el auricular dentro: se lee «WhatsApp» sin copiar el logotipo. */
+export const IconoMensaje = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M4.2 19.8l1.1-3.6A8.25 8.25 0 1 1 8 18.9z" />
+    <path d="M9.2 8.9c.2 2.9 2.9 5.6 5.9 5.9l1-1.2-1.8-1-1 .6a4.5 4.5 0 0 1-2.5-2.5l.6-1-1-1.8z" />
+  </Marco>
+);
+
+export const IconoTelefono = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M6.6 3.75h2.6l1.4 4-1.9 1.4a11.5 11.5 0 0 0 6.2 6.2l1.4-1.9 4 1.4v2.6a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.6 5.95a2 2 0 0 1 2-2.2z" />
+  </Marco>
+);
+
+export const IconoCorreo = ({ className }: Props) => (
+  <Marco className={className}>
+    <rect x="3.25" y="5.25" width="17.5" height="13.5" rx="2" />
+    <path d="m4 6.5 8 6.25 8-6.25" />
+  </Marco>
+);
+
+export const IconoFiltros = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+    <circle cx="16" cy="7" r="2" />
+    <circle cx="8" cy="17" r="2" />
+  </Marco>
+);
+
+export const IconoAbajo = ({ className }: Props) => (
+  <Marco className={className}>
+    <path d="m6.5 9.5 5.5 5.5 5.5-5.5" />
+  </Marco>
+);
+
 export const IconoListo = ({ className }: Props) => (
   <Marco className={className}>
     <circle cx="12" cy="12" r="8.25" />

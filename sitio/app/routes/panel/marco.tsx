@@ -57,11 +57,10 @@ export default function Marco({ loaderData }: Route.ComponentProps) {
         Saltar al contenido
       </a>
 
-      {modoDemo ? (
-        <p className="bg-tinta px-4 py-2 text-center text-sm font-semibold text-white">
-          Modo propuesta: no aparece en Google y no se envían correos.
-        </p>
-      ) : null}
+      {/* En el celular, arriba de todo. En escritorio va DENTRO de la columna
+          de contenido: arriba de todo empujaba 36 px el menú lateral, que mide
+          `h-dvh`, y «Salir» quedaba cortado bajo el borde de la pantalla. */}
+      {modoDemo ? <FranjaDemo className="lg:hidden" /> : null}
 
       {/* Sin tope de ancho: con `max-w-7xl` centrado, a 1920 px el menú oscuro
           flotaba como una isla con 320 px vacíos a cada lado. El menú va al
@@ -150,11 +149,22 @@ export default function Marco({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
 
-        <main id="contenido" className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-          <Outlet />
-        </main>
+        <div className="min-w-0 flex-1">
+          {modoDemo ? <FranjaDemo className="hidden lg:block" /> : null}
+          <main id="contenido" className="px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
+  );
+}
+
+function FranjaDemo({ className }: { className: string }) {
+  return (
+    <p className={`bg-tinta px-4 py-2 text-center text-sm font-semibold text-white ${className}`}>
+      Modo propuesta: no aparece en Google y no se envían correos.
+    </p>
   );
 }
 

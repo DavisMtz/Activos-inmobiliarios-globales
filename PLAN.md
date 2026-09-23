@@ -873,6 +873,12 @@ Orden obligatorio:
 - **Mapa por colonia:** MapLibre GL **5.9.0** (la 6.x no trae UMD) + OpenFreeMap; nunca CARTO; atribución visible (memoria `cuponera-morelia`).
 - «Vende o renta tu casa», calculadora de crédito, favoritos y comparar, ficha en PDF, alertas, páginas por fraccionamiento, «Equipo» con asesores visibles, compartir en redes (1080×1350) y reseñas de Google. (Las opiniones de clientes con permiso ya existen: son las «Entregas» de F5.)
 
+### F8 · El CRM inmobiliario — EL SIGUIENTE PASO DESPUÉS DE F6 (decidido el 23/09/2026)
+El usuario lo dejó dicho: **terminada F6, lo que sigue es el CRM** que describe `Plan_CRM_Inmobiliario_AIG.md` (en la raíz): contactos, consultas y oportunidades separados, actividades y agenda, la pantalla «Hoy», captación y operaciones, y el panel como PWA. No se empieza antes de cerrar F6 ni sin que él lo pida.
+- **Se revisó contra el código (23/09/2026, commit `e0bb88c`) y su diagnóstico es correcto.** Lo que le falta y hay que tener presente al arrancar: (1) partir `cerrado` o agregar tipos de prospecto **no es aditivo**: los `CHECK` de `prospectos` (`0001_inicial.sql`) obligan a reconstruir la tabla; (2) todo Cron Trigger que recorra tablas necesita índice, porque el tope de D1 es de TODA la cuenta (§17); (3) cada pantalla nueva del panel necesita su frase en `MARCAS` para el criterio 8.
+- **Primero, CRM-01 con el dueño:** las preguntas de su §13 (cuántos asesores, qué significa «renta», quién aprueba precio/oferta/comisión) deciden la mitad del esquema. Construir las 20 tablas antes de que el equipo use el panel con clientes reales es construir para un volumen que no existe (hoy hay 1 prospecto en producción).
+- Tres arreglos chicos del plan que no dependen de esas respuestas: asignar solo a cuentas con rol que atiende (`asignarProspecto` solo mira `activo`), el borrador del panel por usuario y borrado al salir, y `cerrado` → ganado/perdido con cierres contados por su fecha.
+
 ---
 
 ## 16. Verificación y pruebas

@@ -385,6 +385,7 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 7. **Menores, anotados en §19:** el lema sigue escrito en el código; `/entregas` no está en el `sitemap` (en F6, solo si hay alguna publicada).
 8. **F5, lo que queda:** crear los usuarios reales **solo cuando el usuario lo pida**, y revisar con el equipo la lista de avisos de la migración.
 9. **F6 espera a los consultores** (`PEDIR-A-CONSULTORES.md`) y nada de F6 se hace sin que el usuario lo pida. **El dominio vence el 06/12/2026.**
+10. **DESPUÉS DE F6, EL SIGUIENTE PASO ES EL CRM** (`Plan_CRM_Inmobiliario_AIG.md`, en la raíz; decidido por el usuario el 23/09/2026). `PLAN.md` §15 «F8» tiene la revisión contra el código y lo que le falta al plan. No se empieza antes de cerrar F6 ni sin su palabra.
 
 ## 7. Verificar
 

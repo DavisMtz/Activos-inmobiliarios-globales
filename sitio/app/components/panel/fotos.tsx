@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { useRevalidator } from "react-router";
 import type { FotoDelPanel } from "../../../server/db/panel/propiedades";
-import { IconoAdelante, IconoAtencion, IconoAtras, IconoMas, IconoPortada } from "./iconos";
+import { IconoAdelante, IconoAtencion, IconoAtras, IconoBasura, IconoMas, IconoPortada } from "./iconos";
 import { Aviso, Bloque, Boton, Etiqueta, Vacio } from "./piezas";
 import { pedirJson, prepararArchivo, subirACloudinary, type Firma } from "../comun/subida";
 
@@ -46,6 +46,7 @@ export function FotosDeLaCasa({
   const [enMarcha, setEnMarcha] = useState<EnMarcha[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [ocupado, setOcupado] = useState(false);
+  const [todas, setTodas] = useState(false);
 
   const cambiar = (id: string, cambios: Partial<EnMarcha>) =>
     setEnMarcha((lista) => lista.map((archivo) => (archivo.id === id ? { ...archivo, ...cambios } : archivo)));
@@ -237,7 +238,14 @@ export function FotosDeLaCasa({
             Las fotos se reducen solas antes de subir, así que puedes mandarlas tal como salen del teléfono.
           </Vacio>
         ) : (
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          <>
+          {/* En el teléfono se ven las seis primeras: con las 26 de una casa
+              típica, la rejilla medía ~3 000 px y el formulario (lo que más se
+              edita) quedaba al fondo. Desde `sm` se ven todas. */}
+          <ul
+            data-todas={todas || undefined}
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 max-sm:[&:not([data-todas])>li:nth-child(n+7)]:hidden"
+          >
             {fotos.map((foto, indice) => (
               <li key={foto.id} className="flex flex-col gap-2 rounded-xl border border-linea bg-fondo p-2">
                 <span className="relative block overflow-hidden rounded-lg bg-linea">
@@ -314,12 +322,16 @@ export function FotosDeLaCasa({
                       >
                         <IconoAdelante className="h-4 w-4" />
                       </button>
+                      {/* Con icono y no con la palabra: a 390 px, en dos
+                          columnas, «Quitar» se salía de la tarjeta. */}
                       <button
                         type="button"
                         onClick={() => void borrar(foto)}
-                        className="ml-auto h-8 shrink-0 rounded-lg px-2 text-xs font-bold text-marca transition-colors hover:bg-marca-suave"
+                        aria-label="Quitar la foto"
+                        title="Quitar la foto"
+                        className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-marca transition-colors hover:bg-marca-suave"
                       >
-                        Quitar
+                        <IconoBasura className="h-4 w-4" />
                       </button>
                     </div>
                   </>
@@ -327,6 +339,16 @@ export function FotosDeLaCasa({
               </li>
             ))}
           </ul>
+          {fotos.length > 6 && !todas ? (
+            <button
+              type="button"
+              onClick={() => setTodas(true)}
+              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl border border-linea text-sm font-bold text-tinta transition-colors hover:border-marca hover:text-marca sm:hidden"
+            >
+              Ver las {fotos.length} fotos
+            </button>
+          ) : null}
+          </>
         )}
       </div>
     </Bloque>

@@ -259,7 +259,7 @@ export default function Propiedad({ loaderData, actionData }: Route.ComponentPro
                   {ESTADOS_DE_PUBLICACION.filter(
                     (estado) => estado !== casa.estado && estado !== "publicada" && !(estado === "pausada" && casa.estado === "publicada"),
                   ).map((estado) => (
-                    <CambiarEstado key={estado} estado={estado} tono="fantasma" pequeno>
+                    <CambiarEstado key={estado} estado={estado} tono="secundario" pequeno>
                       {ETIQUETA_ESTADO[estado]}
                     </CambiarEstado>
                   ))}

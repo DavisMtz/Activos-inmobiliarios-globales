@@ -1,5 +1,6 @@
 import { useId, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
-import { Link } from "react-router";
+import { Form, Link } from "react-router";
+import { IconoFiltros } from "./iconos";
 
 /**
  * Piezas del panel. Nada de aquí se usa en el sitio público, ni al revés: son
@@ -306,5 +307,68 @@ export function Vacio({ titulo, children, accion }: { titulo: string; children?:
       {children ? <p className="max-w-sm text-texto-suave">{children}</p> : null}
       {accion ? <div className="mt-2">{accion}</div> : null}
     </div>
+  );
+}
+
+// ─── Filtros de una lista ─────────────────────────────────────────
+
+/**
+ * El formulario de filtros de una lista (casas, prospectos, bitácora). En el
+ * teléfono solo se ve el buscador y un botón «Filtros»: los desplegables
+ * juntos medían ~430 px y empujaban el primer resultado fuera de la pantalla.
+ * Desde `lg` se ve todo, siempre.
+ *
+ * Abre sin JavaScript: el botón es la `label` de una casilla escondida (sin
+ * `name`, así que no viaja en la búsqueda) y el bloque se muestra con
+ * `peer-checked`. No es un `<details>` porque un `<details>` cerrado no se
+ * puede forzar abierto desde `lg` con CSS; los campos escondidos con
+ * `display: none` sí viajan al enviar, que es lo que se quiere.
+ */
+export function FiltrosDeLista({
+  buscador,
+  activos,
+  children,
+  pie,
+  ocultos,
+}: {
+  /** Campos escondidos que la búsqueda tiene que conservar (p. ej. `papelera`). */
+  ocultos?: ReactNode;
+  /** El campo de búsqueda: siempre a la vista. */
+  buscador: ReactNode;
+  /** Cuántos filtros (sin contar la búsqueda) están puestos: se cuentan en el botón. */
+  activos: number;
+  /** Los demás campos, en una rejilla. */
+  children: ReactNode;
+  /** «Filtrar», casillas y enlaces. */
+  pie: ReactNode;
+}) {
+  const id = useId();
+  return (
+    <Form
+      method="get"
+      className="flex flex-col gap-3 rounded-2xl border border-linea bg-superficie p-4 sm:p-5 lg:grid lg:grid-cols-5 lg:items-end"
+    >
+      {ocultos}
+      {/* En escritorio, un solo renglón: el buscador ocupa dos quintos y los
+          filtros los otros tres, como estaba antes de plegarlos. */}
+      <div className="flex items-end gap-2 lg:col-span-2">
+        <div className="min-w-0 flex-1">{buscador}</div>
+        <label
+          htmlFor={id}
+          className="inline-flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-linea px-3.5 text-sm font-bold text-tinta transition-colors select-none hover:border-marca hover:text-marca lg:hidden"
+        >
+          <IconoFiltros />
+          Filtros
+          {activos > 0 ? (
+            <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-marca px-1.5 text-xs text-white tabular-nums">
+              {activos}
+            </span>
+          ) : null}
+        </label>
+      </div>
+      <input id={id} type="checkbox" className="peer sr-only" aria-label="Mostrar los filtros" />
+      <div className="hidden gap-3 peer-checked:grid sm:grid-cols-2 lg:col-span-3 lg:grid lg:grid-cols-3">{children}</div>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 lg:col-span-5">{pie}</div>
+    </Form>
   );
 }
