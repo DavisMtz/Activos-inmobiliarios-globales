@@ -9,9 +9,9 @@ Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 23/09/2026 (el p
 | | |
 |---|---|
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
-| **Worker** | `activos-inmobiliarios`, versión activa **`f87709f8`** (23/09/2026: el panel en el teléfono con la barra de abajo, §5). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
-| **Reversión** | la anterior es `b328a05c`: `npx wrangler rollback b328a05c-97c3-4301-b5ed-cf59a4e97885` (devuelve el menú plegable arriba, con lo demás de la primera mano). Antes, `5bdc97d4` (el panel de antes), `4ba9e535`, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
-| **Código** | rama `main`, empujada y desplegada (`48cab58`). **Dos copias van adelante de GitHub:** en la PC del trabajo, commits del 03/10/2026 sin subir (el panel instalable y lo que importó 5 casas); en la PC de casa (`Escritorio\Activos-inmobiliarios-globales`), la rama local `sincronizar-wordpress` (21/10/2026, sin subir). Al juntarlas, esperar choques en `PLAN.md` y en este archivo. La rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
+| **Worker** | `activos-inmobiliarios`, versión activa **`b03068e5`** (21/10/2026: `main` con la sincronización con WordPress, §5). Es el mismo sitio que `f87709f8`: los 35 archivos que sirve producción salieron idénticos y wrangler no subió ninguno. **`main` está empujada y desplegada** |
+| **Reversión** | la anterior es `f87709f8`: `npx wrangler rollback f87709f8-7e3c-484e-84c2-c9b361d20a57` (el mismo sitio). Antes, `b328a05c` (devuelve el menú plegable arriba, con lo demás de la primera mano), `5bdc97d4` (el panel de antes), `4ba9e535`, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba. **Revertir el Worker no deshace la sincronización:** esa vive en la base |
+| **Código** | rama `main`, empujada y desplegada: desde el 21/10/2026 trae la sincronización con WordPress, hecha en la PC de casa (`Escritorio\Activos-inmobiliarios-globales`); su rama, `sincronizar-wordpress`, también está en GitHub y ya está unida. **La PC del trabajo tiene commits del 03/10/2026 sin subir** (el panel instalable y lo que importó 5 casas): antes de empujar desde allá, `git pull` y resolver los choques de `PLAN.md` y de este archivo, que las dos PCs tocaron. La rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
 | **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo). **Desde el 21/10/2026: 200 casas de WordPress, 184 publicadas y 16 pausadas** (§5) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
 
@@ -49,8 +49,10 @@ Lo que mejor ha funcionado, por si ayuda:
 — pedido: «quiero que me ayudes a actualizarlo primero si es que hay algun contenido nuevo». El
 equipo sigue subiendo casas al WordPress, y lo que importó las 5 del 03/10 se quedó sin subir en la
 PC del trabajo («haz que podamos hacerlo aquí»). Para lo que WordPress ya quitó eligió
-«Ocultarlas», y autorizó «Ensayo y, si cuadra, aplica». **Sin deploy ni migración:** la activa
-sigue siendo `f87709f8`. `PLAN.md` §19 tiene las cifras; aquí, dónde vive cada cosa:
+«Ocultarlas», y autorizó «Ensayo y, si cuadra, aplica». **La sincronización fue solo de datos**
+(sin migración). Después pidió «sube a git hub, y mergea, tambien sube a produccion»: `main` se
+empujó y se desplegó como **`b03068e5`**, el mismo sitio que `f87709f8` (35 archivos idénticos;
+`verificar:movimiento` 14/14 en producción). `PLAN.md` §19 tiene las cifras; aquí, dónde vive cada cosa:
 
 | Archivo | Qué guarda |
 |---|---|
@@ -369,9 +371,9 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 
 ## 6. Pendientes, por orden
 
-> **Punto de retoma del 21/10/2026 (la sincronización con WordPress, en producción).** El código
-> nuevo está en la rama local `sincronizar-wordpress` de la PC de casa, **sin subir**: se une a
-> `main` y se empuja cuando lleguen a GitHub los commits del 03/10 de la PC del trabajo.
+> **Punto de retoma del 21/10/2026 (la sincronización con WordPress, en producción).** Todo está
+> **empujado y desplegado** (Worker `b03068e5`). Lo que falta subir es de la PC del trabajo: §1,
+> «Código».
 
 0.sexies **De la sincronización (21/10/2026):**
    - **Subir las 109 fotos nuevas a Cloudinary:** `npm run fotos:migrar -- --remote` y después
@@ -383,7 +385,8 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
      Cloudinary: hacerlo junto con el paso de las fotos, si él quiere.
    - **Las 16 pausadas:** WordPress no dice si se vendieron. Su papá puede marcar en el panel las
      que se vendieron o rentaron (su ficha vuelve, con «ya se vendió»).
-   - **Subir la rama** (ver el punto de retoma) y correr `verificar:movimiento` con su ficha nueva.
+   - ~~Subir la rama y correr `verificar:movimiento` con su ficha nueva~~ **Hecho** el 21/10/2026:
+     `main` empujada y desplegada (`b03068e5`), y `verificar:movimiento` 14/14 en producción.
 
 > **Punto de retoma del 23/09/2026 (el panel en el teléfono con su barra de abajo, en producción).** Todo está **empujado y
 > desplegado** (Worker `f87709f8`); el árbol quedó limpio salvo `Plan_CRM_Inmobiliario_AIG.md`, la base local sin datos de muestra
