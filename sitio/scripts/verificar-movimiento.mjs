@@ -38,8 +38,9 @@ const BASE = values.base.replace(/\/+$/, "");
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
 // `/contacto` entró el 21/09/2026: su mostrador trae el dibujo de asesoría y
-// toda la página tiene entrada.
-const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-el-prado-4", "/servicios", "/contacto"];
+// toda la página tiene entrada. La ficha era la de El Prado 4 hasta que
+// WordPress la quitó y la sincronización la pausó (21/10/2026): su ficha da 404.
+const RUTAS = ["/", "/propiedades", "/propiedades/casa-en-la-chapultepec-oriente", "/servicios", "/contacto"];
 /**
  * `/entregas` solo existe con alguna publicada (si no, 404): se revisa cuando
  * responde. Para cubrirla, correr antes `verificar:entregas --local --dejar`.

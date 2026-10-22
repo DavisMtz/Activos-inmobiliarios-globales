@@ -34,6 +34,7 @@
     "hoja:dibujos": "node scripts/hoja-dibujos.mjs",
     "fichas:descargar": "node scripts/descargar-fichas.mjs",
     "sembrar": "node scripts/sembrar-desde-wordpress.mjs",
+    "sincronizar": "node scripts/sincronizar-con-wordpress.mjs",
     "comparar": "node scripts/comparar-con-sitio-actual.mjs",
     "fotos:migrar": "node scripts/migrar-fotos-a-cloudinary.mjs",
     "metricas:muestra": "node scripts/sembrar-metricas-demo.mjs"
