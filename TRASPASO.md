@@ -1,6 +1,6 @@
 # Traspaso · para quien siga
 
-Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 23/09/2026 (el panel en el teléfono, en producción; el CRM anotado como lo que sigue tras F6). Es el **punto de retoma**: qué hay, qué falta y cómo se trabaja aquí. No repite `PLAN.md`; dice por dónde entrarle. Si algo de aquí contradice a `PLAN.md`, manda `PLAN.md` (y corrige este archivo).
+Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 23/09/2026 (el panel en el teléfono, en producción; el CRM anotado como lo que sigue tras F6) y el 21/10/2026 desde la PC de casa (la sincronización con WordPress, en producción: §5). Es el **punto de retoma**: qué hay, qué falta y cómo se trabaja aquí. No repite `PLAN.md`; dice por dónde entrarle. Si algo de aquí contradice a `PLAN.md`, manda `PLAN.md` (y corrige este archivo).
 
 > El repositorio es **público**: aquí no va ninguna clave, contraseña ni dato de una persona real.
 
@@ -11,8 +11,8 @@ Escrito el 20/09/2026 al cerrar una sesión y puesto al día el 23/09/2026 (el p
 | **Sitio** | https://activos-inmobiliarios.logidma.workers.dev (`MODO_DEMO=1`: `noindex`, sin correos, sin analítica) |
 | **Worker** | `activos-inmobiliarios`, versión activa **`f87709f8`** (23/09/2026: el panel en el teléfono con la barra de abajo, §5). **`main` está empujada y desplegada: no hay nada pendiente de subir** |
 | **Reversión** | la anterior es `b328a05c`: `npx wrangler rollback b328a05c-97c3-4301-b5ed-cf59a4e97885` (devuelve el menú plegable arriba, con lo demás de la primera mano). Antes, `5bdc97d4` (el panel de antes), `4ba9e535`, `d71de42b`, `020cc1b9`, `2168665c` y `ecb59d6c`. Ninguna migración estorba |
-| **Código** | rama `main`, empujada y desplegada. **No hay nada fuera de `main`**: la rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
-| **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo) |
+| **Código** | rama `main`, empujada y desplegada (`48cab58`). **Dos copias van adelante de GitHub:** en la PC del trabajo, commits del 03/10/2026 sin subir (el panel instalable y lo que importó 5 casas); en la PC de casa (`Escritorio\Activos-inmobiliarios-globales`), la rama local `sincronizar-wordpress` (21/10/2026, sin subir). Al juntarlas, esperar choques en `PLAN.md` y en este archivo. La rama `worktree-f5-formularios-y-guion` ya está unida (0 commits propios) |
+| **Base** | D1 `activos-inmobiliarios-db`, migraciones `0001`–`0005` aplicadas en local **y en remoto** (la `0005`, del buscador, se aplicó el 20/09/2026 antes de desplegarlo). **Desde el 21/10/2026: 200 casas de WordPress, 184 publicadas y 16 pausadas** (§5) |
 | **Fases** | F0–F4 listas y en producción · F2 con su criterio 5 abierto · F5 en curso · F6 en espera de los consultores |
 
 La app vive en `sitio/`. Todo comando de abajo se corre desde ahí.
@@ -28,7 +28,7 @@ La app vive en `sitio/`. Todo comando de abajo se corre desde ahí.
 - **Desplegar necesita la palabra explícita del usuario en la conversación** («Sube a producción», «Despliegas»). Vale para esa tarea, no para la siguiente. Lo mismo el `git push` si no lo pidió. El commit local sí se hace al cerrar cada paso verificado.
 - **Antes de CUALQUIER deploy** (§17): `git worktree list`, `git branch -a`, `npx wrangler deployments list`. Si la versión activa no es la que esperabas, **no despliegues encima a ciegas**: compara los `.js` que sirve producción contra una compilación del commit que sospechas (receta en §19, «Volver al catálogo»). Ya pasó que otra sesión desplegaba desde un worktree y un deploy desde `main` le borró el trabajo del sitio.
 - **Si hay migración, va PRIMERO.** El marco público consulta la base en todas las páginas: sin la columna, se cae el sitio entero.
-- **Una verificación se cierra mirando la base y la nube, no la salida del guion.** Un guion que muere a media limpieza no lo dice. Al terminar en remoto: casas 188, servicios 6, cero `… de recorrido F3%`, cero cuentas `@ejemplo.invalid`, y `npm run fotos:migrar -- --remote --verificar` en ceros.
+- **Una verificación se cierra mirando la base y la nube, no la salida del guion.** Un guion que muere a media limpieza no lo dice. Al terminar en remoto: casas de WordPress 200 (184 publicadas y 16 pausadas desde el 21/10/2026; eran 188), servicios 6, cero `… de recorrido F3%`, cero cuentas `@ejemplo.invalid`, y `npm run fotos:migrar -- --remote --verificar` en ceros.
 - **Lo que la gente pulsa no es la API.** Dos veces un botón no hacía nada y el código «se veía bien»; la última, el 19/09 (abajo, §5). Lo que toque un formulario se prueba con navegador de verdad, pulsando el botón.
 - **Medir contra `vite preview`, no contra `npm run dev`** (el dev sirve un instante sin CSS y las medidas salen absurdas). El preview **bloquea `build/client`**: hay que cerrarlo antes de reconstruir o `npm run build` muere con `rmdir`. Y matar el proceso deja vivos `node`/`workerd` en el puerto 5180.
 - **Git Bash convierte en ruta de Windows todo argumento que empieza por «/»**: `/servicios` llega como `C:/…/Git/servicios`. Los guiones que reciben una URL entera no lo notan; `filmar` acepta la ruta sin barra.
@@ -43,7 +43,32 @@ Lo que mejor ha funcionado, por si ayuda:
 - **«Me gusta» es una orden de conservar.** Refinar no es rediseñar: la lista de Servicios sigue siendo lista.
 - **Registrar con números** en `PLAN.md` §19 al cerrar, incluidas las trampas nuevas.
 
-## 5. Lo último que se hizo (19-23/09/2026)
+## 5. Lo último que se hizo (19/09-21/10/2026)
+
+**La sincronización con WordPress (21/10/2026 · EN PRODUCCIÓN, solo datos, desde la PC de casa)**
+— pedido: «quiero que me ayudes a actualizarlo primero si es que hay algun contenido nuevo». El
+equipo sigue subiendo casas al WordPress, y lo que importó las 5 del 03/10 se quedó sin subir en la
+PC del trabajo («haz que podamos hacerlo aquí»). Para lo que WordPress ya quitó eligió
+«Ocultarlas», y autorizó «Ensayo y, si cuadra, aplica». **Sin deploy ni migración:** la activa
+sigue siendo `f87709f8`. `PLAN.md` §19 tiene las cifras; aquí, dónde vive cada cosa:
+
+| Archivo | Qué guarda |
+|---|---|
+| `scripts/sincronizar-con-wordpress.mjs` | `npm run sincronizar -- --remote [--seco] [--sin-bajas]`. Lee el WordPress VIVO (la API y la ficha de cada casa nueva o cambiada, con pausa de 700 ms) y lo compara con la D1. **Altas:** clave siguiente por fecha de alta y `publicada`. **Cambios:** solo si WordPress la modificó después que la D1 (`actualizada_en`); lo editado en el panel después no se toca, y el reporte lo lista. Sus fotos no se tocan: si la galería cambió, avisa. **Bajas:** lo que WordPress ya no publica pasa a `pausada` si estaba publicada o apartada. Bitácora con usuario NULL. Escribe `seed/generado/sincronizacion.sql` y `.md`, y lo bajado en `seed/generado/wordpress/<fecha UTC>/` |
+| `scripts/lib/wordpress.mjs` | **Las reglas de §14, en un solo lugar:** de ahí leen la siembra y la sincronización. Si cambias una, cambia para las dos. Al sacarlas, la siembra siguió generando el mismo SQL, comparado línea por línea |
+| `scripts/verificar-movimiento.mjs` | Su ficha es ahora Chapultepec Oriente (AIG-0050): El Prado 4 (AIG-0188), la casa de prueba de siempre, quedó pausada y da 404 |
+
+**Cómo se miró:** primero en una D1 local cargada con la siembra del 16/09 (las 5 de octubre
+salieron con sus claves de producción y sus 122 fotos), luego el ensayo en producción y, al
+aplicar, sus 14 comprobaciones, `comparar-con-sitio-actual --remote` con las 12 casas tocadas,
+las fichas públicas (200 las nuevas, 404 las pausadas) y una segunda pasada vacía.
+
+> ⚠ **La portada cambió sola** a AIG-0200 (Casa en Erandeni Club de Golf), la más reciente, como
+> el 03/10. Si prefiere otra, se fija en Panel › Contenido.
+
+> ⚠ **Para correrla otra vez:** sesión de wrangler, primero `--seco` y enseñarle el reporte. Si
+> salen muchos más «cambios» de los esperados, algo movió `actualizada_en` en producción:
+> mirarlo antes de aplicar.
 
 **El panel en el teléfono, primera mano (23/09/2026 · EN PRODUCCIÓN, Worker `b328a05c`,
 commit `22e9139`)** — desplegado a pedido del usuario («despliega»), con el `git push`; antes,
@@ -344,6 +369,22 @@ titular sobre una foto se decide en una CAPTURA y se mide en seis anchos, no a o
 
 ## 6. Pendientes, por orden
 
+> **Punto de retoma del 21/10/2026 (la sincronización con WordPress, en producción).** El código
+> nuevo está en la rama local `sincronizar-wordpress` de la PC de casa, **sin subir**: se une a
+> `main` y se empuja cuando lleguen a GitHub los commits del 03/10 de la PC del trabajo.
+
+0.sexies **De la sincronización (21/10/2026):**
+   - **Subir las 109 fotos nuevas a Cloudinary:** `npm run fotos:migrar -- --remote` y después
+     `--verificar`. Hace falta `sitio/.dev.vars` con las llaves (en la PC de casa no hay; lo
+     escribe el usuario). Mientras, el sitio sirve esas fotos de WordPress: se ven, pero son los
+     originales pesados, y desaparecen cuando se apague el WordPress.
+   - **AIG-0192:** el 05/10 editaron en WordPress su foto principal (`…-e1791236599221.jpeg`) y la
+     D1 conserva la de antes; las otras 9 son iguales. Cambiarla deja huérfana la anterior en
+     Cloudinary: hacerlo junto con el paso de las fotos, si él quiere.
+   - **Las 16 pausadas:** WordPress no dice si se vendieron. Su papá puede marcar en el panel las
+     que se vendieron o rentaron (su ficha vuelve, con «ya se vendió»).
+   - **Subir la rama** (ver el punto de retoma) y correr `verificar:movimiento` con su ficha nueva.
+
 > **Punto de retoma del 23/09/2026 (el panel en el teléfono con su barra de abajo, en producción).** Todo está **empujado y
 > desplegado** (Worker `f87709f8`); el árbol quedó limpio salvo `Plan_CRM_Inmobiliario_AIG.md`, la base local sin datos de muestra
 > y el `vite preview` apagado. Lo primero de la lista es lo que el usuario dejó abierto, no un
@@ -462,6 +503,7 @@ Con `npm run build` y `npx vite preview --port 5180 --strictPort` levantado. Con
 | `npm run verificar:redes -- --base http://localhost:5180 --local` | Las redes del pie **pulsando «Guardar las redes»** en el panel: el desplegable, lo que queda en la base, lo que sale en el pie y que vaciar el enlace quita la red. Crea una cuenta de dirección y la borra; devuelve la fila a como estaba |
 | `npm run verificar:busqueda -- --base http://localhost:5180 --local [--ia]` | El buscador: lo que entiende sin modelo, la frase tecleada en la portada, el interruptor del panel y, con `--ia`, el modelo de verdad (gasta unas consultas). **En local el binding `AI` va a la nube:** también gasta |
 | `npm run medir:ia` | No verifica el sitio: compara modelos de Workers AI con 65 frases (`--sin-modelo` dice cuántas se resuelven sin preguntar). Necesita la sesión de wrangler con ámbito `ai` |
+| `npm run sincronizar -- --remote --seco` | No verifica: dice qué traería del WordPress vivo (altas, cambios, bajas) sin escribir nada. **En seco primero, siempre**, y aplicar solo con su palabra. Tras aplicar, `node scripts/comparar-con-sitio-actual.mjs --remote <slugs>` es la prueba independiente |
 
 Los que crean cuentas chocan con el freno de acceso (8 por minuto desde una misma IP) y reintentan solos a los 65 s: no es un fallo.
 
