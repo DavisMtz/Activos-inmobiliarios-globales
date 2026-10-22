@@ -4,7 +4,7 @@
  * contra la D1: precio, recámaras, baños, m² y orden exacto de las fotos
  * (PLAN §15, «listo cuando» de F1).
  *
- *   node scripts/comparar-con-sitio-actual.mjs --remote casa-en-el-prado-4 casa-en-la-chapultepec-oriente
+ *   node scripts/comparar-con-sitio-actual.mjs --remote casa-en-la-chapultepec-oriente departamentos-en-valle-artisa
  *
  * La extracción está escrita aparte a propósito: no reutiliza el código de la
  * siembra, así un error de la siembra no se «confirma» a sí mismo.

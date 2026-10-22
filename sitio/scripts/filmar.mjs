@@ -59,7 +59,7 @@ if (!rutaCruda || !carpeta) {
  * **Git Bash convierte en ruta de Windows todo argumento que empieza por «/»:**
  * `/servicios` llega como `C:/…/Git/servicios` y la URL sale inválida (pasó al
  * probar este guion). Por eso la ruta se acepta también SIN la barra
- * (`servicios`, `propiedades/casa-en-el-prado-4`), que es como hay que pasarla
+ * (`servicios`, `propiedades/casa-en-la-chapultepec-oriente`), que es como hay que pasarla
  * desde Git Bash; PowerShell y `cmd` la dejan como está.
  */
 function normalizar(valor, nombre) {

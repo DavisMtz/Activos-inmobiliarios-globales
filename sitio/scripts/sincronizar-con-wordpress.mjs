@@ -156,9 +156,15 @@ const bajas = values["sin-bajas"]
   : filas.filter((f) => !publicadas.has(f.wp_id) && ["publicada", "apartada"].includes(f.estado) && !f.eliminada_en);
 // Pausadas que WordPress vuelve a publicar: no se reactivan solas (quizá las pausó el equipo).
 const regresaron = api.filter((p) => enD1.get(p.id)?.estado === "pausada");
+// Más nuevas en la D1 que en WordPress: editadas en el panel (o importadas después de su
+// último cambio). No se tocan, y si WordPress cambió algo antes de esa edición, no se trae.
+const respetadas = api.filter((p) => enD1.has(p.id) && fechaUtc(p.modified_gmt) < enD1.get(p.id).actualizada_en);
 
 console.log(`WordPress publica ${api.length} · la D1 ${destino} tiene ${filas.length} de WordPress.`);
-console.log(`Altas: ${altas.length} · cambios: ${cambiadas.length} · bajas: ${bajas.length}${values["sin-bajas"] ? " (--sin-bajas)" : ""}`);
+console.log(
+  `Altas: ${altas.length} · cambios: ${cambiadas.length} · bajas: ${bajas.length}${values["sin-bajas"] ? " (--sin-bajas)" : ""}` +
+    ` · más nuevas en la D1: ${respetadas.length}`,
+);
 
 // ─── 4. Las fichas y los medios de lo nuevo y lo cambiado ───────
 
@@ -324,6 +330,19 @@ const reporte = [
   "",
   ...(regresaron.length
     ? [`## Pausadas que WordPress vuelve a publicar (${regresaron.length}): siguen pausadas`, "", ...regresaron.map((p) => `- ${enD1.get(p.id).clave} · ${enD1.get(p.id).titulo}`), ""]
+    : []),
+  ...(respetadas.length
+    ? [
+        `## Más nuevas en la D1 que en WordPress (${respetadas.length}): no se tocan`,
+        "",
+        "Editadas en el panel, o importadas después de su último cambio en WordPress. Si WordPress cambió algo antes de esa edición, no se trae: revisarlas a mano.",
+        "",
+        ...respetadas.map((p) => {
+          const f = enD1.get(p.id);
+          return `- ${f.clave} · ${f.titulo} · D1 ${f.actualizada_en.slice(0, 16).replace("T", " ")} · WordPress ${fechaUtc(p.modified_gmt).slice(0, 16).replace("T", " ")} (UTC)`;
+        }),
+        "",
+      ]
     : []),
   "## Avisos de las altas",
   "",
